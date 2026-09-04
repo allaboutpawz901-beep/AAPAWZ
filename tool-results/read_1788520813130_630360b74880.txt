@@ -1,0 +1,678 @@
+     1→'use client';
+     2→
+     3→import React, { useState } from 'react';
+     4→import { 
+     5→  DawgNavSection, 
+     6→  KPIMetric, 
+     7→  AppointmentItem, 
+     8→  StaffScheduleItem, 
+     9→  FunnelStage, 
+    10→  GroomingRecord, 
+    11→  AlertNotification 
+    12→} from '@/lib/dawg-types';
+    13→import { 
+    14→  Calendar, 
+    15→  DollarSign, 
+    16→  UserPlus, 
+    17→  PawPrint, 
+    18→  RefreshCw, 
+    19→  ArrowUpRight, 
+    20→  ArrowDownRight, 
+    21→  ArrowRight, 
+    22→  ChevronDown, 
+    23→  Plus, 
+    24→  MoreHorizontal,
+    25→  ShieldAlert,
+    26→  FileText,
+    27→  Cake,
+    28→  Package,
+    29→  CheckCircle2,
+    30→  Clock,
+    31→  Sparkles
+    32→} from 'lucide-react';
+    33→
+    34→interface DashboardViewProps {
+    35→  metrics: KPIMetric[];
+    36→  appointments: AppointmentItem[];
+    37→  staffSchedules: StaffScheduleItem[];
+    38→  bookingFunnel: FunnelStage[];
+    39→  groomingRecords: GroomingRecord[];
+    40→  alerts: AlertNotification[];
+    41→  onNavigateSection: (section: DawgNavSection) => void;
+    42→  onOpenQuickAction: (actionType: 'appointment' | 'customer' | 'pet' | 'intake' | 'payment' | 'invoice') => void;
+    43→  onSelectAppointment?: (appt: AppointmentItem) => void;
+    44→  onToggleAppointmentStatus?: (id: string) => void;
+    45→}
+    46→
+    47→export const DashboardView: React.FC<DashboardViewProps> = ({
+    48→  metrics,
+    49→  appointments,
+    50→  staffSchedules,
+    51→  bookingFunnel,
+    52→  groomingRecords,
+    53→  alerts,
+    54→  onNavigateSection,
+    55→  onOpenQuickAction,
+    56→  onSelectAppointment,
+    57→  onToggleAppointmentStatus
+    58→}) => {
+    59→  const [revenuePeriod, setRevenuePeriod] = useState<'This Week' | 'This Month' | 'Quarter'>('This Week');
+    60→  const [hoveredPoint, setHoveredPoint] = useState<number | null>(4); // default Friday highlighted
+    61→
+    62→  // Revenue chart dataset
+    63→  const revenuePoints = [
+    64→    { day: 'Mon', amount: '$4,200', x: 30, y: 95 },
+    65→    { day: 'Tue', amount: '$4,800', x: 75, y: 88 },
+    66→    { day: 'Wed', amount: '$6,200', x: 120, y: 62 },
+    67→    { day: 'Thu', amount: '$5,900', x: 165, y: 72 },
+    68→    { day: 'Fri', amount: '$8,400', x: 210, y: 40 },
+    69→    { day: 'Sat', amount: '$6,900', x: 255, y: 64 },
+    70→    { day: 'Sun', amount: '$5,400', x: 300, y: 80 },
+    71→  ];
+    72→
+    73→  return (
+    74→    <div className="p-4 sm:p-6 space-y-5 max-w-[1600px] mx-auto">
+    75→      {/* 1. KEY PERFORMANCE INDICATOR CARDS */}
+    76→      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5" data-purpose="kpi-metrics-grid">
+    77→        {/* Card 1: Today's Appointments */}
+    78→        <div 
+    79→          onClick={() => onNavigateSection('appointments')}
+    80→          className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs hover:border-indigo-300 transition-all cursor-pointer flex items-center gap-3"
+    81→        >
+    82→          <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl flex-shrink-0">
+    83→            <Calendar className="w-5 h-5" />
+    84→          </div>
+    85→          <div className="min-w-0">
+    86→            <p className="text-[11px] font-medium text-slate-500 truncate">Today&apos;s Appointments</p>
+    87→            <p className="text-xl font-bold text-slate-900 tracking-tight">28</p>
+    88→            <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5">
+    89→              <ArrowUpRight className="w-3 h-3 stroke-[2.5]" /> 12% <span className="font-normal text-slate-400 ml-0.5">vs yesterday</span>
+    90→            </p>
+    91→          </div>
+    92→        </div>
+    93→
+    94→        {/* Card 2: Today's Revenue */}
+    95→        <div 
+    96→          onClick={() => onNavigateSection('payments')}
+    97→          className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs hover:border-indigo-300 transition-all cursor-pointer flex items-center gap-3"
+    98→        >
+    99→          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0">
+   100→            <DollarSign className="w-5 h-5" />
+   101→          </div>
+   102→          <div className="min-w-0">
+   103→            <p className="text-[11px] font-medium text-slate-500 truncate">Today&apos;s Revenue</p>
+   104→            <p className="text-xl font-bold text-slate-900 tracking-tight">$6,842.50</p>
+   105→            <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5">
+   106→              <ArrowUpRight className="w-3 h-3 stroke-[2.5]" /> 18% <span className="font-normal text-slate-400 ml-0.5">vs yesterday</span>
+   107→            </p>
+   108→          </div>
+   109→        </div>
+   110→
+   111→        {/* Card 3: New Customers (30d) */}
+   112→        <div 
+   113→          onClick={() => onNavigateSection('customers')}
+   114→          className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs hover:border-indigo-300 transition-all cursor-pointer flex items-center gap-3"
+   115→        >
+   116→          <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
+   117→            <UserPlus className="w-5 h-5" />
+   118→          </div>
+   119→          <div className="min-w-0">
+   120→            <p className="text-[11px] font-medium text-slate-500 truncate">New Customers (30d)</p>
+   121→            <p className="text-xl font-bold text-slate-900 tracking-tight">46</p>
+   122→            <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5">
+   123→              <ArrowUpRight className="w-3 h-3 stroke-[2.5]" /> 15% <span className="font-normal text-slate-400 ml-0.5">vs last 30 days</span>
+   124→            </p>
+   125→          </div>
+   126→        </div>
+   127→
+   128→        {/* Card 4: No Show Rate (30d) */}
+   129→        <div 
+   130→          onClick={() => onNavigateSection('reports')}
+   131→          className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs hover:border-indigo-300 transition-all cursor-pointer flex items-center gap-3"
+   132→        >
+   133→          <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl flex-shrink-0">
+   134→            <PawPrint className="w-5 h-5 fill-amber-500" />
+   135→          </div>
+   136→          <div className="min-w-0">
+   137→            <p className="text-[11px] font-medium text-slate-500 truncate">No Show Rate (30d)</p>
+   138→            <p className="text-xl font-bold text-slate-900 tracking-tight">4.2%</p>
+   139→            <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5">
+   140→              <ArrowDownRight className="w-3 h-3 stroke-[2.5]" /> 1.3% <span className="font-normal text-slate-400 ml-0.5">vs last 30 days</span>
+   141→            </p>
+   142→          </div>
+   143→        </div>
+   144→
+   145→        {/* Card 5: Rebook Rate (30d) */}
+   146→        <div 
+   147→          onClick={() => onNavigateSection('reports')}
+   148→          className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs hover:border-indigo-300 transition-all cursor-pointer flex items-center gap-3"
+   149→        >
+   150→          <div className="w-11 h-11 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center text-xl flex-shrink-0">
+   151→            <RefreshCw className="w-5 h-5" />
+   152→          </div>
+   153→          <div className="min-w-0">
+   154→            <p className="text-[11px] font-medium text-slate-500 truncate">Rebook Rate (30d)</p>
+   155→            <p className="text-xl font-bold text-slate-900 tracking-tight">68%</p>
+   156→            <p className="text-[10px] font-semibold text-emerald-600 flex items-center gap-0.5">
+   157→              <ArrowUpRight className="w-3 h-3 stroke-[2.5]" /> 6% <span className="font-normal text-slate-400 ml-0.5">vs last 30 days</span>
+   158→            </p>
+   159→          </div>
+   160→        </div>
+   161→      </section>
+   162→
+   163→      {/* 2. MID SECTION (Appointments, Revenue Chart, Staff Schedule) */}
+   164→      <section className="grid grid-cols-1 lg:grid-cols-12 gap-5" data-purpose="primary-operations-grid">
+   165→        {/* Column 1: Today's Appointments List (4 cols) */}
+   166→        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col justify-between">
+   167→          <div>
+   168→            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+   169→              <h3 className="font-bold text-sm text-slate-900">Today&apos;s Appointments</h3>
+   170→              <button
+   171→                onClick={() => onNavigateSection('calendar')}
+   172→                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+   173→              >
+   174→                View Calendar
+   175→              </button>
+   176→            </div>
+   177→
+   178→            {/* List of Appointments */}
+   179→            <div className="space-y-3">
+   180→              {appointments.slice(0, 5).map((appt) => (
+   181→                <div 
+   182→                  key={appt.id} 
+   183→                  onClick={() => onToggleAppointmentStatus && onToggleAppointmentStatus(appt.id)}
+   184→                  className="flex items-center justify-between text-xs py-1 hover:bg-slate-50/80 px-1 rounded-lg transition-colors cursor-pointer"
+   185→                >
+   186→                  <span className="text-slate-400 font-medium text-[11px] w-14">{appt.time}</span>
+   187→                  <div className="flex items-center gap-2 flex-1 min-w-0 px-2">
+   188→                    <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 text-xs font-bold flex-shrink-0">
+   189→                      {appt.petEmoji}
+   190→                    </div>
+   191→                    <div className="truncate">
+   192→                      <p className="font-bold text-slate-800 leading-tight truncate">{appt.petName}</p>
+   193→                      <p className="text-[10px] text-slate-400 leading-tight">{appt.breed}</p>
+   194→                    </div>
+   195→                  </div>
+   196→                  <div className="text-right flex-shrink-0">
+   197→                    <p className="text-[11px] text-slate-700 font-medium">{appt.serviceName}</p>
+   198→                    {appt.staffName && (
+   199→                      <span className="text-[10px] text-slate-400 block">{appt.staffName}</span>
+   200→                    )}
+   201→                    <span className={`inline-block px-1.5 py-0.5 text-[9px] font-semibold rounded ${
+   202→                      appt.status === 'Checked In'
+   203→                        ? 'text-emerald-700 bg-emerald-50'
+   204→                        : 'text-blue-700 bg-blue-50'
+   205→                    }`}>
+   206→                      {appt.status}
+   207→                    </span>
+   208→                  </div>
+   209→                </div>
+   210→              ))}
+   211→            </div>
+   212→          </div>
+   213→
+   214→          <div className="pt-3 mt-2 border-t border-slate-100">
+   215→            <button
+   216→              onClick={() => onNavigateSection('appointments')}
+   217→              className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+   218→            >
+   219→              <span>View all appointments</span>
+   220→              <ArrowRight className="w-3 h-3 stroke-[2.5]" />
+   221→            </button>
+   222→          </div>
+   223→        </div>
+   224→
+   225→        {/* Column 2: Revenue Overview (4 cols) */}
+   226→        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col justify-between">
+   227→          <div>
+   228→            <div className="flex items-center justify-between">
+   229→              <div>
+   230→                <h3 className="font-bold text-sm text-slate-900">Revenue Overview</h3>
+   231→                <div className="flex items-baseline gap-2 mt-1">
+   232→                  <span className="text-xl font-extrabold text-slate-900 tracking-tight">$34,341.00</span>
+   233→                  <span className="text-[11px] font-semibold text-emerald-600 flex items-center gap-0.5">
+   234→                    <ArrowUpRight className="w-3 h-3 stroke-[2.5]" /> 16.4% <span className="font-normal text-slate-400 ml-0.5">vs last week</span>
+   235→                  </span>
+   236→                </div>
+   237→              </div>
+   238→              <button 
+   239→                onClick={() => setRevenuePeriod(p => p === 'This Week' ? 'This Month' : 'This Week')}
+   240→                className="flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 border border-slate-200 px-2 py-1 rounded-lg hover:bg-slate-100"
+   241→              >
+   242→                <span>{revenuePeriod}</span>
+   243→                <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
+   244→              </button>
+   245→            </div>
+   246→
+   247→            {/* SVG Line Chart */}
+   248→            <div className="mt-4 h-36 w-full relative">
+   249→              <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 320 120">
+   250→                {/* Grid Lines */}
+   251→                <line stroke="#f1f5f9" strokeWidth="1" x1="20" x2="310" y1="20" y2="20" />
+   252→                <line stroke="#f1f5f9" strokeWidth="1" x1="20" x2="310" y1="50" y2="50" />
+   253→                <line stroke="#f1f5f9" strokeWidth="1" x1="20" x2="310" y1="80" y2="80" />
+   254→                <line stroke="#f1f5f9" strokeWidth="1" x1="20" x2="310" y1="110" y2="110" />
+   255→
+   256→                {/* Left Axis Labels */}
+   257→                <text fill="#94a3b8" fontSize="8" x="0" y="24">$8K</text>
+   258→                <text fill="#94a3b8" fontSize="8" x="0" y="54">$6K</text>
+   259→                <text fill="#94a3b8" fontSize="8" x="0" y="84">$4K</text>
+   260→                <text fill="#94a3b8" fontSize="8" x="0" y="114">$0</text>
+   261→
+   262→                {/* Gradient Definition */}
+   263→                <defs>
+   264→                  <linearGradient id="chartGradientDawg" x1="0" x2="0" y1="0" y2="1">
+   265→                    <stop offset="0%" stopColor="#6366f1" stopOpacity="0.22" />
+   266→                    <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+   267→                  </linearGradient>
+   268→                </defs>
+   269→
+   270→                {/* Area Fill */}
+   271→                <path d="M 30 95 L 75 88 L 120 62 L 165 72 L 210 40 L 255 64 L 300 80 L 300 110 L 30 110 Z" fill="url(#chartGradientDawg)" />
+   272→
+   273→                {/* Main Line */}
+   274→                <path d="M 30 95 L 75 88 L 120 62 L 165 72 L 210 40 L 255 64 L 300 80" fill="none" stroke="#6366f1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+   275→
+   276→                {/* Interactive Nodes */}
+   277→                {revenuePoints.map((pt, i) => (
+   278→                  <g key={pt.day} onMouseEnter={() => setHoveredPoint(i)}>
+   279→                    <circle
+   280→                      cx={pt.x}
+   281→                      cy={pt.y}
+   282→                      fill={hoveredPoint === i ? '#4338ca' : '#6366f1'}
+   283→                      r={hoveredPoint === i ? 4.5 : 2.5}
+   284→                      stroke={hoveredPoint === i ? '#ffffff' : 'none'}
+   285→                      strokeWidth={1.5}
+   286→                      className="cursor-pointer transition-all"
+   287→                    />
+   288→                  </g>
+   289→                ))}
+   290→              </svg>
+   291→
+   292→              {/* X-Axis Labels */}
+   293→              <div className="flex justify-between pl-6 pr-2 text-[9px] text-slate-400 mt-1 font-medium">
+   294→                {revenuePoints.map((pt, i) => (
+   295→                  <span 
+   296→                    key={pt.day}
+   297→                    className={hoveredPoint === i ? 'font-bold text-indigo-600' : ''}
+   298→                  >
+   299→                    {pt.day}
+   300→                  </span>
+   301→                ))}
+   302→              </div>
+   303→            </div>
+   304→          </div>
+   305→
+   306→          {/* Bottom Stat Category Pills */}
+   307→          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-100 text-center">
+   308→            <div className="bg-indigo-50/50 p-2 rounded-xl border border-indigo-100">
+   309→              <p className="text-[10px] text-slate-500 font-medium">Services</p>
+   310→              <p className="text-xs font-bold text-slate-900">$26,541.00</p>
+   311→              <p className="text-[9px] text-indigo-600 font-medium">77%</p>
+   312→            </div>
+   313→            <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+   314→              <p className="text-[10px] text-slate-500 font-medium">Products</p>
+   315→              <p className="text-xs font-bold text-slate-900">$4,842.00</p>
+   316→              <p className="text-[9px] text-slate-500 font-medium">14%</p>
+   317→            </div>
+   318→            <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+   319→              <p className="text-[10px] text-slate-500 font-medium">Add-ons</p>
+   320→              <p className="text-xs font-bold text-slate-900">$2,958.00</p>
+   321→              <p className="text-[9px] text-slate-500 font-medium">9%</p>
+   322→            </div>
+   323→          </div>
+   324→        </div>
+   325→
+   326→        {/* Column 3: Today's Schedule (Staff Capacity) (4 cols) */}
+   327→        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col justify-between">
+   328→          <div>
+   329→            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+   330→              <h3 className="font-bold text-sm text-slate-900">Today&apos;s Schedule (Staff)</h3>
+   331→              <button
+   332→                onClick={() => onNavigateSection('schedule')}
+   333→                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+   334→              >
+   335→                View Full Schedule
+   336→              </button>
+   337→            </div>
+   338→
+   339→            {/* Staff Grid Slots */}
+   340→            <div className="space-y-3.5">
+   341→              {staffSchedules.map((staff) => (
+   342→                <div key={staff.id} className="flex items-center justify-between text-xs">
+   343→                  <div className="flex items-center gap-2 w-28 flex-shrink-0">
+   344→                    <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">
+   345→                      {staff.initials}
+   346→                    </div>
+   347→                    <div className="truncate">
+   348→                      <p className="font-bold text-slate-800 leading-tight truncate">{staff.name}</p>
+   349→                      <p className="text-[10px] text-slate-400">{staff.role}</p>
+   350→                    </div>
+   351→                  </div>
+   352→
+   353→                  {/* Mini slot bars */}
+   354→                  <div className="flex items-center gap-1">
+   355→                    {staff.slots.map((slot, idx) => (
+   356→                      <span
+   357→                        key={idx}
+   358→                        title={`${staff.name} - Slot ${idx + 1}: ${slot}`}
+   359→                        className={`w-2.5 h-4 rounded-xs transition-colors ${
+   360→                          slot === 'booked'
+   361→                            ? 'bg-emerald-500'
+   362→                            : slot === 'break'
+   363→                            ? 'bg-rose-400'
+   364→                            : slot === 'blocked'
+   365→                            ? 'bg-amber-400'
+   366→                            : 'bg-slate-200'
+   367→                        }`}
+   368→                      />
+   369→                    ))}
+   370→                  </div>
+   371→
+   372→                  <div className="text-right w-10">
+   373→                    <span className="font-bold text-slate-800 text-xs">{staff.appointmentsCount}</span>
+   374→                    <span className="text-[10px] text-slate-400 block">appts</span>
+   375→                  </div>
+   376→                </div>
+   377→              ))}
+   378→            </div>
+   379→          </div>
+   380→
+   381→          {/* Schedule Legend */}
+   382→          <div className="flex items-center justify-center gap-4 text-[10px] text-slate-500 pt-3 border-t border-slate-100">
+   383→            <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-xs bg-emerald-500" /> Booked</div>
+   384→            <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-xs bg-slate-200" /> Available</div>
+   385→            <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-xs bg-rose-400" /> Break</div>
+   386→            <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-xs bg-amber-400" /> Blocked</div>
+   387→          </div>
+   388→        </div>
+   389→      </section>
+   390→
+   391→      {/* 3. LOWER SECTION (Funnel, Records, Alerts) */}
+   392→      <section className="grid grid-cols-1 lg:grid-cols-12 gap-5" data-purpose="funnel-records-alerts-grid">
+   393→        {/* Bookings Funnel (4 cols) */}
+   394→        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col justify-between">
+   395→          <div>
+   396→            <h3 className="font-bold text-sm text-slate-900 mb-3">Bookings Funnel (30 Days)</h3>
+   397→
+   398→            {/* Trapezoid Funnel Representation */}
+   399→            <div className="flex flex-col items-center justify-center py-2 space-y-1 relative">
+   400→              {/* Tier 1 */}
+   401→              <div className="w-11/12 bg-indigo-300 text-indigo-950 py-1.5 px-3 rounded-t-lg text-center shadow-2xs">
+   402→                <p className="font-bold text-xs">412</p>
+   403→                <p className="text-[10px] font-medium opacity-80">Website Visits</p>
+   404→              </div>
+   405→
+   406→              {/* Conversion indicator 1 */}
+   407→              <div className="text-[10px] font-bold text-slate-500 self-end mr-6 flex items-center gap-1">
+   408→                <span className="w-3 h-px bg-slate-300" /> 45.9%
+   409→              </div>
+   410→
+   411→              {/* Tier 2 */}
+   412→              <div className="w-9/12 bg-indigo-400 text-white py-1.5 px-3 text-center shadow-2xs">
+   413→                <p className="font-bold text-xs">189</p>
+   414→                <p className="text-[10px] font-medium opacity-90">Account Created</p>
+   415→              </div>
+   416→
+   417→              {/* Conversion indicator 2 */}
+   418→              <div className="text-[10px] font-bold text-slate-500 self-end mr-10 flex items-center gap-1">
+   419→                <span className="w-3 h-px bg-slate-300" /> 75.1%
+   420→              </div>
+   421→
+   422→              {/* Tier 3 */}
+   423→              <div className="w-7/12 bg-emerald-400 text-white py-1.5 px-3 text-center shadow-2xs">
+   424→                <p className="font-bold text-xs">142</p>
+   425→                <p className="text-[10px] font-medium opacity-90">Intake Completed</p>
+   426→              </div>
+   427→
+   428→              {/* Conversion indicator 3 */}
+   429→              <div className="text-[10px] font-bold text-slate-500 self-end mr-14 flex items-center gap-1">
+   430→                <span className="w-3 h-px bg-slate-300" /> 81.4%
+   431→              </div>
+   432→
+   433→              {/* Tier 4 */}
+   434→              <div className="w-5/12 bg-amber-300 text-amber-950 py-1.5 px-3 text-center shadow-2xs">
+   435→                <p className="font-bold text-xs">118</p>
+   436→                <p className="text-[10px] font-medium opacity-90">Booked</p>
+   437→              </div>
+   438→
+   439→              {/* Conversion indicator 4 */}
+   440→              <div className="text-[10px] font-bold text-slate-500 self-end mr-16 flex items-center gap-1">
+   441→                <span className="w-3 h-px bg-slate-300" /> 81.4%
+   442→              </div>
+   443→
+   444→              {/* Tier 5 */}
+   445→              <div className="w-4/12 bg-rose-400 text-white py-1.5 px-2 rounded-b-lg text-center shadow-2xs">
+   446→                <p className="font-bold text-xs">96</p>
+   447→                <p className="text-[9px] font-medium opacity-90">Completed</p>
+   448→              </div>
+   449→            </div>
+   450→          </div>
+   451→
+   452→          <div className="text-center pt-2 text-[11px] text-slate-400">
+   453→            Overall Conversion: <span className="font-bold text-slate-700">23.3%</span> (Visit to Completed)
+   454→          </div>
+   455→        </div>
+   456→
+   457→        {/* Recent Grooming Records (4 cols) */}
+   458→        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col justify-between">
+   459→          <div>
+   460→            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+   461→              <h3 className="font-bold text-sm text-slate-900">Recent Grooming Records</h3>
+   462→              <button
+   463→                onClick={() => onNavigateSection('grooming-records')}
+   464→                className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+   465→              >
+   466→                View All
+   467→              </button>
+   468→            </div>
+   469→
+   470→            {/* Grooming Record items */}
+   471→            <div className="space-y-3">
+   472→              {groomingRecords.slice(0, 4).map((rec) => (
+   473→                <div key={rec.id} className="flex items-center justify-between text-xs py-1 hover:bg-slate-50/80 px-1 rounded-lg transition-colors">
+   474→                  <div className="flex items-center gap-2.5 flex-1 min-w-0 pr-2">
+   475→                    <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center text-xs flex-shrink-0">
+   476→                      {rec.petEmoji}
+   477→                    </div>
+   478→                    <div className="truncate">
+   479→                      <p className="font-bold text-slate-800 leading-tight truncate">{rec.petName}</p>
+   480→                      <p className="text-[10px] text-slate-400 leading-tight truncate">{rec.breed}</p>
+   481→                    </div>
+   482→                  </div>
+   483→                  <div className="text-center text-[10px] text-slate-500 px-1">
+   484→                    <p className="font-medium text-slate-700">{rec.date} • {rec.serviceName}</p>
+   485→                    <p className="text-slate-400">Groomer: {rec.groomer}</p>
+   486→                  </div>
+   487→                  <div className="text-right w-16 flex-shrink-0">
+   488→                    <p className="font-bold text-slate-900">${rec.amount.toFixed(2)}</p>
+   489→                    <span className="text-[9px] font-bold text-emerald-600 uppercase">Paid</span>
+   490→                  </div>
+   491→                </div>
+   492→              ))}
+   493→            </div>
+   494→          </div>
+   495→
+   496→          <div className="pt-3 mt-2 border-t border-slate-100">
+   497→            <button
+   498→              onClick={() => onNavigateSection('grooming-records')}
+   499→              className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+   500→            >
+   501→              <span>View all grooming records</span>
+   502→              <ArrowRight className="w-3 h-3 stroke-[2.5]" />
+   503→            </button>
+   504→          </div>
+   505→        </div>
+   506→
+   507→        {/* Alerts & Reminders (4 cols) */}
+   508→        <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col justify-between">
+   509→          <div>
+   510→            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+   511→              <h3 className="font-bold text-sm text-slate-900">Alerts &amp; Reminders</h3>
+   512→              <span className="text-[11px] font-medium text-slate-400">Priority Feed</span>
+   513→            </div>
+   514→
+   515→            {/* Alert rows */}
+   516→            <div className="space-y-3">
+   517→              {/* Alert 1 */}
+   518→              <div 
+   519→                onClick={() => onNavigateSection('pets')}
+   520→                className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+   521→              >
+   522→                <div className="flex items-center gap-3">
+   523→                  <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-lg flex-shrink-0">
+   524→                    <ShieldAlert className="w-5 h-5 text-rose-600" />
+   525→                  </div>
+   526→                  <div>
+   527→                    <p className="text-xs font-bold text-slate-800">Vaccinations Expiring Soon</p>
+   528→                    <p className="text-[10px] text-slate-400">12 pets have vaccinations expiring in 30 days</p>
+   529→                  </div>
+   530→                </div>
+   531→                <span className="w-6 h-6 rounded-full bg-rose-100 text-rose-700 font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+   532→                  12
+   533→                </span>
+   534→              </div>
+   535→
+   536→              {/* Alert 2 */}
+   537→              <div 
+   538→                onClick={() => onNavigateSection('documents')}
+   539→                className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+   540→              >
+   541→                <div className="flex items-center gap-3">
+   542→                  <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg flex-shrink-0">
+   543→                    <FileText className="w-5 h-5 text-amber-600" />
+   544→                  </div>
+   545→                  <div>
+   546→                    <p className="text-xs font-bold text-slate-800">Unsigned Documents</p>
+   547→                    <p className="text-[10px] text-slate-400">8 documents need customer signature</p>
+   548→                  </div>
+   549→                </div>
+   550→                <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+   551→                  8
+   552→                </span>
+   553→              </div>
+   554→
+   555→              {/* Alert 3 */}
+   556→              <div 
+   557→                onClick={() => onNavigateSection('pets')}
+   558→                className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+   559→              >
+   560→                <div className="flex items-center gap-3">
+   561→                  <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg flex-shrink-0">
+   562→                    <Cake className="w-5 h-5 text-blue-600" />
+   563→                  </div>
+   564→                  <div>
+   565→                    <p className="text-xs font-bold text-slate-800">Upcoming Birthdays</p>
+   566→                    <p className="text-[10px] text-slate-400">5 pets have birthdays this week</p>
+   567→                  </div>
+   568→                </div>
+   569→                <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+   570→                  5
+   571→                </span>
+   572→              </div>
+   573→
+   574→              {/* Alert 4 */}
+   575→              <div 
+   576→                onClick={() => onNavigateSection('inventory')}
+   577→                className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+   578→              >
+   579→                <div className="flex items-center gap-3">
+   580→                  <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg flex-shrink-0">
+   581→                    <Package className="w-5 h-5 text-purple-600" />
+   582→                  </div>
+   583→                  <div>
+   584→                    <p className="text-xs font-bold text-slate-800">Low Inventory</p>
+   585→                    <p className="text-[10px] text-slate-400">7 products are running low</p>
+   586→                  </div>
+   587→                </div>
+   588→                <span className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+   589→                  7
+   590→                </span>
+   591→              </div>
+   592→            </div>
+   593→          </div>
+   594→
+   595→          <div className="pt-3 mt-2 border-t border-slate-100">
+   596→            <button
+   597→              onClick={() => onNavigateSection('appointments')}
+   598→              className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+   599→            >
+   600→              <span>View all alerts</span>
+   601→              <ArrowRight className="w-3 h-3 stroke-[2.5]" />
+   602→            </button>
+   603→          </div>
+   604→        </div>
+   605→      </section>
+   606→
+   607→      {/* 4. BOTTOM QUICK ACTIONS BAR */}
+   608→      <section className="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs flex flex-wrap items-center justify-between gap-2" data-purpose="quick-actions-bar">
+   609→        <span className="text-xs font-bold text-slate-800 px-2">Quick Actions</span>
+   610→        <div className="flex flex-wrap items-center gap-2 text-xs">
+   611→          {/* Action: New Appointment */}
+   612→          <button 
+   613→            onClick={() => onOpenQuickAction('appointment')}
+   614→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100 font-medium transition-colors"
+   615→          >
+   616→            <Plus className="w-3.5 h-3.5" />
+   617→            <span>New Appointment</span>
+   618→          </button>
+   619→
+   620→          {/* Action: Add Customer */}
+   621→          <button 
+   622→            onClick={() => onOpenQuickAction('customer')}
+   623→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-medium transition-colors"
+   624→          >
+   625→            <Plus className="w-3.5 h-3.5" />
+   626→            <span>Add Customer</span>
+   627→          </button>
+   628→
+   629→          {/* Action: Add Pet */}
+   630→          <button 
+   631→            onClick={() => onOpenQuickAction('pet')}
+   632→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-medium transition-colors"
+   633→          >
+   634→            <Plus className="w-3.5 h-3.5" />
+   635→            <span>Add Pet</span>
+   636→          </button>
+   637→
+   638→          {/* Action: Intake Form */}
+   639→          <button 
+   640→            onClick={() => onOpenQuickAction('intake')}
+   641→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-medium transition-colors"
+   642→          >
+   643→            <Plus className="w-3.5 h-3.5" />
+   644→            <span>Intake Form</span>
+   645→          </button>
+   646→
+   647→          {/* Action: Payment */}
+   648→          <button 
+   649→            onClick={() => onOpenQuickAction('payment')}
+   650→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-medium transition-colors"
+   651→          >
+   652→            <Plus className="w-3.5 h-3.5" />
+   653→            <span>Payment</span>
+   654→          </button>
+   655→
+   656→          {/* Action: Invoice */}
+   657→          <button 
+   658→            onClick={() => onOpenQuickAction('invoice')}
+   659→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50 font-medium transition-colors"
+   660→          >
+   661→            <Plus className="w-3.5 h-3.5" />
+   662→            <span>Invoice</span>
+   663→          </button>
+   664→
+   665→          {/* Action: More Actions */}
+   666→          <button 
+   667→            onClick={() => onNavigateSection('settings')}
+   668→            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 font-medium transition-colors"
+   669→          >
+   670→            <MoreHorizontal className="w-3.5 h-3.5" />
+   671→            <span>More Actions</span>
+   672→          </button>
+   673→        </div>
+   674→      </section>
+   675→    </div>
+   676→  );
+   677→};
+   678→
