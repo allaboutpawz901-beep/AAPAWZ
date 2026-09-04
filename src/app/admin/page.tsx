@@ -68,6 +68,9 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
+  // Analytics state
+  const [analytics, setAnalytics] = useState<any>(null)
+
   // Modal state
   const [activeModal, setActiveModal] = useState<'appointment' | 'customer' | 'pet' | 'intake' | 'payment' | 'invoice' | 'search' | null>(null)
 
@@ -105,7 +108,8 @@ export default function AdminPage() {
       fetchAPI("products"),
       fetchAPI("services"),
       fetch("/api/cms/stats").then(r => r.json()).catch(() => null),
-    ]).then(([bks, custs, dgs, stf, pays, prods, svcs, sts]) => {
+      fetch("/api/analytics/revenue?period=week").then(r => r.json()).catch(() => null),
+    ]).then(([bks, custs, dgs, stf, pays, prods, svcs, sts, anlyt]) => {
       if (!alive) return
       setBookings(bks)
       setCustomers(custs)
@@ -115,6 +119,7 @@ export default function AdminPage() {
       setProducts(prods)
       setServices(svcs)
       setStats(sts)
+      setAnalytics(anlyt)
       setLoading(false)
     })
     return () => { alive = false }
@@ -183,42 +188,73 @@ export default function AdminPage() {
     specialNotes: d.markings || "",
   }))
 
-  // Transform staff
-  const dawgStaff: StaffScheduleItem[] = staff.map((s: any) => ({
+  // Transform staff from analytics (real schedule slots)
+  const dawgStaff: StaffScheduleItem[] = analytics?.staffSchedule?.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    role: s.role as any,
+    initials: s.initials,
+    slots: s.slots as any,
+    appointmentsCount: s.appointmentsCount,
+    phone: s.phone,
+    commissionRate: s.commissionRate,
+  })) || staff.map((s: any) => ({
     id: s.id,
     name: s.name || "Staff",
     role: (s.role as any) || "Groomer",
     initials: (s.name || "S").split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase(),
-    slots: ["booked", "available", "available", "booked", "available"],
+    slots: ["available", "available", "available", "available", "available", "available", "available", "available", "available", "available"] as any,
     appointmentsCount: bookings.filter(b => b.groomerId === s.id).length,
   }))
 
-  // KPI metrics from real stats
+  // KPI metrics from real stats + analytics
+  const revenueData = analytics?.revenue
   const kpiMetrics: KPIMetric[] = stats ? [
     {
-      id: "kpi-1", label: "Today's Appointments", value: String(stats.counts?.bookings || 0),
+      id: "kpi-1", label: "Today's Appointments",
+      value: String(appointments.filter(a => a.date === new Date().toISOString().split("T")[0]).length || stats.counts?.bookings || 0),
       change: "—", period: "today", isPositive: true, iconName: "calendar", colorTheme: "purple",
     },
     {
-      id: "kpi-2", label: "Total Revenue", value: `$${payments.filter(p => p.status === "paid").reduce((s, p) => s + parseFloat(p.amount?.replace(/[^0-9.]/g, "") || "0"), 0).toFixed(0)}`,
-      change: "—", period: "all time", isPositive: true, iconName: "currency-dollar", colorTheme: "emerald",
+      id: "kpi-2", label: "Revenue (7d)",
+      value: revenueData ? `$${revenueData.current.toFixed(0)}` : "$0",
+      change: revenueData?.change ? `${Math.abs(revenueData.change)}%` : "—",
+      period: revenueData?.change && revenueData.change >= 0 ? "vs last week" : "vs last week",
+      isPositive: revenueData ? revenueData.change >= 0 : true,
+      iconName: "currency-dollar", colorTheme: "emerald",
     },
     {
-      id: "kpi-3", label: "Customers", value: String(stats.counts?.customers || 0),
+      id: "kpi-3", label: "Customers",
+      value: String(stats.counts?.customers || 0),
       change: "—", period: "total", isPositive: true, iconName: "user-plus", colorTheme: "blue",
     },
     {
-      id: "kpi-4", label: "Pending Bookings", value: String(stats.pendingBookings || 0),
+      id: "kpi-4", label: "Pending Bookings",
+      value: String(stats.pendingBookings || 0),
       change: "—", period: "needs attention", isPositive: false, iconName: "paw-print", colorTheme: "amber",
     },
     {
-      id: "kpi-5", label: "Unread Messages", value: String(stats.unreadMessages || 0),
+      id: "kpi-5", label: "Unread Messages",
+      value: String(stats.unreadMessages || 0),
       change: "—", period: "inbox", isPositive: false, iconName: "arrows-clockwise", colorTheme: "rose",
     },
   ] : []
 
-  // Grooming records from completed bookings
-  const groomingRecords: GroomingRecord[] = bookings
+  // Revenue chart data from analytics
+  const revenueChartPoints = analytics?.revenue?.daily?.map((d: any) => ({
+    day: d.label,
+    amount: `$${d.total.toFixed(0)}`,
+  })) || []
+
+  // Booking funnel from analytics
+  const bookingFunnel: FunnelStage[] = analytics?.funnel || [
+    { stage: "Requests", count: bookings.length, subtext: "Total bookings", bgClass: "bg-indigo-50", textClass: "text-indigo-700" },
+    { stage: "Confirmed", count: bookings.filter(b => b.status === "CONFIRMED").length, subtext: "Deposit paid", bgClass: "bg-emerald-50", textClass: "text-emerald-700" },
+    { stage: "Completed", count: bookings.filter(b => b.status === "COMPLETED").length, subtext: "Service done", bgClass: "bg-zinc-100", textClass: "text-zinc-700" },
+  ]
+
+  // Grooming records from analytics
+  const groomingRecords: GroomingRecord[] = analytics?.groomingRecords || bookings
     .filter((b: any) => b.status === "COMPLETED")
     .map((b: any) => ({
       id: b.id,
@@ -229,15 +265,8 @@ export default function AdminPage() {
       serviceName: b.service,
       groomer: staff.find(s => s.id === b.groomerId)?.name || "—",
       amount: parseFloat(b.servicePrice?.replace(/[^0-9.]/g, "") || "0"),
-      status: b.paymentStatus === "PAID" ? "Paid" : "Unpaid" as const,
+      status: (b.paymentStatus === "PAID" ? "Paid" : "Unpaid") as const,
     }))
-
-  // Booking funnel (simplified from real data)
-  const bookingFunnel: FunnelStage[] = [
-    { stage: "Requests", count: bookings.length, subtext: "Total bookings", bgClass: "bg-indigo-50", textClass: "text-indigo-700" },
-    { stage: "Confirmed", count: bookings.filter(b => b.status === "CONFIRMED").length, subtext: "Deposit paid", bgClass: "bg-emerald-50", textClass: "text-emerald-700" },
-    { stage: "Completed", count: bookings.filter(b => b.status === "COMPLETED").length, subtext: "Service done", bgClass: "bg-zinc-100", textClass: "text-zinc-700" },
-  ]
 
   // Alerts from real data
   const alerts: AlertNotification[] = [
