@@ -71,7 +71,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   ];
 
   return (
-    <div className="p-4 sm:p-6 space-y-5 max-w-[1600px] mx-auto">
+    <div className="p-4 sm:p-6 space-y-5 ">
       {/* 1. KEY PERFORMANCE INDICATOR CARDS */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5" data-purpose="kpi-metrics-grid">
         {/* Card 1: Today's Appointments */}

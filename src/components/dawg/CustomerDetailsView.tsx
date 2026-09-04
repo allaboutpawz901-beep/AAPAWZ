@@ -917,7 +917,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 1: OVERVIEW
        * ----------------------------------------------------------- */}
       {activeTab === 'Overview' && (
-        <div className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto">
+        <div className="p-6 sm:p-8 space-y-6 ">
           {/* Metric Cards Section (5 columns) */}
           <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5" data-purpose="metric-summary-cards">
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex items-center gap-3">
@@ -1272,7 +1272,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 2: PETS (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Pets' && (
-        <div className="p-6 sm:p-8 space-y-6 max-w-7xl mx-auto" data-purpose="customer-pets-tab">
+        <div className="p-6 sm:p-8 space-y-6 " data-purpose="customer-pets-tab">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-slate-900">Pets Belonging to {profile.name}</h2>
             <button
@@ -1445,7 +1445,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 3: APPOINTMENTS (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Appointments' && (
-        <div className="p-6 sm:p-8 space-y-4 max-w-7xl mx-auto" data-purpose="customer-appointments-tab">
+        <div className="p-6 sm:p-8 space-y-4 " data-purpose="customer-appointments-tab">
           {/* Sub-navigation & Filter Toolbar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
             <div className="flex flex-wrap items-center gap-3">
@@ -1627,7 +1627,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 4: GROOMING HISTORY (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Grooming History' && (
-        <div className="p-6 sm:p-8 space-y-4 max-w-7xl mx-auto" data-purpose="customer-grooming-history-view">
+        <div className="p-6 sm:p-8 space-y-4 " data-purpose="customer-grooming-history-view">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative">
@@ -1773,7 +1773,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 5: PAYMENTS (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Payments' && (
-        <div className="p-6 sm:p-8 space-y-4 max-w-7xl mx-auto" data-purpose="payments-tab-view">
+        <div className="p-6 sm:p-8 space-y-4 " data-purpose="payments-tab-view">
           <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
             {/* Table Control / Search Bar Header */}
             <div className="px-6 py-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
@@ -1891,7 +1891,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 6: DOCUMENTS (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Documents' && (
-        <div className="p-6 sm:p-8 space-y-4 max-w-7xl mx-auto" data-purpose="documents-tab-content">
+        <div className="p-6 sm:p-8 space-y-4 " data-purpose="documents-tab-content">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
             <div>
               <h2 className="text-base font-bold text-slate-900">Documents &amp; Records</h2>
@@ -1993,7 +1993,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 7: NOTES & ACTIVITY (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Notes & Activity' && (
-        <div className="p-6 sm:p-8 max-w-7xl mx-auto" data-purpose="notes-activity-content">
+        <div className="p-6 sm:p-8 " data-purpose="notes-activity-content">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Column: Add Note Card (4 cols) */}
             <section className="lg:col-span-4 bg-white rounded-xl border border-slate-200 shadow-2xs p-5" data-purpose="add-note-card">
@@ -2127,7 +2127,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
        * TAB 8: COMMUNICATION (All Primary Actions Included)
        * ----------------------------------------------------------- */}
       {activeTab === 'Communication' && (
-        <div className="p-6 sm:p-8 flex flex-col md:flex-row gap-6 max-w-7xl mx-auto" data-purpose="communication-tab-content">
+        <div className="p-6 sm:p-8 flex flex-col md:flex-row gap-6 " data-purpose="communication-tab-content">
           <div className="w-full md:w-48 shrink-0 space-y-4">
             <ul className="space-y-1 text-xs font-medium">
               {(['Messages', 'Email History', 'SMS History', 'Templates'] as const).map((subItem) => (

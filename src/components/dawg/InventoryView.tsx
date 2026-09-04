@@ -6,7 +6,7 @@ import { Package, AlertTriangle, Plus, Search, CheckCircle2 } from 'lucide-react
 
 export const InventoryView: React.FC = () => {
   return (
-    <div className="p-4 sm:p-6 space-y-6 max-w-[1600px] mx-auto">
+    <div className="p-4 sm:p-6 space-y-6 ">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs">
         <div>
           <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">

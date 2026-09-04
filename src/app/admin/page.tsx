@@ -481,7 +481,7 @@ export default function AdminPage() {
 
           {/* Placeholder sections that link to existing pages */}
           {(activeSection === "payments" || activeSection === "invoices" || activeSection === "documents" || activeSection === "communications" || activeSection === "marketing" || activeSection === "reports") && (
-            <div className="p-6 max-w-4xl mx-auto space-y-6">
+            <div className="p-6  space-y-6">
               <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-2xs space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                   <div>

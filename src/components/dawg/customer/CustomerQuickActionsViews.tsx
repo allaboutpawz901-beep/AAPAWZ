@@ -73,7 +73,7 @@ export const QuickActionTakePaymentView: React.FC<CustomerQuickActionsProps> = (
   };
 
   return (
-    <div className="flex-1 flex flex-col px-6 sm:px-8 py-6 max-w-7xl mx-auto w-full">
+    <div className="flex-1 flex flex-col px-6 sm:px-8 py-6  w-full">
       {/* Customer Context Header */}
       <header className="mb-6">
         {/* Breadcrumbs */}
@@ -1234,7 +1234,7 @@ export const QuickActionSendMessageView: React.FC<CustomerQuickActionsProps> = (
   };
 
   return (
-    <div className="flex-1 flex flex-col p-6 md:p-8 lg:p-10 max-w-7xl mx-auto w-full">
+    <div className="flex-1 flex flex-col p-6 md:p-8 lg:p-10  w-full">
       {/* Header */}
       <header className="mb-6">
         <nav className="flex items-center space-x-2 text-xs font-medium text-slate-500 mb-2">
@@ -1522,7 +1522,7 @@ export const QuickActionUpdateDocumentsView: React.FC<CustomerQuickActionsProps>
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-y-auto px-6 py-6 md:px-10 lg:px-12 max-w-7xl mx-auto w-full">
+    <div className="flex-1 flex flex-col h-full overflow-y-auto px-6 py-6 md:px-10 lg:px-12  w-full">
       {/* Header Section */}
       <header className="mb-6">
         <div className="flex items-center space-x-2 text-xs font-medium text-slate-400 mb-2">
