@@ -1,0 +1,624 @@
+     1→'use client';
+     2→
+     3→import React, { useState } from 'react';
+     4→import { AuthUser, UserRole } from '@/lib/dawg-types';
+     5→import { DEMO_AUTH_USERS } from '@/lib/dawg-mock-data';
+     6→
+     7→interface LandingLoginViewProps {
+     8→  onLogin: (user: AuthUser, initialSection?: string) => void;
+     9→}
+    10→
+    11→type PortalType = 'staff' | 'client';
+    12→type StaffRoleKey = 'Administrator' | 'Manager' | 'Front Desk' | 'Groomer' | 'Marketing';
+    13→
+    14→interface RoleOption {
+    15→  key: StaffRoleKey;
+    16→  label: string;
+    17→  desc: string;
+    18→  icon: (colorClass: string) => React.ReactNode;
+    19→  defaultEmail: string;
+    20→  userRole: UserRole;
+    21→  displayName: string;
+    22→}
+    23→
+    24→const STAFF_ROLES: RoleOption[] = [
+    25→  {
+    26→    key: 'Administrator',
+    27→    label: 'Administrator',
+    28→    desc: 'Full system access & salon control',
+    29→    defaultEmail: 'admin@test.com',
+    30→    userRole: 'admin',
+    31→    displayName: 'Admin User',
+    32→    icon: (colorClass) => (
+    33→      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    34→        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
+    35→      </svg>
+    36→    ),
+    37→  },
+    38→  {
+    39→    key: 'Manager',
+    40→    label: 'Manager',
+    41→    desc: 'Manage salon operations & staff',
+    42→    defaultEmail: 'manager@test.com',
+    43→    userRole: 'admin',
+    44→    displayName: 'Marcus Vance',
+    45→    icon: (colorClass) => (
+    46→      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    47→        <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" strokeLinecap="round" strokeLinejoin="round" />
+    48→      </svg>
+    49→    ),
+    50→  },
+    51→  {
+    52→    key: 'Front Desk',
+    53→    label: 'Front Desk',
+    54→    desc: 'Check-ins, appointments & payments',
+    55→    defaultEmail: 'reception@test.com',
+    56→    userRole: 'admin',
+    57→    displayName: 'Elena Rostova',
+    58→    icon: (colorClass) => (
+    59→      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    60→        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" strokeLinecap="round" strokeLinejoin="round" />
+    61→      </svg>
+    62→    ),
+    63→  },
+    64→  {
+    65→    key: 'Groomer',
+    66→    label: 'Groomer Station',
+    67→    desc: 'Active dog queue, timer & notes',
+    68→    defaultEmail: 'groomer@test.com',
+    69→    userRole: 'groomer',
+    70→    displayName: 'Sarah M.',
+    71→    icon: (colorClass) => (
+    72→      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    73→        <path d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.828 2.829a4 4 0 11-5.657-5.657l2.828-2.828m0 0a4 4 0 115.657 5.656L9 12" strokeLinecap="round" strokeLinejoin="round" />
+    74→      </svg>
+    75→    ),
+    76→  },
+    77→  {
+    78→    key: 'Marketing',
+    79→    label: 'Marketing',
+    80→    desc: 'Promotions, VIP perks & SMS',
+    81→    defaultEmail: 'marketing@test.com',
+    82→    userRole: 'admin',
+    83→    displayName: 'Jordan Hayes',
+    84→    icon: (colorClass) => (
+    85→      <svg className={`w-5 h-5 ${colorClass}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    86→        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" strokeLinecap="round" strokeLinejoin="round" />
+    87→      </svg>
+    88→    ),
+    89→  },
+    90→];
+    91→
+    92→export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) => {
+    93→  // Portal Mode: 'client' (Pet Parent) vs 'staff'
+    94→  const [portalType, setPortalType] = useState<PortalType>('client');
+    95→
+    96→  // Staff role selection
+    97→  const [selectedStaffRole, setSelectedStaffRole] = useState<StaffRoleKey>('Administrator');
+    98→  
+    99→  // Credentials
+   100→  const [email, setEmail] = useState('sarah.johnson@example.com');
+   101→  const [password, setPassword] = useState('••••••••••••');
+   102→  const [showPassword, setShowPassword] = useState(false);
+   103→  const [rememberMe, setRememberMe] = useState(true);
+   104→  const [trustDevice, setTrustDevice] = useState(true);
+   105→  const [footerModal, setFooterModal] = useState<string | null>(null);
+   106→
+   107→  // Switch between Pet Parent and Staff
+   108→  const handlePortalSwitch = (type: PortalType) => {
+   109→    setPortalType(type);
+   110→    if (type === 'client') {
+   111→      setEmail('sarah.johnson@example.com');
+   112→    } else {
+   113→      const activeRole = STAFF_ROLES.find((r) => r.key === selectedStaffRole) || STAFF_ROLES[0];
+   114→      setEmail(activeRole.defaultEmail);
+   115→    }
+   116→  };
+   117→
+   118→  const handleStaffRoleSelect = (roleItem: RoleOption) => {
+   119→    setSelectedStaffRole(roleItem.key);
+   120→    setEmail(roleItem.defaultEmail);
+   121→  };
+   122→
+   123→  const handleSignIn = (e: React.FormEvent) => {
+   124→    e.preventDefault();
+   125→
+   126→    if (portalType === 'client') {
+   127→      // Pet Parent Login
+   128→      onLogin({
+   129→        id: 'usr-client-1',
+   130→        name: 'Sarah Johnson',
+   131→        email: email || 'sarah.johnson@example.com',
+   132→        role: 'customer',
+   133→        avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCNIEpDScyL977tdc-rLYh4_ksq466XZ7OpRPQzY-1HWlRGcv3nDVmyz5hiik8a4BztgOlDE8mwAglsQF7nec16VqxecRAG2BROmD6CQ6akSNSwZjZXabjJAu0lTMjgw8Z5m7gcOPZDP7UlqFU_sNGVJCwd5fNw_Mye6SCB9_SIBuisfYgH-Ry8BYMEIB0B4Fh8D_upZhRp5MafgvVz1iXHsTvXy1oA1byvfOqrP_Xg3cYGC-rQ-oye',
+   134→      });
+   135→    } else {
+   136→      // Staff Login
+   137→      const currentRoleConfig = STAFF_ROLES.find((r) => r.key === selectedStaffRole) || STAFF_ROLES[0];
+   138→      const isGroomer = selectedStaffRole === 'Groomer' || email.toLowerCase().includes('groomer');
+   139→
+   140→      if (isGroomer) {
+   141→        onLogin({
+   142→          id: 'usr-groomer-1',
+   143→          name: 'Sarah M.',
+   144→          email: email || 'groomer@test.com',
+   145→          role: 'groomer',
+   146→          avatarUrl: DEMO_AUTH_USERS[1].avatarUrl,
+   147→          stationName: 'Station #3 (Spa Suite)',
+   148→        });
+   149→      } else {
+   150→        onLogin(
+   151→          {
+   152→            id: 'usr-admin-1',
+   153→            name: currentRoleConfig.displayName,
+   154→            email: email || 'admin@test.com',
+   155→            role: 'admin',
+   156→            avatarUrl: DEMO_AUTH_USERS[0].avatarUrl,
+   157→            stationName: 'Central Management',
+   158→          },
+   159→          'appointments'
+   160→        );
+   161→      }
+   162→    }
+   163→  };
+   164→
+   165→  return (
+   166→    <div className="min-h-screen flex flex-col lg:flex-row text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-700 bg-[#f8f9fc]">
+   167→      <div className="w-full flex flex-col lg:flex-row flex-grow min-h-screen">
+   168→        {/* ================= LEFT POSTER COLUMN ================= */}
+   169→        <aside className="w-full lg:w-[480px] xl:w-[520px] flex-shrink-0 relative overflow-hidden min-h-[480px] lg:min-h-screen bg-gradient-to-b from-[#f0f4fc] via-[#f7f9fd] to-[#eaf0fc] flex flex-col justify-between p-8 sm:p-10 lg:p-12 border-b lg:border-b-0 lg:border-r border-slate-200/80">
+   170→          {/* Top Brand & Value Props in 100% Crisp Vector Code */}
+   171→          <div className="space-y-8 my-auto">
+   172→            {/* Logo */}
+   173→            <div className="flex flex-col items-center text-center space-y-3">
+   174→              <div className="w-14 h-14 rounded-2xl bg-[#0D62F3] flex items-center justify-center text-white shadow-lg shadow-blue-200">
+   175→                <svg className="w-8 h-8 fill-white" viewBox="0 0 24 24">
+   176→                  <path d="M12 2C11.17 2 10.5 2.67 10.5 3.5C10.5 4.33 11.17 5 12 5C12.83 5 13.5 4.33 13.5 3.5C13.5 2.67 12.83 2 12 2ZM8 4.5C7.17 4.5 6.5 5.17 6.5 6C6.5 6.83 7.17 7.5 8 7.5C8.83 7.5 9.5 6.83 9.5 6C9.5 5.17 8.83 4.5 8 4.5ZM16 4.5C15.17 4.5 14.5 5.17 14.5 6C14.5 6.83 15.17 7.5 16 7.5C16.83 7.5 17.5 6.83 17.5 6C17.5 5.17 16.83 4.5 16 4.5ZM5.5 8.5C4.67 8.5 4 9.17 4 10C4 10.83 4.67 11.5 5.5 11.5C6.33 11.5 7 10.83 7 10C7 9.17 6.33 8.5 5.5 8.5ZM18.5 8.5C17.67 8.5 17 9.17 17 10C17 10.83 17.67 11.5 18.5 11.5C19.33 11.5 20 10.83 20 10C20 9.17 19.33 8.5 18.5 8.5ZM12 7C9.5 7 7 9.5 7 12.5C7 15 8.5 17.5 10 19C10.5 19.5 11.2 20 12 20C12.8 20 13.5 19.5 14 19C15.5 17.5 17 15 17 12.5C17 9.5 14.5 7 12 7Z" />
+   177→                </svg>
+   178→              </div>
+   179→              <div>
+   180→                <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+   181→                  All About <br />
+   182→                  <span className="text-[#0D62F3]">Pawz</span>
+   183→                </h1>
+   184→                <span className="inline-block mt-1.5 text-xs font-extrabold text-blue-600 tracking-widest uppercase">
+   185→                  Salon &amp; Pet Parent Platform
+   186→                </span>
+   187→              </div>
+   188→            </div>
+   189→
+   190→            {/* Headline */}
+   191→            <div className="text-center max-w-sm mx-auto">
+   192→              <h2 className="text-base sm:text-lg font-bold text-slate-700 leading-snug">
+   193→                {portalType === 'client'
+   194→                  ? 'Your Pet Parent Dashboard for Seamless Grooming, Live Status & Easy Booking'
+   195→                  : 'The Complete All-in-One Salon Operating System for Groomers & Staff'}
+   196→              </h2>
+   197→            </div>
+   198→
+   199→            {/* Feature Bullets */}
+   200→            <div className="space-y-3.5 max-w-sm mx-auto pt-1">
+   201→              {portalType === 'client' ? (
+   202→                <>
+   203→                  <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+   204→                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+   205→                      <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
+   206→                        <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round" />
+   207→                      </svg>
+   208→                    </div>
+   209→                    <div>
+   210→                      <h3 className="text-xs font-bold text-slate-900 leading-tight">Live Groom Progress</h3>
+   211→                      <p className="text-[11px] text-slate-500 leading-normal mt-0.5">
+   212→                        Track checked-in, in-bath, styling, and ready for pickup in real-time.
+   213→                      </p>
+   214→                    </div>
+   215→                  </div>
+   216→
+   217→                  <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+   218→                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+   219→                      <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
+   220→                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" strokeLinecap="round" strokeLinejoin="round" />
+   221→                      </svg>
+   222→                    </div>
+   223→                    <div>
+   224→                      <h3 className="text-xs font-bold text-slate-900 leading-tight">My Pets &amp; Vaccines</h3>
+   225→                      <p className="text-[11px] text-slate-500 leading-normal mt-0.5">
+   226→                        Manage Buddy &amp; Luna&apos;s rabies certificates and grooming history.
+   227→                      </p>
+   228→                    </div>
+   229→                  </div>
+   230→
+   231→                  <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+   232→                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+   233→                      <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
+   234→                        <path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" strokeLinecap="round" strokeLinejoin="round" />
+   235→                      </svg>
+   236→                    </div>
+   237→                    <div>
+   238→                      <h3 className="text-xs font-bold text-slate-900 leading-tight">Fast Stripe Checkout</h3>
+   239→                      <p className="text-[11px] text-slate-500 leading-normal mt-0.5">
+   240→                        Save cards securely, tip your groomer, and view receipts on demand.
+   241→                      </p>
+   242→                    </div>
+   243→                  </div>
+   244→                </>
+   245→              ) : (
+   246→                <>
+   247→                  <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+   248→                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+   249→                      <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
+   250→                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
+   251→                      </svg>
+   252→                    </div>
+   253→                    <div>
+   254→                      <h3 className="text-xs font-bold text-slate-900 leading-tight">Secure Salon OS</h3>
+   255→                      <p className="text-[11px] text-slate-500 leading-normal mt-0.5">
+   256→                        Enterprise role management for groomers, bathers, and managers.
+   257→                      </p>
+   258→                    </div>
+   259→                  </div>
+   260→
+   261→                  <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
+   262→                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+   263→                      <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
+   264→                        <path d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.828 2.829a4 4 0 11-5.657-5.657l2.828-2.828m0 0a4 4 0 115.657 5.656L9 12" strokeLinecap="round" strokeLinejoin="round" />
+   265→                      </svg>
+   266→                    </div>
+   267→                    <div>
+   268→                      <h3 className="text-xs font-bold text-slate-900 leading-tight">Groomer Workstation</h3>
+   269→                      <p className="text-[11px] text-slate-500 leading-normal mt-0.5">
+   270→                        Dedicated queue with breed notes, temperament alerts, and timers.
+   271→                      </p>
+   272→                    </div>
+   273→                  </div>
+   274→                </>
+   275→              )}
+   276→            </div>
+   277→          </div>
+   278→
+   279→          {/* Bottom Trust Badge */}
+   280→          <div className="pt-6 border-t border-slate-200/60 text-center">
+   281→            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-slate-200/80 text-[11px] font-medium text-slate-600 shadow-2xs">
+   282→              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+   283→              <span>All About Pawz • Frisco &amp; Main Salon</span>
+   284→            </div>
+   285→          </div>
+   286→        </aside>
+   287→
+   288→        {/* ================= RIGHT FORM COLUMN ================= */}
+   289→        <main className="flex-1 flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16">
+   290→          <div className="flex-1 flex items-center justify-center">
+   291→            <div className="w-full max-w-[840px] bg-white rounded-3xl p-8 sm:p-12 shadow-[0_10px_35px_-4px_rgba(0,0,0,0.04)] border border-slate-100">
+   292→              
+   293→              {/* TOP ROLE SWITCHER TABS: Pet Parent vs Staff */}
+   294→              <div className="flex justify-center mb-8">
+   295→                <div className="bg-slate-100 p-1.5 rounded-2xl flex items-center gap-1.5 border border-slate-200/80 shadow-2xs">
+   296→                  <button
+   297→                    type="button"
+   298→                    onClick={() => handlePortalSwitch('client')}
+   299→                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition cursor-pointer ${
+   300→                      portalType === 'client'
+   301→                        ? 'bg-[#0D62F3] text-white shadow-sm'
+   302→                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+   303→                    }`}
+   304→                  >
+   305→                    <span>🐾</span>
+   306→                    <span>Pet Parent Portal</span>
+   307→                  </button>
+   308→
+   309→                  <button
+   310→                    type="button"
+   311→                    onClick={() => handlePortalSwitch('staff')}
+   312→                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition cursor-pointer ${
+   313→                      portalType === 'staff'
+   314→                        ? 'bg-[#0D62F3] text-white shadow-sm'
+   315→                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+   316→                    }`}
+   317→                  >
+   318→                    <span>💼</span>
+   319→                    <span>Salon Staff &amp; Groomers</span>
+   320→                  </button>
+   321→                </div>
+   322→              </div>
+   323→
+   324→              {/* Header Title */}
+   325→              <div className="text-center mb-6">
+   326→                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-1.5">
+   327→                  {portalType === 'client' ? 'Welcome Pet Parent!' : 'Staff Command Portal'}
+   328→                </h2>
+   329→                <p className="text-xs sm:text-sm text-slate-500">
+   330→                  {portalType === 'client'
+   331→                    ? 'Sign in to view Buddy & Luna, track grooming in real-time, and manage payments.'
+   332→                    : 'Select your salon role to launch your active workstation.'}
+   333→                </p>
+   334→              </div>
+   335→
+   336→              {/* Form */}
+   337→              <form className="space-y-4" onSubmit={handleSignIn}>
+   338→                {/* Email Address */}
+   339→                <div>
+   340→                  <label className="block text-xs font-semibold text-slate-800 mb-1.5" htmlFor="email">
+   341→                    {portalType === 'client' ? 'Pet Parent Email' : 'Staff Email Address'}
+   342→                  </label>
+   343→                  <div className="relative rounded-lg shadow-2xs">
+   344→                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+   345→                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   346→                        <path
+   347→                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+   348→                          strokeLinecap="round"
+   349→                          strokeLinejoin="round"
+   350→                          strokeWidth="2"
+   351→                        />
+   352→                      </svg>
+   353→                    </div>
+   354→                    <input
+   355→                      className="block w-full rounded-lg border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-[#0D62F3] focus:ring-1 focus:ring-[#0D62F3] focus:outline-none transition-colors"
+   356→                      id="email"
+   357→                      name="email"
+   358→                      placeholder={portalType === 'client' ? 'sarah.johnson@example.com' : 'Enter your staff email'}
+   359→                      type="email"
+   360→                      value={email}
+   361→                      onChange={(e) => setEmail(e.target.value)}
+   362→                      required
+   363→                    />
+   364→                  </div>
+   365→                </div>
+   366→
+   367→                {/* Password */}
+   368→                <div>
+   369→                  <label className="block text-xs font-semibold text-slate-800 mb-1.5" htmlFor="password">
+   370→                    Password
+   371→                  </label>
+   372→                  <div className="relative rounded-lg shadow-2xs">
+   373→                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+   374→                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   375→                        <path
+   376→                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+   377→                          strokeLinecap="round"
+   378→                          strokeLinejoin="round"
+   379→                          strokeWidth="2"
+   380→                        />
+   381→                      </svg>
+   382→                    </div>
+   383→                    <input
+   384→                      className="block w-full rounded-lg border border-slate-200 pl-10 pr-10 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-[#0D62F3] focus:ring-1 focus:ring-[#0D62F3] focus:outline-none transition-colors"
+   385→                      id="password"
+   386→                      name="password"
+   387→                      placeholder="Enter your password"
+   388→                      type={showPassword ? 'text' : 'password'}
+   389→                      value={password}
+   390→                      onChange={(e) => setPassword(e.target.value)}
+   391→                      required
+   392→                    />
+   393→                    <button
+   394→                      aria-label="Toggle password visibility"
+   395→                      className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+   396→                      type="button"
+   397→                      onClick={() => setShowPassword(!showPassword)}
+   398→                    >
+   399→                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   400→                        <path
+   401→                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+   402→                          strokeLinecap="round"
+   403→                          strokeLinejoin="round"
+   404→                          strokeWidth="2"
+   405→                        />
+   406→                        <path
+   407→                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+   408→                          strokeLinecap="round"
+   409→                          strokeLinejoin="round"
+   410→                          strokeWidth="2"
+   411→                        />
+   412→                      </svg>
+   413→                    </button>
+   414→                  </div>
+   415→                </div>
+   416→
+   417→                {/* Remember Me & Forgot Password */}
+   418→                <div className="flex items-center justify-between text-xs pt-0.5">
+   419→                  <label className="flex items-center gap-2 cursor-pointer select-none">
+   420→                    <input
+   421→                      className="w-4 h-4 rounded border-slate-300 text-[#0D62F3] focus:ring-blue-500 focus:ring-offset-0 transition cursor-pointer"
+   422→                      type="checkbox"
+   423→                      checked={rememberMe}
+   424→                      onChange={(e) => setRememberMe(e.target.checked)}
+   425→                    />
+   426→                    <span className="text-slate-600 font-medium">Remember me</span>
+   427→                  </label>
+   428→                  <button
+   429→                    type="button"
+   430→                    onClick={() => alert('Password reset link sent to ' + (email || 'your email'))}
+   431→                    className="font-medium text-[#0D62F3] hover:text-blue-700 hover:underline cursor-pointer"
+   432→                  >
+   433→                    Forgot your password?
+   434→                  </button>
+   435→                </div>
+   436→
+   437→                {/* Staff Role Cards: ONLY shown when Staff tab is active */}
+   438→                {portalType === 'staff' && (
+   439→                  <div className="pt-2">
+   440→                    <span className="block text-xs font-semibold text-slate-800 mb-2.5">
+   441→                      Select Your Staff Role
+   442→                    </span>
+   443→                    <div
+   444→                      aria-label="Select User Role"
+   445→                      className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"
+   446→                      role="radiogroup"
+   447→                    >
+   448→                      {STAFF_ROLES.map((role) => {
+   449→                        const isSelected = selectedStaffRole === role.key;
+   450→                        return (
+   451→                          <div
+   452→                            key={role.key}
+   453→                            aria-checked={isSelected}
+   454→                            onClick={() => handleStaffRoleSelect(role)}
+   455→                            className={`relative flex flex-col items-center text-center p-3 sm:p-3.5 rounded-xl cursor-pointer transition-all ${
+   456→                              role.key === 'Marketing' ? 'col-span-2 sm:col-span-1' : ''
+   457→                            } ${
+   458→                              isSelected
+   459→                                ? 'border-2 border-[#0D62F3] bg-blue-50/20 shadow-2xs'
+   460→                                : 'border border-slate-200 bg-white hover:border-slate-300'
+   461→                            }`}
+   462→                            role="radio"
+   463→                            tabIndex={0}
+   464→                          >
+   465→                            {isSelected && (
+   466→                              <div className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full border border-[#0D62F3] flex items-center justify-center">
+   467→                                <span className="w-1.5 h-1.5 bg-[#0D62F3] rounded-full" />
+   468→                              </div>
+   469→                            )}
+   470→
+   471→                            <div className="w-8 h-8 mb-2 flex items-center justify-center text-[#0D62F3]">
+   472→                              {role.icon('text-[#0D62F3]')}
+   473→                            </div>
+   474→
+   475→                            <h5 className="text-xs font-bold text-slate-900 mb-1 leading-tight">
+   476→                              {role.label}
+   477→                            </h5>
+   478→                            <p className="text-[10px] leading-tight text-slate-500">
+   479→                              {role.desc}
+   480→                            </p>
+   481→                          </div>
+   482→                        );
+   483→                      })}
+   484→                    </div>
+   485→                  </div>
+   486→                )}
+   487→
+   488→                {/* Trust Device Checkbox */}
+   489→                <div className="pt-1">
+   490→                  <label className="flex items-center gap-2 cursor-pointer select-none text-xs">
+   491→                    <input
+   492→                      className="w-4 h-4 rounded border-slate-300 text-[#0D62F3] focus:ring-blue-500 focus:ring-offset-0 transition cursor-pointer"
+   493→                      type="checkbox"
+   494→                      checked={trustDevice}
+   495→                      onChange={(e) => setTrustDevice(e.target.checked)}
+   496→                    />
+   497→                    <span className="text-slate-600 font-medium">Trust this device for 30 days</span>
+   498→                  </label>
+   499→                </div>
+   500→
+   501→                {/* Submit Sign In Button */}
+   502→                <div className="pt-1">
+   503→                  <button
+   504→                    className="w-full bg-[#0D62F3] hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition duration-150 shadow-2xs cursor-pointer"
+   505→                    type="submit"
+   506→                  >
+   507→                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+   508→                      <path
+   509→                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+   510→                        strokeLinecap="round"
+   511→                        strokeLinejoin="round"
+   512→                        strokeWidth="2"
+   513→                      />
+   514→                    </svg>
+   515→                    <span>
+   516→                      {portalType === 'client' ? 'Sign In as Pet Parent' : `Sign In as ${selectedStaffRole}`}
+   517→                    </span>
+   518→                  </button>
+   519→                </div>
+   520→
+   521→                {/* Divider */}
+   522→                <div className="relative py-1">
+   523→                  <div className="absolute inset-0 flex items-center">
+   524→                    <div className="w-full border-t border-slate-200" />
+   525→                  </div>
+   526→                  <div className="relative flex justify-center text-xs">
+   527→                    <span className="bg-white px-3 text-slate-400">or</span>
+   528→                  </div>
+   529→                </div>
+   530→
+   531→                {/* Quick Google Sign In */}
+   532→                <div>
+   533→                  <button
+   534→                    onClick={handleSignIn}
+   535→                    className="w-full border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-3 transition duration-150 shadow-2xs cursor-pointer"
+   536→                    type="button"
+   537→                  >
+   538→                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+   539→                      <path
+   540→                        d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+   541→                        fill="#4285F4"
+   542→                      />
+   543→                      <path
+   544→                        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
+   545→                        fill="#34A853"
+   546→                      />
+   547→                      <path
+   548→                        d="M5.28 14.27a7.15 7.15 0 010-4.54V6.58H1.25a11.98 11.98 0 000 10.84l4.03-3.15z"
+   549→                        fill="#FBBC05"
+   550→                      />
+   551→                      <path
+   552→                        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.93 6.72-4.93z"
+   553→                        fill="#EA4335"
+   554→                      />
+   555→                    </svg>
+   556→                    <span>Sign in with Google</span>
+   557→                  </button>
+   558→                </div>
+   559→              </form>
+   560→            </div>
+   561→          </div>
+   562→
+   563→          {/* Footer */}
+   564→          <footer className="w-full max-w-[840px] mx-auto pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+   565→            <div>
+   566→              <p>© 2025 All About Pawz. All rights reserved.</p>
+   567→            </div>
+   568→            <div className="flex items-center gap-4 sm:gap-6">
+   569→              <button
+   570→                onClick={() => setFooterModal('Privacy Policy')}
+   571→                className="hover:text-slate-800 transition-colors cursor-pointer"
+   572→              >
+   573→                Privacy Policy
+   574→              </button>
+   575→              <span className="text-slate-300">|</span>
+   576→              <button
+   577→                onClick={() => setFooterModal('Terms of Service')}
+   578→                className="hover:text-slate-800 transition-colors cursor-pointer"
+   579→              >
+   580→                Terms of Service
+   581→              </button>
+   582→              <span className="text-slate-300">|</span>
+   583→              <button
+   584→                onClick={() => setFooterModal('Help Center')}
+   585→                className="hover:text-slate-800 transition-colors cursor-pointer"
+   586→              >
+   587→                Help Center
+   588→              </button>
+   589→            </div>
+   590→          </footer>
+   591→        </main>
+   592→      </div>
+   593→
+   594→      {/* Footer Modal dialog */}
+   595→      {footerModal && (
+   596→        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+   597→          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+   598→            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+   599→              <h3 className="font-bold text-slate-900 text-sm">{footerModal}</h3>
+   600→              <button
+   601→                onClick={() => setFooterModal(null)}
+   602→                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+   603→              >
+   604→                ✕
+   605→              </button>
+   606→            </div>
+   607→            <p className="text-xs text-slate-600 leading-relaxed">
+   608→              All About Pawz enforces strict data privacy, veterinary vaccine tracking, and Stripe-certified payment tokenization for all salon operations.
+   609→            </p>
+   610→            <div className="flex justify-end pt-2">
+   611→              <button
+   612→                onClick={() => setFooterModal(null)}
+   613→                className="px-4 py-1.5 bg-[#0D62F3] hover:bg-blue-700 text-white rounded-xl text-xs font-semibold cursor-pointer"
+   614→              >
+   615→                Close
+   616→              </button>
+   617→            </div>
+   618→          </div>
+   619→        </div>
+   620→      )}
+   621→    </div>
+   622→  );
+   623→};
+   624→

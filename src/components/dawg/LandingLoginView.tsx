@@ -163,15 +163,15 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-700 bg-[#f8f9fc]">
+    <div className="min-h-screen flex flex-col lg:flex-row text-slate-800 antialiased selection:bg-gold/20 selection:text-gold-deep bg-[#f8f9fc]">
       <div className="w-full flex flex-col lg:flex-row flex-grow min-h-screen">
         {/* ================= LEFT POSTER COLUMN ================= */}
-        <aside className="w-full lg:w-[480px] xl:w-[520px] flex-shrink-0 relative overflow-hidden min-h-[480px] lg:min-h-screen bg-gradient-to-b from-[#f0f4fc] via-[#f7f9fd] to-[#eaf0fc] flex flex-col justify-between p-8 sm:p-10 lg:p-12 border-b lg:border-b-0 lg:border-r border-slate-200/80">
+        <aside className="w-full lg:w-[480px] xl:w-[520px] flex-shrink-0 relative overflow-hidden min-h-[480px] lg:min-h-screen bg-gradient-to-b from-cream via-cream-deep to-cream flex flex-col justify-between p-8 sm:p-10 lg:p-12 border-b lg:border-b-0 lg:border-r border-gold/20">
           {/* Top Brand & Value Props in 100% Crisp Vector Code */}
           <div className="space-y-8 my-auto">
             {/* Logo */}
             <div className="flex flex-col items-center text-center space-y-3">
-              <div className="w-14 h-14 rounded-2xl bg-[#0D62F3] flex items-center justify-center text-white shadow-lg shadow-blue-200">
+              <div className="w-14 h-14 rounded-2xl bg-gold-deep flex items-center justify-center text-white shadow-lg shadow-gold/40">
                 <svg className="w-8 h-8 fill-white" viewBox="0 0 24 24">
                   <path d="M12 2C11.17 2 10.5 2.67 10.5 3.5C10.5 4.33 11.17 5 12 5C12.83 5 13.5 4.33 13.5 3.5C13.5 2.67 12.83 2 12 2ZM8 4.5C7.17 4.5 6.5 5.17 6.5 6C6.5 6.83 7.17 7.5 8 7.5C8.83 7.5 9.5 6.83 9.5 6C9.5 5.17 8.83 4.5 8 4.5ZM16 4.5C15.17 4.5 14.5 5.17 14.5 6C14.5 6.83 15.17 7.5 16 7.5C16.83 7.5 17.5 6.83 17.5 6C17.5 5.17 16.83 4.5 16 4.5ZM5.5 8.5C4.67 8.5 4 9.17 4 10C4 10.83 4.67 11.5 5.5 11.5C6.33 11.5 7 10.83 7 10C7 9.17 6.33 8.5 5.5 8.5ZM18.5 8.5C17.67 8.5 17 9.17 17 10C17 10.83 17.67 11.5 18.5 11.5C19.33 11.5 20 10.83 20 10C20 9.17 19.33 8.5 18.5 8.5ZM12 7C9.5 7 7 9.5 7 12.5C7 15 8.5 17.5 10 19C10.5 19.5 11.2 20 12 20C12.8 20 13.5 19.5 14 19C15.5 17.5 17 15 17 12.5C17 9.5 14.5 7 12 7Z" />
                 </svg>
@@ -179,9 +179,9 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
               <div>
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
                   All About <br />
-                  <span className="text-[#0D62F3]">Pawz</span>
+                  <span className="text-gold-deep">Pawz</span>
                 </h1>
-                <span className="inline-block mt-1.5 text-xs font-extrabold text-blue-600 tracking-widest uppercase">
+                <span className="inline-block mt-1.5 text-xs font-extrabold text-gold-deep tracking-widest uppercase">
                   Salon &amp; Pet Parent Platform
                 </span>
               </div>
@@ -201,7 +201,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
               {portalType === 'client' ? (
                 <>
                   <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-cream-deep text-gold-deep flex items-center justify-center shrink-0">
                       <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -215,7 +215,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                   </div>
 
                   <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-cream-deep text-gold-deep flex items-center justify-center shrink-0">
                       <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -229,7 +229,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                   </div>
 
                   <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-cream-deep text-gold-deep flex items-center justify-center shrink-0">
                       <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -245,7 +245,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
               ) : (
                 <>
                   <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-cream-deep text-gold-deep flex items-center justify-center shrink-0">
                       <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -259,7 +259,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                   </div>
 
                   <div className="flex items-start gap-3.5 bg-white/80 p-3.5 rounded-2xl border border-slate-200/60 shadow-2xs">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 text-[#0D62F3] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-cream-deep text-gold-deep flex items-center justify-center shrink-0">
                       <svg className="w-4 h-4 stroke-current" fill="none" strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.828 2.829a4 4 0 11-5.657-5.657l2.828-2.828m0 0a4 4 0 115.657 5.656L9 12" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -298,7 +298,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                     onClick={() => handlePortalSwitch('client')}
                     className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition cursor-pointer ${
                       portalType === 'client'
-                        ? 'bg-[#0D62F3] text-white shadow-sm'
+                        ? 'bg-gold-deep text-white shadow-sm'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                   >
@@ -311,7 +311,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                     onClick={() => handlePortalSwitch('staff')}
                     className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition cursor-pointer ${
                       portalType === 'staff'
-                        ? 'bg-[#0D62F3] text-white shadow-sm'
+                        ? 'bg-gold-deep text-white shadow-sm'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                   >
@@ -352,7 +352,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                       </svg>
                     </div>
                     <input
-                      className="block w-full rounded-lg border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-[#0D62F3] focus:ring-1 focus:ring-[#0D62F3] focus:outline-none transition-colors"
+                      className="block w-full rounded-lg border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-gold-deep focus:ring-1 focus:ring-gold-deep focus:outline-none transition-colors"
                       id="email"
                       name="email"
                       placeholder={portalType === 'client' ? 'sarah.johnson@example.com' : 'Enter your staff email'}
@@ -381,7 +381,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                       </svg>
                     </div>
                     <input
-                      className="block w-full rounded-lg border border-slate-200 pl-10 pr-10 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-[#0D62F3] focus:ring-1 focus:ring-[#0D62F3] focus:outline-none transition-colors"
+                      className="block w-full rounded-lg border border-slate-200 pl-10 pr-10 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-gold-deep focus:ring-1 focus:ring-gold-deep focus:outline-none transition-colors"
                       id="password"
                       name="password"
                       placeholder="Enter your password"
@@ -418,7 +418,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                 <div className="flex items-center justify-between text-xs pt-0.5">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
-                      className="w-4 h-4 rounded border-slate-300 text-[#0D62F3] focus:ring-blue-500 focus:ring-offset-0 transition cursor-pointer"
+                      className="w-4 h-4 rounded border-slate-300 text-gold-deep focus:ring-gold-deep focus:ring-offset-0 transition cursor-pointer"
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
@@ -428,7 +428,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                   <button
                     type="button"
                     onClick={() => alert('Password reset link sent to ' + (email || 'your email'))}
-                    className="font-medium text-[#0D62F3] hover:text-blue-700 hover:underline cursor-pointer"
+                    className="font-medium text-gold-deep hover:text-gold-deep hover:underline cursor-pointer"
                   >
                     Forgot your password?
                   </button>
@@ -456,20 +456,20 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                               role.key === 'Marketing' ? 'col-span-2 sm:col-span-1' : ''
                             } ${
                               isSelected
-                                ? 'border-2 border-[#0D62F3] bg-blue-50/20 shadow-2xs'
+                                ? 'border-2 border-gold-deep bg-gold/10 shadow-2xs'
                                 : 'border border-slate-200 bg-white hover:border-slate-300'
                             }`}
                             role="radio"
                             tabIndex={0}
                           >
                             {isSelected && (
-                              <div className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full border border-[#0D62F3] flex items-center justify-center">
-                                <span className="w-1.5 h-1.5 bg-[#0D62F3] rounded-full" />
+                              <div className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full border border-gold-deep flex items-center justify-center">
+                                <span className="w-1.5 h-1.5 bg-gold-deep rounded-full" />
                               </div>
                             )}
 
-                            <div className="w-8 h-8 mb-2 flex items-center justify-center text-[#0D62F3]">
-                              {role.icon('text-[#0D62F3]')}
+                            <div className="w-8 h-8 mb-2 flex items-center justify-center text-gold-deep">
+                              {role.icon('text-gold-deep')}
                             </div>
 
                             <h5 className="text-xs font-bold text-slate-900 mb-1 leading-tight">
@@ -489,7 +489,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                 <div className="pt-1">
                   <label className="flex items-center gap-2 cursor-pointer select-none text-xs">
                     <input
-                      className="w-4 h-4 rounded border-slate-300 text-[#0D62F3] focus:ring-blue-500 focus:ring-offset-0 transition cursor-pointer"
+                      className="w-4 h-4 rounded border-slate-300 text-gold-deep focus:ring-gold-deep focus:ring-offset-0 transition cursor-pointer"
                       type="checkbox"
                       checked={trustDevice}
                       onChange={(e) => setTrustDevice(e.target.checked)}
@@ -501,7 +501,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
                 {/* Submit Sign In Button */}
                 <div className="pt-1">
                   <button
-                    className="w-full bg-[#0D62F3] hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition duration-150 shadow-2xs cursor-pointer"
+                    className="w-full bg-gold-deep hover:bg-ink active:bg-ink text-white font-semibold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition duration-150 shadow-2xs cursor-pointer"
                     type="submit"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -610,7 +610,7 @@ export const LandingLoginView: React.FC<LandingLoginViewProps> = ({ onLogin }) =
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setFooterModal(null)}
-                className="px-4 py-1.5 bg-[#0D62F3] hover:bg-blue-700 text-white rounded-xl text-xs font-semibold cursor-pointer"
+                className="px-4 py-1.5 bg-gold-deep hover:bg-ink text-white rounded-xl text-xs font-semibold cursor-pointer"
               >
                 Close
               </button>

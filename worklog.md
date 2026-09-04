@@ -842,3 +842,57 @@ Stage Summary:
 - Every Font Awesome icon from the original HTML design is now correctly mapped to its Phosphor equivalent. No more lazy `Lightning` icon reused for 9 different actions.
 - The modal's visual fidelity to the original HTML design is now correct: each action card shows the semantically correct icon (Clipboard for waitlist, Bell for reminder, Heartbeat for in-service status, etc.).
 - Comments in the code document the Font Awesome → Phosphor mapping for every action so future agents can verify at a glance.
+
+---
+Task ID: PURPLE-COLOR-FIX
+Agent: main (Z.ai Code)
+Task: Fix the "big purple on the front screen" CSS issue — the admin login page (LandingLoginView) was using #0D62F3 (bright royal blue/purple) for all primary actions, which clashed completely with the luxury cream/gold brand of the site.
+
+Work Log:
+- Used VLM (z-ai vision) to analyze screenshots of the home page and admin login page.
+- VLM confirmed: home page (`/`) has no purple — it uses the correct cream/gold/ink luxury palette.
+- VLM identified: `/admin` login page (LandingLoginView.tsx) was covered in `#0D62F3` (bright royal blue) — 25+ occurrences across the logo icon background, the "Pet Parent Portal"/"Salon Staff & Groomers" toggle buttons, the "Sign In" button, all feature card icons, focus rings, checkbox accents, role selector borders, and the "Forgot your password?" link.
+- The `#0D62F3` color was imported from the Serviceportals repo and was never updated to match the All About Pawz brand.
+
+- Fixed by replacing every `#0D62F3` / blue class in LandingLoginView.tsx with the brand's gold/ink palette:
+  * `bg-[#0D62F3]` → `bg-gold-deep` (logo background, toggle buttons, Sign In button)
+  * `text-[#0D62F3]` → `text-gold-deep` (logo text, feature card icons, links, role selector)
+  * `bg-blue-100 text-[#0D62F3]` → `bg-cream-deep text-gold-deep` (5 feature card icon containers)
+  * `border-[#0D62F3]` → `border-gold-deep` (role selector selected state)
+  * `focus:ring-[#0D62F3]` / `focus:ring-blue-500` → `focus:ring-gold-deep` (inputs, checkboxes)
+  * `focus:border-[#0D62F3]` → `focus:border-gold-deep` (email/password inputs)
+  * `hover:bg-blue-700` → `hover:bg-ink` (Sign In button hover)
+  * `active:bg-blue-800` → `active:bg-ink` (Sign In button active)
+  * `hover:text-blue-700` → `hover:text-gold-deep` (links)
+  * `bg-blue-50/20` → `bg-gold/10` (role selector selected background)
+  * `selection:bg-blue-100 selection:text-blue-700` → `selection:bg-gold/20 selection:text-gold-deep` (text selection)
+  * `shadow-blue-200` → `shadow-gold/40` (logo shadow)
+  * `bg-gradient-to-b from-[#f0f4fc] via-[#f7f9fd] to-[#eaf0fc]` (left panel blue gradient) → `bg-gradient-to-b from-cream via-cream-deep to-cream` (brand cream gradient)
+  * `border-slate-200/80` (left panel border) → `border-gold/20` (brand gold border)
+  * `text-blue-600` (sub-header) → `text-gold-deep`
+
+- Verified via VLM after the fix: "The colors are gold/bronze/cream, not blue/purple. The logo icon background is bronze/gold. The toggle buttons are bronze/gold. The Sign In button is bronze/gold."
+
+- Lint: 0 errors, 3 pre-existing warnings.
+- Routes: `/` → 200, `/admin` → 200.
+
+Stage Summary:
+- The "big purple" the user was seeing was the admin login page (LandingLoginView) using #0D62F3 (bright royal blue) for every primary action — imported from the Serviceportals repo and never rebranded.
+- All 25+ blue/purple color references in LandingLoginView.tsx have been replaced with the brand's gold-deep / cream-deep / ink palette. The login page now matches the luxury aesthetic of the rest of the site.
+- The home page was never broken — it was already using the correct cream/gold/ink palette.
+
+---
+Task ID: DEV-SERVER-STABILITY
+Agent: main (Z.ai Code)
+Task: Document the dev server stability issue and how to work around it.
+
+Work Log:
+- The dev server (Turbopack) crashes with OOM-kill when agent-browser sends concurrent asset requests. The cgroup memory limit is 4GB; Turbopack's next-server process peaks at ~3.5GB anon-rss when compiling the 2756-line CustomerDetailsView.tsx. The Linux OOM killer then kills the process.
+- The dev server survives single-threaded curl requests but dies under Chromium's concurrent asset loading (HTML + CSS + multiple JS chunks fetched in parallel).
+- Workaround used during this session: restart the dev server with `NODE_OPTIONS=--max-old-space-size=2048` and warm up routes via curl before opening agent-browser. Even with this, agent-browser navigation sometimes kills the server — requiring a restart.
+
+- The correct long-term fix is to split CustomerDetailsView.tsx (2756 lines) into smaller components so Turbopack doesn't need to hold the entire file's AST in memory during compilation. This is a code refactor, not a config change.
+
+Stage Summary:
+- Dev server is currently running via `bun run dev` and serving both `/` and `/admin` with 200 responses.
+- If it crashes again, restart with: `pkill -9 -f next; cd /home/z/my-project && setsid bash -c 'bun run dev' < /dev/null > dev.log 2>&1 & disown`
