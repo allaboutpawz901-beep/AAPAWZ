@@ -4,20 +4,17 @@ node_modules
 # next.js
 .next/
 out/
-
-# production
-build
-dist
+next-env.d.ts
+tsconfig.tsbuildinfo
 
 # env files
 .env
 .env.local
 .env*.local
+.env.example
 
 # logs
 *.log
-dev.log
-dev-server.log
 
 # database
 db/
@@ -26,24 +23,26 @@ db/
 
 # uploads
 uploads/
+upload/
 public/uploads/
 
-# worklogs / notes
-worklog.md
-*.md.bak
-
-# prisma (Supabase is primary — no local schema)
-prisma/*.bak
-
-# non-code folders
+# non-code folders (do not track)
+tool-results/
+tests/
 download/
 examples/
 mini-services/
 scripts/
 skills/
 
+# prisma (removed — Supabase is the only backend)
+prisma/
+
 # misc
 .DS_Store
 *.pem
 .idea/
 .vscode/
+Caddyfile
+components.json
+supabase/.temp/
