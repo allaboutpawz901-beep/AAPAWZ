@@ -42,6 +42,7 @@ export type WizardState = {
   weightLbs: string
   color: string
   markings: string
+  photoUrl: string // public URL of the uploaded pet photo
 
   // ---- coat & grooming profile (step 4) ----
   coatTypeId: string
@@ -124,6 +125,7 @@ const INITIAL: Omit<WizardState, "patch" | "setStep" | "reset"> = {
   weightLbs: "",
   color: "",
   markings: "",
+  photoUrl: "",
   coatTypeId: "",
   coatTextureId: "",
   coatLengthId: "",

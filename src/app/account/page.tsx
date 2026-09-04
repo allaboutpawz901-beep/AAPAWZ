@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { createClient } from "@/lib/auth/client"
 import { useRouter } from "next/navigation"
+import { PetCard } from "@/components/dawg/PetCard"
 import {
   PawPrint, CalendarCheck, CreditCard, CurrencyDollar,
   ArrowRight, SignOut,
@@ -13,7 +14,7 @@ type Customer = {
   id: string; firstName: string; lastName: string; email: string
   stripeCustomerId: string | null
 }
-type Dog = { id: string; name: string; breedName: string | null; weightLbs: string | null; sex: string | null }
+type Dog = { id: string; name: string; breedName: string | null; weightLbs: string | null; sex: string | null; birthDate: string | null; color: string | null; markings: string | null; photoUrl: string | null }
 type Booking = { id: string; dogName: string; service: string; date: string; time: string; status: string; servicePrice: string | null }
 type Payment = { id: string; amount: string; type: string; status: string; createdAt: string }
 
@@ -138,23 +139,28 @@ export default function AccountPage() {
 
         {/* My Pets */}
         <section className="mt-8">
-          <h2 className="font-display text-[20px] text-ink">My Pets</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-[20px] text-ink">My Pets</h2>
+            {dogs.length > 0 && (
+              <Link href="/book" className="text-[11px] font-bold uppercase tracking-wide text-gold-deep hover:underline">+ Add a pet</Link>
+            )}
+          </div>
           {dogs.length === 0 ? (
-            <p className="mt-3 rounded-lg border border-gold/25 bg-card p-6 text-center text-[13px] text-ink-soft">No pets registered yet.</p>
+            <div className="mt-3 rounded-lg border border-gold/25 bg-card p-6 text-center">
+              <p className="text-[13px] text-ink-soft">No pets registered yet.</p>
+              <Link href="/book" className="mt-3 inline-block btn-gold text-[11px]">+ Add your first pet</Link>
+            </div>
           ) : (
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {dogs.map(d => (
-                <div key={d.id} className="rounded-lg border border-gold/25 bg-card p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cream-deep">
-                      <PawPrint size={20} weight="fill" className="text-gold-deep" />
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-semibold text-ink">{d.name}</p>
-                      <p className="text-[11px] text-ink-soft">{d.breedName || "—"} {d.sex ? `· ${d.sex}` : ""} {d.weightLbs ? `· ${d.weightLbs} lbs` : ""}</p>
-                    </div>
-                  </div>
-                </div>
+                <PetCard
+                  key={d.id}
+                  dog={d}
+                  variant="customer"
+                  onPhotoChange={(url) => {
+                    setDogs(prev => prev.map(p => p.id === d.id ? { ...p, photoUrl: url } : p))
+                  }}
+                />
               ))}
             </div>
           )}

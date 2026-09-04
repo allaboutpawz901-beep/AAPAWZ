@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { PetCard } from "@/components/dawg/PetCard"
 import {
   ArrowLeft, PawPrint, CalendarCheck, PhoneCall, ShoppingBag, CreditCard,
   CurrencyDollar, Dog as DogIcon, Envelope, MapPin, Phone, Sparkle,
@@ -14,7 +15,7 @@ type Customer = {
   address: string; addressLine2: string | null; city: string; state: string; postalCode: string
   stripeCustomerId: string | null; createdAt: string
 }
-type Dog = { id: string; name: string; breedId: string | null; breedName: string | null; sex: string | null; birthDate: string | null; weightLbs: string | null; color: string | null; markings: string | null; createdAt: string }
+type Dog = { id: string; name: string; breedId: string | null; breedName: string | null; sex: string | null; birthDate: string | null; weightLbs: string | null; color: string | null; markings: string | null; photoUrl: string | null; createdAt: string }
 type GroomingProfile = { dogId: string; temperament: string | null; nailHandling: string | null; coatConditionId: string | null; currentHaircutStyleId: string | null }
 type Booking = { id: string; dogName: string; dogId: string | null; service: string; date: string; time: string; status: string; paymentStatus: string | null; servicePrice: string | null; depositAmount: string | null; groomerId: string | null; createdAt: string }
 type Consultation = { id: string; dogName: string | null; preferredTime: string | null; status: string; createdAt: string }
@@ -191,26 +192,29 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
               const lastGroom = dogBookings.find((b) => b.status === "COMPLETED")
               const nextAppt = dogBookings.find((b) => b.status === "CONFIRMED" || b.status === "PAYMENT_PENDING")
               return (
-                <Link key={dog.id} href={`/admin/dogs/${dog.id}`} className="block rounded-lg border border-black/10 p-4 hover:border-zinc-300 hover:bg-zinc-50">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-100"><PawPrint size={20} weight="fill" className="text-zinc-700" /></div>
-                      <div>
-                        <p className="text-[14px] font-semibold text-zinc-900">{dog.name}</p>
-                        <p className="text-[11px] text-zinc-400">{breedName(dog)} {breedSize(dog) ? `· ${breedSize(dog)}` : ""} {dog.sex ? `· ${dog.sex}` : ""} {dog.weightLbs ? `· ${dog.weightLbs} lbs` : ""}</p>
-                      </div>
+                <div key={dog.id}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <PetCard
+                        dog={dog}
+                        variant="admin"
+                        linkTo={`/admin/dogs/${dog.id}`}
+                        onPhotoChange={(url) => {
+                          setDogs(prev => prev.map(d => d.id === dog.id ? { ...d, photoUrl: url } : d))
+                        }}
+                      />
                     </div>
-                    {nextAppt && <span className="rounded bg-amber-50 px-2 py-1 text-[9px] font-bold text-amber-700">Next: {nextAppt.date}</span>}
+                    {nextAppt && <span className="shrink-0 rounded bg-amber-50 px-2 py-1 text-[9px] font-bold text-amber-700">Next: {nextAppt.date}</span>}
                   </div>
                   {profile && (
-                    <div className="mt-3 grid grid-cols-2 gap-2 border-t border-black/5 pt-2 text-[11px] sm:grid-cols-4">
+                    <div className="mt-2 grid grid-cols-2 gap-2 rounded-lg border border-black/5 bg-zinc-50/50 p-3 text-[11px] sm:grid-cols-4">
                       {profile.temperament && <div><span className="text-zinc-400">Temperament:</span> <span className="font-medium text-zinc-700">{profile.temperament}</span></div>}
                       {profile.nailHandling && <div><span className="text-zinc-400">Nails:</span> <span className="font-medium text-zinc-700">{profile.nailHandling}</span></div>}
                       {profile.currentHaircutStyleId && haircutStyles[profile.currentHaircutStyleId] && <div><span className="text-zinc-400">Cut:</span> <span className="font-medium text-zinc-700">{haircutStyles[profile.currentHaircutStyleId]}</span></div>}
                       {lastGroom && <div><span className="text-zinc-400">Last:</span> <span className="font-medium text-zinc-700">{lastGroom.date} · {lastGroom.service}</span></div>}
                     </div>
                   )}
-                </Link>
+                </div>
               )
             })}
           </div>

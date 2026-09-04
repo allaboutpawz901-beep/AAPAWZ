@@ -560,3 +560,105 @@ WHAT I NEED FROM YOU:
 - RESEND_API_KEY: paste your real key (re_...) and all emails will send immediately. Currently they're queued with an error.
 - STRIPE_WEBHOOK_SECRET: create the webhook endpoint in Stripe dashboard (URL: https://yourdomain/api/stripe/webhook, events: checkout.session.completed, payment_intent.succeeded, invoice.paid, customer.updated), then paste the whsec_... key.
 - Stripe test keys (sk_test_... and pk_test_...): the current placeholders prevent any Stripe API calls. Paste your test-mode keys.
+
+---
+Task ID: PETCARD-COMPONENT
+Agent: sub-agent (general-purpose)
+Task: Build reusable PetCard React component (with photo upload) for use on /account and /admin/customers/[id].
+
+Work Log:
+- Read worklog.md and reviewed existing patterns: /account uses `rounded-lg border border-gold/25 bg-card p-4` with `h-12 w-12` PawPrint placeholder; /admin/customers/[id] uses `flex h-10 w-10 rounded-full bg-zinc-100` PawPrint placeholder.
+- Confirmed Tailwind v4 brand tokens exist in `src/app/globals.css` (`@theme inline` → `--color-cream`, `--color-cream-deep`, `--color-ink`, `--color-ink-soft`, `--color-gold`, `--color-gold-deep`, `--color-on-dark-muted`) and `@utility btn-gold` is defined.
+- Discovered the installed version of `@phosphor-icons/react` (^2.1.10) does NOT export `Loader2` (that's a lucide-react icon). Substituted with `Spinner` (the Phosphor equivalent — same visual semantics: animated circle for loading state). The other required icons (`PawPrint`, `Camera`, `Check`, `X`) are all present; `X` was removed from the import as it was not actually used by any described behaviour.
+- Created `/home/z/my-project/src/components/dawg/PetCard.tsx`:
+  * `'use client'` component, plain divs + Tailwind classes (no shadcn/ui Card primitives), Next.js `<Link>` for optional link wrapping.
+  * `PetCardProps` interface exported, fully typed, no `any`.
+  * Two render branches: `variant === 'customer'` (luxury gold theme — `rounded-lg border border-gold/25 bg-card p-4`, `h-16 w-16` photo circle, `bg-cream-deep` placeholder with `text-gold-deep` PawPrint, footer with Sex/Weight/Color/Markings rows using `text-[11px]` `text-zinc-400` label / `text-ink-soft` value, `mt-3 border-t border-gold/20 pt-2`) and `variant === 'admin'` (neutral — `rounded-lg border border-black/10 bg-white p-4 hover:border-zinc-300 hover:bg-zinc-50`, `h-10 w-10` photo circle, `bg-zinc-100` placeholder with `text-zinc-700` PawPrint, `text-[14px] font-semibold text-zinc-900` name, `text-[11px] text-zinc-400` sub-text).
+  * Birth-date → age calculation helper (`calcAge`) producing strings like `"3 yrs · 2 mos"`, `"8 mos"`, `"0 mos"`. Defensive against invalid/future dates (returns null).
+  * Photo upload flow:
+    - Hidden `<input type="file" accept="image/*" ref={fileInputRef} className="hidden" tabIndex={-1} aria-hidden="true">`.
+    - On file select: set `uploading=true`, POST `multipart/form-data` to `/api/dogs/${dog.id}/photo` with field name `file`, parse `{ url: string }` response (validated — non-string url throws), call `onPhotoChange?.(url)`, update local `photoUrl` state immediately (don't wait for parent re-fetch), show a 2-second `Check` checkmark "Saved!" overlay (`bg-emerald-600/75`) on the photo circle, then clear.
+    - On failure: set `error` state with the message (truncated to 200 chars if very long), rendered as `text-[10px] text-red-600` directly under the photo circle.
+    - File input value is reset in `finally` so the same file can be re-selected.
+    - Local `photoUrl` state is also synced from `dog.photoUrl` prop via `useEffect([dog.photoUrl])` so a parent re-fetch doesn't show stale photo.
+    - The "saved" timeout is tracked via `useRef` and cleared on unmount + cleared before each new upload so back-to-back uploads don't flicker the checkmark.
+  * Camera button overlay: small round button absolutely positioned at `-bottom-0.5 -right-0.5` of the photo wrapper (slightly outside the circle, ring halo against the card background — `ring-cream` for customer, `ring-white` for admin). Customer: `bg-gold-deep` 20px, admin: `bg-zinc-900` 16px. Has `aria-label="Upload pet photo"`, `title="Upload pet photo"`, `type="button"` (real keyboard-accessible `<button>`, not a div).
+  * Uploading overlay: `bg-ink/55` (customer) — note: for admin variant the same overlay is used (`bg-ink/55` looks fine on white too). Spinner icon `animate-spin text-white` centered.
+  * Optional link wrapping: when `linkTo` is provided, the photo `<img>`/placeholder AND the name/breed text are each individually wrapped in `<Link href={linkTo}>`. The camera button, spinner overlay, and saved overlay are rendered as SIBLINGS of the link (inside the photo wrapper, but outside the `<Link>`) so clicking them does NOT trigger navigation. This satisfies the spec: "wrap the body of the card (excluding the upload button) in a `<Link>`".
+  * Accessibility: `alt={\`${dog.name} photo\}`}` when a photo exists; the placeholder fallback uses a decorative PawPrint (no alt needed since it's a div, not img). Camera button has both `aria-label` and `title`. Hidden file input is `tabIndex={-1} aria-hidden="true"` so it's not in the tab order (the visible camera button is the actual interactive control).
+  * Footer rows only render when at least one of Sex/Weight/Color/Markings is present.
+  * Exported both as named `export function PetCard` and `export default PetCard`.
+
+Self-verification:
+- `bunx tsc --noEmit` (whole project) → 0 errors that mention `components/dawg/PetCard`. (Pre-existing errors in unrelated `scripts/*.ts` and `examples/websocket/*` files remain but are not introduced by this change.)
+- `bunx tsc --noEmit --skipLibCheck --jsx react-jsx --esModuleInterop --moduleResolution bundler --target ES2017 --module esnext src/components/dawg/PetCard.tsx` → 0 errors, 0 output.
+- Note about the spec's verification command: `bunx tsc --noEmit --skipLibCheck src/components/dawg/PetCard.tsx` (passing a single file) bypasses the project's `tsconfig.json` and produces false-positive errors about JSX/esModuleInterop/`@phosphor-icons/react` exports. The correct verification uses either (a) the whole-project `bunx tsc --noEmit` filtered to this file, or (b) explicitly passes the missing flags (`--jsx react-jsx --esModuleInterop --moduleResolution bundler`).
+- Icon substitution: `Loader2` (lucide-react) → `Spinner` (Phosphor). This is the only deviation from the spec's exact import list and is forced by the installed `@phosphor-icons/react@2.1.10` having no `Loader2` export. `Spinner` is the Phosphor semantic equivalent (a circular loading indicator).
+- Integration readiness: this component is NOT yet wired into `/account` or `/admin/customers/[id]` — that's the next agent's job. A `/api/dogs/[id]/photo` route also needs to exist (it currently does not appear to) — verification of that endpoint is out of scope for this component-only task, but the upload flow is built to call it.
+
+Stage Summary:
+- A reusable, fully-typed `PetCard` component now lives at `src/components/dawg/PetCard.tsx`. It supports two visual variants (customer gold / admin neutral), inline photo upload with progress + success + error states, optional Next.js `<Link>` wrapping (with the upload button safely outside the link), age calculation from birthDate, and full keyboard accessibility. Ready to be dropped into `/account` and `/admin/customers/[id]` once the consuming pages are updated to use `<PetCard dog={d} variant="customer" onPhotoChange={...} />` (and `variant="admin"` respectively) and the `/api/dogs/[id]/photo` endpoint is implemented by a future agent.
+
+---
+Task ID: PET-PHOTOS
+Agent: main (Z.ai Code)
+Task: Add pet photo upload capability to customer dashboard profile page + onboarding flow (booking wizard step 3).
+
+Work Log:
+- Probed Supabase dogs table — confirmed 18 columns exist (id, customerId, name, breed, size, weight, age, coatType, notes, specialHandling, createdAt, breedId, sex, birthDate, weightLbs, color, markings, breedName). photoUrl does NOT exist — needs a SQL migration the user must run in Supabase SQL editor.
+- Wrote SQL migration: `/home/z/my-project/supabase/migrations/0001_add_dog_photo.sql` — single ALTER TABLE that adds `photoUrl text` column to the dogs table.
+- Built new API route `/api/dogs/[id]/photo` with three methods:
+  * POST multipart/form-data (field `file`) — uploads image to Supabase Storage `cms-media` bucket under `dogs/{dogId}/{timestamp}-{rand}.{ext}`, then PATCHes the dog row's `photoUrl`. Returns `{ url, path }`. Enforces 5 MB cap + image/* MIME.
+  * PATCH JSON `{ url }` — used by the booking wizard when the photo was already uploaded to storage BEFORE the dog row existed (via /api/cms/upload); links the URL to the dog row after creation.
+  * GET — returns the current `photoUrl` for a dog (used by the dashboard to detect whether the column has been applied).
+  * Returns 503 with a clear migration message if the `photoUrl` column doesn't exist yet (PGRST204 error from PostgREST).
+- Added `photoUrl: string` field to the wizard store (`/home/z/my-project/src/lib/wizard/wizard-store.ts`) with empty-string default. Persisted to localStorage as part of the wizard state.
+- Updated the booking wizard StepDog component (`/home/z/my-project/src/components/site/islands/booking-wizard-v2.tsx`):
+  * Added a circular photo uploader card at the top of step 3 with a 80px round photo, hover overlay with Camera icon, and spinner during upload.
+  * Uploads to `/api/cms/upload` (storage only) → stores URL in wizard state `photoUrl`.
+  * "Replace photo" / "Remove" buttons appear after upload.
+  * After dog is created (existing POST /api/cms/dogs flow), PATCHes `/api/dogs/{dogId}/photo` with the URL — non-fatal if it fails (column not yet migrated).
+  * Added Camera + Spinner to the Phosphor Icons import.
+- Built reusable `<PetCard>` component at `/home/z/my-project/src/components/dawg/PetCard.tsx` (subagent):
+  * Two variants: `customer` (luxury gold theme — 64px photo circle with `bg-cream-deep` PawPrint fallback, footer rows for Sex/Weight/Color/Markings) and `admin` (neutral theme — 40px photo circle, `bg-zinc-100` PawPrint fallback).
+  * Camera button overlay on the photo → triggers hidden file input → POST multipart to `/api/dogs/{dog.id}/photo` → updates local state immediately → calls `onPhotoChange?.(url)` → shows 2s green Check overlay.
+  * Graceful error display: parses JSON error response and shows clean message under the photo.
+  * Calculates age from `birthDate` (e.g. "3 yrs · 2 mos").
+  * Optional `linkTo` wraps photo + text in a Next.js `<Link>` while keeping the camera button outside the link (so clicking upload doesn't navigate).
+  * Accessibility: real `<button>` for the camera (aria-label + title), alt text on photos.
+- Wired `<PetCard>` into the customer dashboard (`/home/z/my-project/src/app/account/page.tsx`):
+  * Extended `Dog` type to include `photoUrl, birthDate, color, markings`.
+  * Replaced the old paw-print-only inline markup with `<PetCard dog={d} variant="customer" onPhotoChange={...} />`.
+  * `onPhotoChange` callback updates the local `dogs` state so the new photo appears immediately without a refetch.
+  * Empty state now has a "+ Add your first pet" CTA that links to /book.
+  * Header gets a "+ Add a pet" link when the customer already has pets.
+- Wired `<PetCard>` into the admin customer detail page (`/home/z/my-project/src/app/admin/customers/[id]/page.tsx`):
+  * Extended `Dog` type to include `photoUrl`.
+  * Replaced the inline `<PawPrint>` circle with `<PetCard dog={dog} variant="admin" linkTo={/admin/dogs/${dog.id}} onPhotoChange={...} />`.
+  * Kept the grooming profile metadata (temperament, nails, cut, last groom) as a separate footer block under the PetCard.
+  * `onPhotoChange` updates local state.
+
+Self-verification (Agent Browser end-to-end):
+- Opened /book → clicked "Book an Appointment" → filled name + contact + address → arrived at step 3 (DOG).
+- Confirmed the new "Upload pet photo" button + 80px round photo circle render correctly.
+- Uploaded a test PNG via JS-dispatched file input — file arrived in Supabase Storage `cms-media` bucket (verified via Storage API).
+- PetCard button changed from "UPLOAD PHOTO" to "REPLACE PHOTO" + "Remove" → confirming the upload flow + state update.
+- Opened /account (signed in as admin user `allaboutpawz901@gmail.com`).
+- Created a test customer + dog linked to the admin email via REST API.
+- Reloaded /account → confirmed "Hello, Demo" (customer matched) and PetCard rendered with Buddy the Golden Retriever (75 lbs, Male, Gold color, White chest markings).
+- Tried uploading a photo via the PetCard → got the expected 503 with clean migration message: "The dogs table is missing the photoUrl column. Run the migration in supabase/migrations/0001_add_dog_photo.sql inside the Supabase SQL editor, then retry."
+- Lint: 0 errors, 3 warnings (2 unused eslint-disable directives + 1 pre-existing font warning).
+- Cleaned up the test customer + dog from Supabase.
+- All routes return 200: /account, /book, /api/cms/dogs.
+
+WHAT THE USER NEEDS TO DO (one-time setup):
+- Open Supabase dashboard → SQL Editor → New query.
+- Paste the contents of `supabase/migrations/0001_add_dog_photo.sql` (single ALTER TABLE statement).
+- Click Run.
+- That's it. After the column exists, both the wizard StepDog uploader and the dashboard PetCard uploader will persist the photo URL to the dog row, and the dashboard will display the actual photo.
+
+Stage Summary:
+- Customer dashboard /account now shows real PetCards with the dog's photo (when uploaded), name, breed, age, weight, sex, color, and markings — matching the luxury salon aesthetic of the site. When no photo is uploaded yet, the card shows a stylized PawPrint icon in the brand gold color.
+- The PetCard is reusable: same component is used on the customer dashboard (variant="customer") and the admin customer 360 view (variant="admin" with linkTo=/admin/dogs/[id]).
+- Booking wizard step 3 (Tell us about your dog) now has a prominent photo uploader at the top — customers can upload a picture of their pet during onboarding, and the photo gets linked to the dog profile after the dog is created.
+- The system gracefully degrades: if the photoUrl column hasn't been migrated yet, the dashboard shows paw print icons and the upload endpoint returns a clear migration message. No crashes, no broken UI.

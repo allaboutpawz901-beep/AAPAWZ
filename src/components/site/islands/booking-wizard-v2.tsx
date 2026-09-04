@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react"
 import {
   Check, CaretLeft, CaretRight, CaretDown, PawPrint,
-  Scissors, Dog, CreditCard, Sparkle,
+  Scissors, Dog, CreditCard, Sparkle, Camera, Spinner,
 } from "@phosphor-icons/react"
 import { useWizard, type BookingType } from "@/lib/wizard/wizard-store"
 
@@ -162,6 +162,18 @@ export function BookingWizardV2({
         }
         const data = await res.json()
         s.patch({ dogId: data.id, breedName: selectedBreed?.name || s.breedName })
+
+        // If the customer uploaded a photo before creating the dog, link it
+        // to the now-known dogId via the photo endpoint. Non-fatal — if the
+        // photoUrl column hasn't been migrated yet, the photo is still in
+        // Supabase Storage and can be linked later.
+        if (s.photoUrl && data.id) {
+          await fetch(`/api/dogs/${data.id}/photo`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: s.photoUrl }),
+          }).catch(() => {/* non-fatal */})
+        }
       } catch (e: any) {
         setApiError(e.message || "Network error")
         return
@@ -692,6 +704,41 @@ function StepContact({ submitting }: { submitting: boolean }) {
 
 function StepDog({ breeds, submitting }: { breeds: Breed[]; submitting: boolean }) {
   const s = useWizard()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState("")
+
+  const onPickFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    if (!/^image\//.test(f.type)) {
+      setUploadError("Please choose an image file")
+      return
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setUploadError("Image is too large (5 MB max)")
+      return
+    }
+    setUploading(true)
+    setUploadError("")
+    try {
+      const fd = new FormData()
+      fd.append("file", f)
+      const res = await fetch("/api/cms/upload", { method: "POST", body: fd })
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}))
+        throw new Error(j.error || "Upload failed")
+      }
+      const data = await res.json()
+      s.patch({ photoUrl: data.url })
+    } catch (err: any) {
+      setUploadError(err.message || "Upload failed")
+    } finally {
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }
+
   return (
     <div className={`${stepWrapCls} space-y-5`}>
       <div>
@@ -699,6 +746,73 @@ function StepDog({ breeds, submitting }: { breeds: Breed[]; submitting: boolean 
         <h2 className="mt-2 font-display text-[24px] text-ink">Tell us about your dog</h2>
         <p className="mt-1 text-[12px] text-ink-soft">Every dog is special. We tailor the experience to their breed.</p>
       </div>
+
+      {/* Photo uploader */}
+      <div className="rounded-xl border border-gold/25 bg-card p-4">
+        <p className="eyebrow mb-3">PET PHOTO</p>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            aria-label="Upload pet photo"
+            title="Upload pet photo"
+            className="relative group flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-gold/40 bg-cream-deep transition hover:border-gold-deep disabled:opacity-60"
+          >
+            {s.photoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={s.photoUrl} alt="Pet photo" className="h-full w-full object-cover" />
+            ) : (
+              <PawPrint size={28} weight="fill" className="text-gold-deep" />
+            )}
+            <span className="absolute inset-0 flex items-center justify-center bg-ink/60 opacity-0 transition group-hover:opacity-100">
+              <Camera size={20} weight="fill" className="text-on-dark" />
+            </span>
+            {uploading && (
+              <span className="absolute inset-0 flex items-center justify-center bg-ink/70">
+                <Spinner size={20} className="animate-spin text-gold" />
+              </span>
+            )}
+          </button>
+          <div className="flex-1">
+            <p className="text-[13px] font-semibold text-ink">{s.photoUrl ? "Photo added!" : "Add a photo of your pup"}</p>
+            <p className="mt-0.5 text-[11px] text-ink-soft">
+              {s.photoUrl
+                ? "We'll display this on your profile so your groomer knows who's coming in."
+                : "A friendly photo helps our groomers recognize your dog. JPG/PNG up to 5 MB."}
+            </p>
+            {uploadError && <p className="mt-1 text-[10px] text-red-600">{uploadError}</p>}
+            <div className="mt-2 flex gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="btn-gold text-[10px]"
+              >
+                {s.photoUrl ? "Replace photo" : "Upload photo"}
+              </button>
+              {s.photoUrl && (
+                <button
+                  type="button"
+                  onClick={() => s.patch({ photoUrl: "" })}
+                  className="rounded-md border border-gold/30 px-2 py-1 text-[10px] font-bold text-ink-soft hover:bg-cream-deep"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={onPickFile}
+              className="hidden"
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="DOG NAME" required>
           <input value={s.dogName} onChange={(e) => s.patch({ dogName: e.target.value })} placeholder="Cooper" className={inputCls} />
