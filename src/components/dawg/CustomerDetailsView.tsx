@@ -46,6 +46,7 @@ import {
   Eye,
   Printer,
   CheckCheck,
+  Zap,
 } from 'lucide-react';
 import Image from 'next/image';
 import {
@@ -71,6 +72,7 @@ import {
   QuickActionUpdateDocumentsView,
   QuickActionAddNoteView,
 } from './customer/CustomerQuickActionsViews';
+import { QuickActionsModal, type QuickActionId } from './QuickActionsModal';
 
 interface CustomerDetailsViewProps {
   customerProfile: CustomerFullProfile;
@@ -95,6 +97,12 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
   const [activeQuickAction, setActiveQuickAction] = useState<
     'take_payment' | 'new_appointment' | 'add_pet' | 'send_message' | 'update_documents' | 'add_note' | null
   >(null);
+
+  // Quick Actions universal modal — single entry point for all 27 quick actions.
+  // Wired today: 6 customer actions (new_appointment, add_pet, take_payment,
+  // send_message, add_note, update_documents). Remaining 21 (appointment +
+  // shared + status transitions) surface a "coming soon" toast when clicked.
+  const [isQuickActionsModalOpen, setIsQuickActionsModalOpen] = useState(false);
 
   // Common Modals
   const [isEditCustomerOpen, setIsEditCustomerOpen] = useState(false);
@@ -402,6 +410,27 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  // Universal Quick Actions handler — routes action IDs from the launcher
+  // modal to the existing inline views. The 6 wired today map directly to
+  // the legacy activeQuickAction state. The remaining 21 surface a toast.
+  const handleQuickAction = (id: QuickActionId) => {
+    const wired: Record<string, typeof activeQuickAction> = {
+      new_appointment: 'new_appointment',
+      add_pet: 'add_pet',
+      take_payment: 'take_payment',
+      send_message: 'send_message',
+      add_note: 'add_note',
+      update_documents: 'update_documents',
+    };
+    const target = wired[id];
+    if (target) {
+      setIsQuickActionsModalOpen(false);
+      setActiveQuickAction(target);
+    } else {
+      showToast(`"${id.replace(/_/g, ' ')}" — coming soon`);
+    }
   };
 
   /* ------------------- ACTIONS: 1. OVERVIEW ------------------- */
@@ -1100,58 +1129,29 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               </div>
             </div>
 
-            {/* Quick Actions Sidebar (Col span 2) - ALL ACTIONS FROM SPEC */}
+            {/* Quick Actions Sidebar (Col span 2) — universal launcher.
+                All 6 customer actions + 21 appointment/shared actions are
+                reachable through the QuickActionsModal. The inline buttons
+                that used to live here are now consolidated into the modal. */}
             <div className="col-span-12 lg:col-span-2 space-y-3">
               <h2 className="text-sm font-bold text-slate-900">Quick Actions</h2>
-              <div className="bg-white border border-slate-200 rounded-xl p-2.5 flex flex-col gap-1.5 shadow-2xs">
-                <button
-                  onClick={() => setActiveQuickAction('new_appointment')}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2.5 border border-transparent hover:border-slate-200 transition cursor-pointer"
-                >
-                  <CalendarPlus className="w-4 h-4 text-indigo-600" />
-                  <span>New Appointment</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveQuickAction('add_pet')}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2.5 border border-transparent hover:border-slate-200 transition cursor-pointer"
-                >
-                  <PawPrint className="w-4 h-4 text-indigo-600" />
-                  <span>Add Pet</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveQuickAction('take_payment')}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2.5 border border-transparent hover:border-slate-200 transition cursor-pointer"
-                >
-                  <CreditCard className="w-4 h-4 text-indigo-600" />
-                  <span>Take Payment</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveQuickAction('send_message')}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2.5 border border-transparent hover:border-slate-200 transition cursor-pointer"
-                >
-                  <MessageSquare className="w-4 h-4 text-indigo-600" />
-                  <span>Send Message</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveQuickAction('add_note')}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2.5 border border-transparent hover:border-slate-200 transition cursor-pointer"
-                >
-                  <FileEdit className="w-4 h-4 text-indigo-600" />
-                  <span>Add Note</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveQuickAction('update_documents')}
-                  className="w-full text-left px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2.5 border border-transparent hover:border-slate-200 transition cursor-pointer"
-                >
-                  <FileCheck className="w-4 h-4 text-indigo-600" />
-                  <span>Update Documents</span>
-                </button>
-              </div>
+              <button
+                onClick={() => setIsQuickActionsModalOpen(true)}
+                className="w-full bg-white border border-slate-200 rounded-xl p-2.5 flex flex-col gap-2 shadow-2xs hover:border-indigo-400 hover:shadow-sm transition cursor-pointer group"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs group-hover:scale-105 transition-transform">
+                      <Zap className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-800">Open Quick Actions</span>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-indigo-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+                </div>
+                <span className="text-[10px] text-slate-500 leading-tight">
+                  New appointment · Add pet · Take payment · Send message · Add note · Update documents — all in one place.
+                </span>
+              </button>
             </div>
           </section>
 
@@ -2741,6 +2741,15 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
         onSave={() => {
           showToast('Customer communication preferences updated.');
         }}
+      />
+
+      {/* Universal Quick Actions Modal — launcher for all 27 quick actions.
+          Today: 6 customer actions wired; 21 surface a "coming soon" toast. */}
+      <QuickActionsModal
+        open={isQuickActionsModalOpen}
+        onClose={() => setIsQuickActionsModalOpen(false)}
+        onAction={handleQuickAction}
+        showSections={['customer', 'appointment', 'shared']}
       />
     </main>
   );
