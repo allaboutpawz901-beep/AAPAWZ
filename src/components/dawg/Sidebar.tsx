@@ -7,10 +7,11 @@ import {
   LayoutGrid,
   Users,
   Calendar,
-  CalendarDays,
-  Scissors,
   CreditCard,
   FileText,
+  Coins,
+  RotateCcw,
+  Gift,
   Tag,
   CalendarClock,
   Package,
@@ -68,22 +69,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const navGroups: NavGroup[] = [
     {
+      category: 'MAIN',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
-      ],
-    },
-    {
-      category: 'CUSTOMERS',
-      items: [
         { id: 'customers', label: 'Customers', icon: Users },
-      ],
-    },
-    {
-      category: 'OPERATIONS',
-      items: [
         { id: 'appointments', label: 'Appointments', icon: Calendar },
-        { id: 'calendar', label: 'Calendar', icon: CalendarDays },
-        { id: 'grooming-records', label: 'Grooming Records', icon: Scissors },
       ],
     },
     {
@@ -91,6 +81,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         { id: 'payments', label: 'Payments', icon: CreditCard },
         { id: 'invoices', label: 'Invoices', icon: FileText },
+        { id: 'deposits', label: 'Deposits', icon: Coins },
+        { id: 'refunds', label: 'Refunds', icon: RotateCcw },
+        { id: 'gift-cards', label: 'Gift Cards / Credits', icon: Gift },
       ],
     },
     {

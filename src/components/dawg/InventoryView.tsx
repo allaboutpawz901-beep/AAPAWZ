@@ -40,7 +40,9 @@ export const InventoryView: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {INVENTORY_PRODUCTS.map((item) => {
-                const isLow = item.stock <= item.minStock;
+                const currentStock = item.stock ?? item.inStock ?? 0;
+                const minStock = item.minStock ?? item.reorderPoint ?? 5;
+                const isLow = currentStock <= minStock;
                 return (
                   <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3.5 px-4">
@@ -51,10 +53,10 @@ export const InventoryView: React.FC = () => {
                       {item.category}
                     </td>
                     <td className="py-3.5 px-4 font-bold text-slate-900">
-                      {item.stock} units
+                      {currentStock} units
                     </td>
                     <td className="py-3.5 px-4 text-slate-500">
-                      Min {item.minStock} units
+                      Min {minStock} units
                     </td>
                     <td className="py-3.5 px-4 font-bold text-slate-900">
                       ${item.price.toFixed(2)}

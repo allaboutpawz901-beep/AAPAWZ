@@ -457,19 +457,19 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
   const handleSetPrimaryPet = (petId: string) => {
     setProfile(prev => ({
       ...prev,
-      pets: prev.pets.map(p => ({
+      pets: (prev.pets || []).map(p => ({
         ...p,
         isPrimary: p.id === petId,
       })),
     }));
-    const targetPet = profile.pets.find(p => p.id === petId);
+    const targetPet = (profile.pets || []).find(p => p.id === petId);
     showToast(`Marked ${targetPet?.name || 'Pet'} as primary/default for booking.`);
   };
 
   const handleSavePetEdit = (updatedPet: CustomerPetDetail) => {
     setProfile(prev => ({
       ...prev,
-      pets: prev.pets.map(p => (p.id === updatedPet.id ? updatedPet : p)),
+      pets: (prev.pets || []).map(p => (p.id === updatedPet.id ? updatedPet : p)),
     }));
     showToast(`Updated ${updatedPet.name}'s profile and health information.`);
   };
@@ -615,9 +615,9 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               setProfile(prev => ({
                 ...prev,
                 totalSpent: prev.totalSpent + data.amount,
-                lifetimeValue: prev.lifetimeValue + data.amount,
-                outstandingBalance: Math.max(0, prev.outstandingBalance - data.amount),
-                paymentHistory: [newPayment, ...prev.paymentHistory],
+                lifetimeValue: (prev.lifetimeValue || prev.totalSpent) + data.amount,
+                outstandingBalance: Math.max(0, (prev.outstandingBalance || 0) - data.amount),
+                paymentHistory: [newPayment, ...(prev.paymentHistory || [])],
               }));
               setNotesList(prev => [
                 {
@@ -841,7 +841,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{profile.name}</h1>
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                {profile.status}
+                {profile.status || 'Active'}
               </span>
               <button
                 onClick={() => setIsEditCustomerOpen(true)}
@@ -926,7 +926,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               </div>
               <div>
                 <div className="text-[11px] font-medium text-slate-400 leading-none">Lifetime Value</div>
-                <div className="text-lg font-bold text-slate-900 mt-1">${profile.lifetimeValue.toFixed(2)}</div>
+                <div className="text-lg font-bold text-slate-900 mt-1">${(profile.lifetimeValue ?? profile.totalSpent ?? 0).toFixed(2)}</div>
               </div>
             </div>
 
@@ -936,7 +936,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               </div>
               <div>
                 <div className="text-[11px] font-medium text-slate-400 leading-none">Total Spent</div>
-                <div className="text-lg font-bold text-slate-900 mt-1">${profile.totalSpent.toFixed(2)}</div>
+                <div className="text-lg font-bold text-slate-900 mt-1">${(profile.totalSpent ?? 0).toFixed(2)}</div>
               </div>
             </div>
 
@@ -946,7 +946,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               </div>
               <div>
                 <div className="text-[11px] font-medium text-slate-400 leading-none">Outstanding Balance</div>
-                <div className="text-lg font-bold text-slate-900 mt-1">${profile.outstandingBalance.toFixed(2)}</div>
+                <div className="text-lg font-bold text-slate-900 mt-1">${(profile.outstandingBalance ?? 0).toFixed(2)}</div>
               </div>
             </div>
 
@@ -957,7 +957,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               <div>
                 <div className="text-[11px] font-medium text-slate-400 leading-none">Loyalty Points</div>
                 <div className="text-lg font-bold text-slate-900 mt-1">
-                  {profile.loyaltyPoints} <span className="text-xs font-normal text-slate-500">pts</span>
+                  {profile.loyaltyPoints ?? 0} <span className="text-xs font-normal text-slate-500">pts</span>
                 </div>
               </div>
             </div>
@@ -968,7 +968,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               </div>
               <div>
                 <div className="text-[11px] font-medium text-slate-400 leading-none">Customer Since</div>
-                <div className="text-base font-bold text-slate-900 mt-1">{profile.customerSince}</div>
+                <div className="text-base font-bold text-slate-900 mt-1">{profile.customerSince || profile.memberSince || 'Apr 12, 2023'}</div>
               </div>
             </div>
           </section>
@@ -1066,14 +1066,14 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
                   <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-7 bg-indigo-900 text-white font-bold rounded flex items-center justify-center text-[10px]">
-                        {profile.defaultPaymentMethod.cardBrand}
+                        {profile.defaultPaymentMethod?.cardBrand || 'VISA'}
                       </div>
                       <div>
                         <div className="text-xs font-semibold text-slate-800">
-                          Visa •••• {profile.defaultPaymentMethod.last4}
+                          Visa •••• {profile.defaultPaymentMethod?.last4 || '4242'}
                         </div>
                         <div className="text-[10px] text-slate-400">
-                          Expires {profile.defaultPaymentMethod.expires}
+                          Expires {profile.defaultPaymentMethod?.expires || '04/27'}
                         </div>
                       </div>
                     </div>
@@ -1094,7 +1094,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
                 <div className="mt-6 pt-4 border-t border-slate-100">
                   <div className="text-xs text-slate-500">Outstanding Balance</div>
                   <div className="text-xl font-bold text-emerald-600 mt-0.5">
-                    ${profile.outstandingBalance.toFixed(2)}
+                    ${(profile.outstandingBalance ?? 0).toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -1208,7 +1208,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
                   </button>
                 </div>
                 <div className="space-y-2 mt-3">
-                  {profile.paymentHistory.slice(0, 3).map((item) => (
+                  {(profile.paymentHistory || []).slice(0, 3).map((item) => (
                     <div key={item.id} className="flex items-center justify-between text-xs py-1 border-b border-slate-50">
                       <div>
                         <div className="font-semibold text-slate-800">{item.description}</div>
@@ -1780,7 +1780,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               <div className="flex items-center gap-3">
                 <h2 className="text-sm font-bold text-slate-900">Payment Ledger</h2>
                 <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
-                  {profile.paymentHistory.length} transactions
+                  {(profile.paymentHistory || []).length} transactions
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -1827,7 +1827,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {profile.paymentHistory
+                  {(profile.paymentHistory || [])
                     .filter((p) =>
                       p.description.toLowerCase().includes(paymentSearch.toLowerCase()) ||
                       p.type.toLowerCase().includes(paymentSearch.toLowerCase())
@@ -2573,7 +2573,7 @@ export const CustomerDetailsView: React.FC<CustomerDetailsViewProps> = ({
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
                   <Image
-                    src={selectedPetDetail.imageUrl}
+                    src={selectedPetDetail.imageUrl || selectedPetDetail.photoUrl || 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80'}
                     alt={selectedPetDetail.name}
                     fill
                     className="object-cover"

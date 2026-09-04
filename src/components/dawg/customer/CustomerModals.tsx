@@ -43,10 +43,12 @@ export const EditPetModal: React.FC<{
   const [name, setName] = useState(pet.name);
   const [breed, setBreed] = useState(pet.breed);
   const [gender, setGender] = useState(pet.gender);
-  const [birthDate, setBirthDate] = useState(pet.birthDate);
-  const [weight, setWeight] = useState(pet.weight);
+  const [birthDate, setBirthDate] = useState(pet.birthDate || '');
+  const [weight, setWeight] = useState(pet.weight || '');
   const [medicalAlert, setMedicalAlert] = useState(pet.medicalAlert || '');
-  const [vaccinationsStatus, setVaccinationsStatus] = useState<'Up to date' | 'Expiring Soon' | 'Expired'>(pet.vaccinationsStatus);
+  const [vaccinationsStatus, setVaccinationsStatus] = useState<'Up to date' | 'Expiring Soon' | 'Expired'>(
+    (pet.vaccinationsStatus as 'Up to date' | 'Expiring Soon' | 'Expired') || 'Up to date'
+  );
 
   if (!isOpen) return null;
 

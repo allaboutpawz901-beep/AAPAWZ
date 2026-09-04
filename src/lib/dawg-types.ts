@@ -8,6 +8,9 @@ export type DawgNavSection =
   | 'services'
   | 'payments'
   | 'invoices'
+  | 'deposits'
+  | 'refunds'
+  | 'gift-cards'
   | 'documents'
   | 'communications'
   | 'marketing'
@@ -43,7 +46,7 @@ export type AppointmentStatus =
 export interface AppointmentItem {
   id: string;
   date?: string; // e.g. '2025-05-16' or 'May 16, 2025'
-  time: string; // e.g. '8:30 AM' or '8:30 AM (2.5 hrs)'
+  time?: string; // e.g. '8:30 AM' or '8:30 AM (2.5 hrs)'
   duration?: string; // e.g. '2.5 hrs'
   customerName?: string;
   customerInitials?: string;
@@ -146,11 +149,11 @@ export interface PetRecord {
 export interface ServiceItem {
   id: string;
   name: string;
-  category: 'Full Groom' | 'Bath & Brush' | 'Deluxe Spa' | 'Add-on' | 'A La Carte';
+  category: 'Full Groom' | 'Bath & Brush' | 'Deluxe Spa' | 'Add-on' | 'A La Carte' | string;
   durationMinutes: number;
   price: number;
   description: string;
-  active: boolean;
+  active?: boolean;
 }
 
 export interface ProductItem {
@@ -158,10 +161,13 @@ export interface ProductItem {
   name: string;
   sku: string;
   category: string;
-  inStock: number;
-  reorderPoint: number;
+  stock?: number;
+  minStock?: number;
+  inStock?: number;
+  reorderPoint?: number;
   price: number;
-  supplier: string;
+  supplier?: string;
+  [key: string]: any;
 }
 
 export interface LocationItem {
@@ -196,35 +202,117 @@ export interface CustomerFullProfile {
   email: string;
   phone: string;
   address: string;
-  memberSince: string;
-  avatarUrl: string;
-  vipStatus: string;
+  status?: string;
+  memberSince?: string;
+  customerSince?: string;
+  avatarUrl?: string;
+  vipStatus?: string;
   totalSpent: number;
-  totalVisits: number;
-  loyaltyPoints: number;
-  preferredContact: string;
-  notes: string;
-  communicationOptIn: {
+  lifetimeValue?: number;
+  outstandingBalance?: number;
+  totalVisits?: number;
+  loyaltyPoints?: number;
+  preferredContact?: string;
+  notes?: string;
+  communicationOptIn?: {
     sms: boolean;
     email: boolean;
     marketing: boolean;
   };
+  pets: any[];
+  paymentMethods?: Array<{
+    id: string;
+    brand: string;
+    last4: string;
+    expMonth: number;
+    expYear: number;
+    isDefault: boolean;
+  }>;
+  defaultPaymentMethod?: {
+    cardBrand: string;
+    last4: string;
+    expires: string;
+  };
+  paymentHistory?: any[];
+  recentActivity?: any[];
+  communication?: any;
+  upcomingAppointments?: any[];
+}
+
+export interface CustomerPetDetail {
+  id: string;
+  name: string;
+  breed: string;
+  age: string;
+  weight: string;
+  gender: string;
+  birthDate?: string;
+  isPrimary?: boolean;
+  isSpayedNeutered?: boolean;
+  color?: string;
+  microchipNumber?: string;
+  allergies?: string[];
+  medicalAlerts?: string[];
+  medicalAlert?: string;
+  vaccinationsStatus?: string;
+  behaviorFlags?: string[];
+  preferredGroomer?: string;
+  groomingFrequencyWeeks?: number;
+  lastGroomDate?: string;
+  nextApptDate?: string;
+  nextApptType?: string;
+  vaccines?: {
+    rabies: { status: 'Up to date' | 'Expiring Soon' | 'Expired'; expires: string };
+    dhpp: { status: 'Up to date' | 'Expiring Soon' | 'Expired'; expires: string };
+    bordetella: { status: 'Up to date' | 'Expiring Soon' | 'Expired'; expires: string };
+  };
+  photoUrl?: string;
+  imageUrl?: string;
+}
+
+export interface CustomerAppointmentItem {
+  id: string;
+  date: string;
+  time: string;
+  petName: string;
+  service: string;
+  groomer: string;
+  amount: number;
+  status: 'Completed' | 'Upcoming' | 'Canceled' | 'In Progress' | 'Checked In' | 'No Show';
+  deposit?: number;
+  addons?: string[];
 }
 
 export interface GroomerAppointmentItem {
   id: string;
   time: string;
+  duration?: string;
   petName: string;
   breed: string;
+  age?: string;
+  weight?: string;
   ownerName: string;
   ownerPhone: string;
-  serviceName: string;
-  durationMinutes: number;
-  status: 'Checked In' | 'In Bath' | 'On Table' | 'Blow Drying' | 'Styling' | 'Ready for Pickup' | 'Completed';
-  price: number;
-  coatType: string;
-  temperament: string;
+  ownerEmail?: string;
+  serviceName?: string;
+  serviceType?: string;
+  durationMinutes?: number;
+  status: 'Scheduled' | 'Checked In' | 'In Service' | 'In Bath' | 'On Table' | 'Blow Drying' | 'Styling' | 'Ready for Pickup' | 'Completed';
+  price?: number;
+  coatType?: string;
+  temperament?: string;
   specialHandlingNotes?: string;
   bladeGuide?: string;
   photoUrl?: string;
+  petImage?: string;
+  allergies?: string;
+  healthAlert?: string;
+  stationName?: string;
+  lastGroomDate?: string;
+  instructions?: string;
+  notes?: string;
+  ownerNotes?: string;
+  internalNotes?: string[];
+  addons?: Array<{ name: string; price: number }>;
+  [key: string]: any;
 }

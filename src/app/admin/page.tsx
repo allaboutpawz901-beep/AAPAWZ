@@ -436,9 +436,7 @@ export default function AdminPage() {
             />
           )}
 
-          {activeSection === "calendar" && (
-            <FullCalendarView appointments={appointments} />
-          )}
+          {/* Calendar now lives inside Appointments view (kanban/timeline/calendar tabs) */}
 
           {activeSection === "customers" && (
             <CustomersView

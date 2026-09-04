@@ -684,8 +684,8 @@ export const GroomerPortalView: React.FC<GroomerPortalViewProps> = ({
             <div className="space-y-1.5 pt-1">
               <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Today&apos;s Service</div>
               <div className="flex items-baseline justify-between">
-                <div className="text-xs font-bold text-slate-900">{activePet.serviceType}</div>
-                <div className="text-xs font-bold text-slate-900">${activePet.price.toFixed(2)}</div>
+                <div className="text-xs font-bold text-slate-900">{activePet.serviceType || activePet.serviceName || 'Full Groom'}</div>
+                <div className="text-xs font-bold text-slate-900">${(activePet.price ?? 85).toFixed(2)}</div>
               </div>
               <p className="text-[11px] text-slate-400 leading-tight">Includes: Bath, Blow Dry, Haircut, Nail Trim, Ear Cleaning</p>
               
