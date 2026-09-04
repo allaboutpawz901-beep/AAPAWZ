@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
+import { useSearchParams } from "next/navigation"
 import {
   DawgNavSection,
   AppointmentItem,
@@ -27,6 +28,9 @@ import { InventoryView } from "@/components/dawg/InventoryView"
 import { SettingsView } from "@/components/dawg/SettingsView"
 import { QuickActionModals } from "@/components/dawg/Modals/QuickActionModals"
 import { FullCalendarView } from "@/components/dawg/FullCalendarView"
+import { GroomerPortalView } from "@/components/dawg/GroomerPortalView"
+import { CustomerPortalView } from "@/components/dawg/CustomerPortalView"
+import { createClient } from "@/lib/auth/client"
 import Link from "next/link"
 
 // ---- Real data fetching from Supabase via our API ----
@@ -39,10 +43,18 @@ async function fetchAPI<T>(endpoint: string): Promise<T[]> {
 }
 
 export default function AdminPage() {
+  const searchParams = useSearchParams()
+  const forcePortal = searchParams.get("portal") // "groomer" or "customer"
+  const supabase = createClient()
+
   const [activeSection, setActiveSection] = useState<DawgNavSection>("dashboard")
   const [mobileOpen, setMobileOpen] = useState(false)
   const [currentDate, setCurrentDate] = useState(new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }))
   const [selectedLocation, setSelectedLocation] = useState("All About Pawz – Main Location")
+
+  // Auth state
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null)
+  const [authChecked, setAuthChecked] = useState(false)
 
   // Real data from Supabase
   const [bookings, setBookings] = useState<any[]>([])
@@ -58,14 +70,37 @@ export default function AdminPage() {
   // Modal state
   const [activeModal, setActiveModal] = useState<'appointment' | 'customer' | 'pet' | 'intake' | 'payment' | 'invoice' | 'search' | null>(null)
 
-  // Mock user (auth removed for dev — will wire later)
-  const currentUser: AuthUser = {
-    id: "admin",
-    name: "Admin User",
-    email: "admin@aapawz.com",
-    role: "admin",
-    stationName: "Central Management",
-  }
+  // Check auth on mount
+  useEffect(() => {
+    let alive = true
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!alive) return
+      if (session?.user) {
+        const role = (session.user.user_metadata?.role as string) || "admin"
+        const firstName = session.user.user_metadata?.firstName || "Admin"
+        const lastName = session.user.user_metadata?.lastName || "User"
+        setCurrentUser({
+          id: session.user.id,
+          name: `${firstName} ${lastName}`,
+          email: session.user.email || "",
+          role: role as any,
+          stationName: role === "groomer" ? "Station #1" : "Central Management",
+        })
+      }
+      // Auth disabled for dev — if no session, create a default admin user
+      if (!session?.user) {
+        setCurrentUser({
+          id: "dev-admin",
+          name: "Admin User",
+          email: "admin@aapawz.com",
+          role: "admin",
+          stationName: "Central Management",
+        })
+      }
+      setAuthChecked(true)
+    })
+    return () => { alive = false }
+  }, [])
 
   useEffect(() => {
     let alive = true
@@ -262,7 +297,7 @@ export default function AdminPage() {
     console.log("New pet:", newPet)
   }
 
-  if (loading) {
+  if (!authChecked || loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#fafbfc]">
         <div className="text-center">
@@ -272,6 +307,43 @@ export default function AdminPage() {
       </div>
     )
   }
+
+  // Role-based portal routing
+  const effectiveRole = forcePortal === "groomer" ? "groomer" : forcePortal === "customer" ? "customer" : currentUser?.role
+
+  // Groomer Portal
+  if (effectiveRole === "groomer" && currentUser) {
+    return (
+      <GroomerPortalView
+        currentUser={currentUser}
+        onSwitchToAdmin={() => {
+          setCurrentUser({ ...currentUser, role: "admin" })
+          window.history.replaceState({}, "", "/admin")
+        }}
+        onSignOut={() => { supabase.auth.signOut(); setCurrentUser(null) }}
+      />
+    )
+  }
+
+  // Customer Portal
+  if (effectiveRole === "customer" && currentUser) {
+    return (
+      <CustomerPortalView
+        currentUser={currentUser}
+        onSwitchToAdmin={() => {
+          setCurrentUser({ ...currentUser, role: "admin" })
+          window.history.replaceState({}, "", "/admin")
+        }}
+        onSwitchToGroomer={() => {
+          setCurrentUser({ ...currentUser, role: "groomer" })
+          window.history.replaceState({}, "", "/admin?portal=groomer")
+        }}
+        onSignOut={() => { supabase.auth.signOut(); setCurrentUser(null) }}
+      />
+    )
+  }
+
+  // Admin OS Shell
 
   return (
     <div className="h-screen w-screen flex overflow-hidden bg-[#fafbfc] text-slate-800 antialiased font-sans">
