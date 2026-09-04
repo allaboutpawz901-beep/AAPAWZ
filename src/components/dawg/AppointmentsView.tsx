@@ -93,6 +93,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
   const [activeTaskAction, setActiveTaskAction] = useState<AppointmentActionType | null>(null);
   const [activeTaskAppointment, setActiveTaskAppointment] = useState<AppointmentItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showActionGuide, setShowActionGuide] = useState(false);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
