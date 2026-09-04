@@ -1,12 +1,8 @@
-import { db } from "./db"
-
 // ---------------------------------------------------------------------------
-// Repository abstraction.
-//   - If SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY are set, all reads/writes
-//     go to Supabase (Postgres via the PostgREST API + Storage for uploads).
-//   - Otherwise, fall back to the local Prisma + SQLite database.
-// The two implementations expose the same surface so the API routes and the
-// CMS frontend never need to know which backend is active.
+// Repository abstraction — Supabase only.
+//   All reads/writes go to Supabase (Postgres via the PostgREST API + Storage
+//   for uploads). There is no Prisma/SQLite fallback — Supabase has all 51
+//   tables and is the single source of truth.
 // ---------------------------------------------------------------------------
 
 export type Row = Record<string, any>
@@ -24,40 +20,6 @@ export type CmsResource =
   | "dog_grooming_profiles" | "appointment_grooming_requests"
   | "payments" | "blocked_times" | "availability" | "service_pricing"
   | "invoices" | "invoice_items" | "email_messages" | "communications"
-
-const PRISMA_DELEGATE: Record<CmsResource, any> = {
-  services: db.service,
-  products: db.product,
-  gallery: db.galleryPhoto,
-  packages: db.pricingPackage,
-  addons: db.addOn,
-  faqs: db.faq,
-  policies: db.policy,
-  testimonials: db.testimonial,
-  bookings: db.booking,
-  consultations: db.consultation,
-  messages: db.contactMessage,
-  orders: (null as any),      // SQLite fallback not modeled for these yet
-  order_items: (null as any),
-  customers: (null as any),
-  dogs: (null as any),
-  activity_log: (null as any),
-  dog_breeds: (null as any),
-  staff: (null as any),
-  haircut_styles: (null as any),
-  coat_types: (null as any), coat_textures: (null as any), coat_lengths: (null as any),
-  coat_conditions: (null as any), shedding_levels: (null as any), clip_lengths: (null as any),
-  body_styles: (null as any), leg_styles: (null as any), face_styles: (null as any),
-  head_styles: (null as any), ear_styles: (null as any), tail_styles: (null as any),
-  feet_styles: (null as any), sanitary_options: (null as any), nail_services: (null as any),
-  paw_pad_services: (null as any), ear_services: (null as any), teeth_services: (null as any),
-  deshedding_services: (null as any), coat_techniques: (null as any),
-  dog_grooming_profiles: (null as any), appointment_grooming_requests: (null as any),
-  payments: (null as any), blocked_times: (null as any),
-  availability: (null as any), service_pricing: (null as any),
-  invoices: (null as any), invoice_items: (null as any),
-  email_messages: (null as any), communications: (null as any),
-}
 
 const TABLE: Record<CmsResource, string> = {
   services: "services",
@@ -102,8 +64,6 @@ const ORDERED = new Set<CmsResource>([
   "services", "products", "gallery", "packages", "addons", "faqs", "policies", "testimonials",
 ])
 
-// Use NEXT_PUBLIC_ vars (available on both server and client) with fallback
-// to the non-public versions for backwards compatibility.
 const SB_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL)?.replace(/\/$/, "")
 const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 export const supabaseReady = !!(SB_URL && SB_KEY)
@@ -141,79 +101,6 @@ export type Repo = {
   saveSettings(obj: Record<string, string>): Promise<void>
   addNewsletter(email: string): Promise<Row>
   listNewsletter(): Promise<Row[]>
-}
-
-// ===========================================================================
-// Prisma implementation
-// ===========================================================================
-const prismaRepo: Repo = {
-  async list(r) {
-    const delegate = PRISMA_DELEGATE[r]
-    if (!delegate) throw new Error(`Resource ${r} not available on SQLite (Supabase only)`)
-    const orderBy = ORDERED.has(r) ? { order: "asc" as const } : { createdAt: "desc" as const }
-    return delegate.findMany({ orderBy })
-  },
-  async get(r, id) {
-    const delegate = PRISMA_DELEGATE[r]
-    if (!delegate) throw new Error(`Resource ${r} not available on SQLite (Supabase only)`)
-    return delegate.findUnique({ where: { id } })
-  },
-  async create(r, data) {
-    const delegate = PRISMA_DELEGATE[r]
-    if (!delegate) throw new Error(`Resource ${r} not available on SQLite (Supabase only)`)
-    return delegate.create({ data })
-  },
-  async update(r, id, data) {
-    const delegate = PRISMA_DELEGATE[r]
-    if (!delegate) throw new Error(`Resource ${r} not available on SQLite (Supabase only)`)
-    return delegate.update({ where: { id }, data })
-  },
-  async remove(r, id) {
-    const delegate = PRISMA_DELEGATE[r]
-    if (!delegate) throw new Error(`Resource ${r} not available on SQLite (Supabase only)`)
-    await delegate.delete({ where: { id } })
-    return { ok: true }
-  },
-  async stats() {
-    const [
-      services, products, gallery, packages, addons, faqs, policies,
-      testimonials, bookings, consultations, messages, newsletter,
-    ] = await Promise.all([
-      db.service.count(), db.product.count(), db.galleryPhoto.count(),
-      db.pricingPackage.count(), db.addOn.count(), db.faq.count(),
-      db.policy.count(), db.testimonial.count(), db.booking.count(),
-      db.consultation.count(), db.contactMessage.count(), db.newsletterSub.count(),
-    ])
-    const [pendingBookings, unreadMessages, pendingConsultations] = await Promise.all([
-      db.booking.count({ where: { status: "PENDING" } }),
-      db.contactMessage.count({ where: { status: "UNREAD" } }),
-      db.consultation.count({ where: { status: "PENDING" } }),
-    ])
-    const recentBookings = await db.booking.findMany({ orderBy: { createdAt: "desc" }, take: 5 })
-    const recentMessages = await db.contactMessage.findMany({ orderBy: { createdAt: "desc" }, take: 5 })
-    return {
-      counts: { services, products, gallery, packages, addons, faqs, policies, testimonials, bookings, consultations, messages, newsletter },
-      pendingBookings, unreadMessages, pendingConsultations,
-      recentBookings, recentMessages,
-    }
-  },
-  async getSettings() {
-    const rows = await db.siteSetting.findMany()
-    const obj: Record<string, string> = {}
-    for (const r of rows) obj[r.key] = r.value
-    return obj
-  },
-  async saveSettings(obj) {
-    for (const [key, value] of Object.entries(obj)) {
-      await db.siteSetting.upsert({ where: { key }, create: { key, value: String(value) }, update: { value: String(value) } })
-    }
-  },
-  async addNewsletter(email) {
-    return db.newsletterSub.create({ data: { email } })
-  },
-  async listNewsletter() {
-    return db.newsletterSub.findMany({ orderBy: { createdAt: "desc" } })
-  },
 }
 
 // ===========================================================================
@@ -320,23 +207,23 @@ function stripNulls(data: Row): Row {
   return out
 }
 
-// ---- backend probe ----
-// Supabase env may be present before the schema has been applied. Probe once
-// to see whether the tables actually exist; if not, fall back to Prisma so the
-// site keeps working. Re-probe by restarting the dev server after running the
-// SQL schema.
-let backend: "supabase" | "sqlite" | null = null
-async function resolveBackend(): Promise<"supabase" | "sqlite"> {
+// ---- backend probe (Supabase only) ----
+let backend: "supabase" | null = null
+async function resolveBackend(): Promise<"supabase"> {
   if (backend) return backend
-  if (!supabaseReady) { backend = "sqlite"; return "sqlite" }
+  if (!supabaseReady) {
+    throw new Error("Supabase not configured. Set NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in .env")
+  }
+  // Probe once to verify Supabase is reachable
   try {
     const res = await fetch(`${SB_URL}/rest/v1/services?select=id&limit=1`, {
       headers: { apikey: SB_KEY!, Authorization: `Bearer ${SB_KEY}` },
       signal: AbortSignal.timeout(5000),
     })
-    backend = res.ok ? "supabase" : "sqlite"
-  } catch {
-    backend = "sqlite"
+    backend = res.ok ? "supabase" : null
+    if (!backend) throw new Error(`Supabase probe failed (${res.status})`)
+  } catch (e: any) {
+    throw new Error(`Supabase unreachable: ${e.message}`)
   }
   return backend
 }
@@ -345,27 +232,12 @@ export async function getBackend() {
   return await resolveBackend()
 }
 export async function usingSupabase() {
-  return (await resolveBackend()) === "supabase"
+  try {
+    return (await resolveBackend()) === "supabase"
+  } catch {
+    return false
+  }
 }
 
-// Lazy repo: each call resolves the backend (cached after first probe).
-function delegating(name: keyof Repo): Repo[typeof name] {
-  return (async (...args: any[]) => {
-    const r = (await resolveBackend()) === "supabase" ? supabaseRepo : prismaRepo
-    // @ts-expect-error dynamic dispatch
-    return r[name](...args)
-  }) as Repo[typeof name]
-}
-
-export const repo: Repo = {
-  list: delegating("list"),
-  get: delegating("get"),
-  create: delegating("create"),
-  update: delegating("update"),
-  remove: delegating("remove"),
-  stats: delegating("stats"),
-  getSettings: delegating("getSettings"),
-  saveSettings: delegating("saveSettings"),
-  addNewsletter: delegating("addNewsletter"),
-  listNewsletter: delegating("listNewsletter"),
-}
+// Direct export — no delegation needed since there's only one backend.
+export const repo: Repo = supabaseRepo
