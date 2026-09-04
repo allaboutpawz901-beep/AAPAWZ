@@ -287,6 +287,13 @@ export function BookingWizardV2({
   if (success) {
     return (
       <div className="border border-gold/30 bg-card p-10 text-center">
+        {/* Pet photo (if uploaded) */}
+        {s.photoUrl && (
+          <div className="mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full border-2 border-gold/40">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={s.photoUrl} alt={s.dogName || "Your pup"} className="h-full w-full object-cover" />
+          </div>
+        )}
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gold-deep">
           <Check size={32} weight="bold" className="text-cream" />
         </div>
@@ -299,6 +306,26 @@ export function BookingWizardV2({
             ? `Your $25 deposit has been received and your appointment is confirmed. A confirmation email is on its way to ${s.email || "your inbox"}.`
             : "We received your consultation request. Our team will reach out personally to schedule your visit."}
         </p>
+        {/* Booking summary with pet name + photo reference */}
+        {success === "booking" && (s.dogName || s.serviceName || s.date) && (
+          <div className="mx-auto mt-6 max-w-sm rounded-lg border border-gold/20 bg-cream-deep p-4 text-left">
+            {s.dogName && (
+              <p className="text-[12px] text-ink-soft">
+                <span className="font-bold text-ink">Pup:</span> {s.dogName}
+              </p>
+            )}
+            {s.serviceName && (
+              <p className="text-[12px] text-ink-soft">
+                <span className="font-bold text-ink">Service:</span> {s.serviceName}
+              </p>
+            )}
+            {s.date && (
+              <p className="text-[12px] text-ink-soft">
+                <span className="font-bold text-ink">Date:</span> {s.date} at {s.time}
+              </p>
+            )}
+          </div>
+        )}
         <div className="mt-6 flex justify-center gap-3">
           <a href="/" className="btn-gold">RETURN HOME</a>
           <button
