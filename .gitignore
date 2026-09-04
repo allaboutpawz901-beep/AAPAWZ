@@ -46,3 +46,4 @@ prisma/
 Caddyfile
 components.json
 supabase/.temp/
+worklog.md
