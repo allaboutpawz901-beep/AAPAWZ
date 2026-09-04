@@ -3,7 +3,9 @@
 import React, { useEffect, useRef } from 'react'
 import {
   Lightning, X, CalendarPlus, PawPrint, CurrencyDollar, ChatCircleDots,
-  FileText, FileLock, ArrowRight,
+  FileText, FileLock, Clipboard, PencilSimple, Copy, XCircle, Checks,
+  Bell, ArrowClockwise, Heartbeat, CheckCircle, PauseCircle, Phone,
+  User, Receipt, ClockClockwise, Sliders, ArrowRight,
 } from '@phosphor-icons/react'
 
 // ============================================================================
@@ -53,6 +55,8 @@ export interface QuickActionsModalProps {
 
 // ---------------------------------------------------------------------------
 // Action definitions — metadata drives the rendered cards.
+// Each icon is the correct Phosphor equivalent of the Font Awesome icon from
+// the original HTML design (fa-bolt → Lightning, fa-paw → PawPrint, etc).
 // ---------------------------------------------------------------------------
 
 type Variant = 'primary' | 'success' | 'danger' | 'info' | 'warning'
@@ -73,46 +77,82 @@ const VARIANT_STYLES: Record<Variant, { bg: string; text: string }> = {
   warning: { bg: 'bg-amber-50', text: 'text-amber-600' },
 }
 
+// Section 1 — Customer actions (6). Each icon is the Phosphor equivalent of
+// the Font Awesome icon used in the original HTML design.
 const CUSTOMER_ACTIONS: ActionDef[] = [
+  // fa-calendar-plus
   { id: 'new_appointment', label: 'New Appointment', description: 'Create a new appointment for customer', icon: CalendarPlus },
+  // fa-paw
   { id: 'add_pet', label: 'Add Pet', description: 'Register a new pet to profile', icon: PawPrint },
+  // fa-dollar-sign (emerald variant in original)
   { id: 'take_payment', label: 'Take Payment', description: 'Charge or record payment', icon: CurrencyDollar, variant: 'success' },
+  // fa-comment-dots
   { id: 'send_message', label: 'Send Message', description: 'SMS or email message', icon: ChatCircleDots },
+  // fa-file-lines
   { id: 'add_note', label: 'Add Note', description: 'Internal or customer note', icon: FileText },
+  // fa-file-shield
   { id: 'update_documents', label: 'Update Documents', description: 'Vaccines, waivers & forms', icon: FileLock },
 ]
 
+// Section 2 — Appointment lifecycle actions (7). Phosphor equivalents of the
+// Font Awesome icons used in the original HTML design.
 const APPOINTMENT_ACTIONS: ActionDef[] = [
-  { id: 'add_to_waitlist', label: 'Add to Waitlist', description: 'Queue customer for opening', icon: Lightning },
-  { id: 'reschedule', label: 'Reschedule', description: 'Change date or time', icon: CalendarPlus },
-  { id: 'duplicate', label: 'Duplicate', description: 'Clone appointment details', icon: Lightning },
-  { id: 'cancel', label: 'Cancel', description: 'Cancel scheduled appointment', icon: X, variant: 'danger' },
-  { id: 'confirm_appointment', label: 'Confirm Appointment', description: 'Mark appointment confirmed', icon: Lightning, variant: 'info' },
-  { id: 'send_reminder', label: 'Send Reminder', description: 'Trigger SMS/email reminder', icon: ChatCircleDots },
-  { id: 'follow_up', label: 'Follow Up', description: 'Log post-groom follow up', icon: Lightning },
+  // fa-clipboard
+  { id: 'add_to_waitlist', label: 'Add to Waitlist', description: 'Queue customer for opening', icon: Clipboard },
+  // fa-pen
+  { id: 'reschedule', label: 'Reschedule', description: 'Change date or time', icon: PencilSimple },
+  // fa-copy
+  { id: 'duplicate', label: 'Duplicate', description: 'Clone appointment details', icon: Copy },
+  // fa-circle-xmark (rose variant in original)
+  { id: 'cancel', label: 'Cancel', description: 'Cancel scheduled appointment', icon: XCircle, variant: 'danger' },
+  // fa-check-double (blue variant in original)
+  { id: 'confirm_appointment', label: 'Confirm Appointment', description: 'Mark appointment confirmed', icon: Checks, variant: 'info' },
+  // fa-bell
+  { id: 'send_reminder', label: 'Send Reminder', description: 'Trigger SMS/email reminder', icon: Bell },
+  // fa-rotate-right
+  { id: 'follow_up', label: 'Follow Up', description: 'Log post-groom follow up', icon: ArrowClockwise },
 ]
 
+// Section 2 — Live status transitions (5). Each maps to the original HTML's
+// colored pill (emerald/indigo/blue/amber/rose).
 const STATUS_TRANSITIONS: ActionDef[] = [
-  { id: 'status_check_in', label: 'Check In', description: 'Arrived', icon: Lightning, variant: 'success' },
-  { id: 'status_in_service', label: 'In Service', description: 'Grooming', icon: Lightning, variant: 'primary' },
-  { id: 'status_complete', label: 'Complete', description: 'Ready', icon: Lightning, variant: 'info' },
-  { id: 'status_hold', label: 'Hold', description: 'Paused', icon: Lightning, variant: 'warning' },
-  { id: 'status_no_show', label: 'No Show', description: 'Missed', icon: Lightning, variant: 'danger' },
+  // fa-circle-check (emerald)
+  { id: 'status_check_in', label: 'Check In', description: 'Arrived', icon: CheckCircle, variant: 'success' },
+  // fa-heart-pulse (indigo)
+  { id: 'status_in_service', label: 'In Service', description: 'Grooming', icon: Heartbeat, variant: 'primary' },
+  // fa-circle-check (blue)
+  { id: 'status_complete', label: 'Complete', description: 'Ready', icon: CheckCircle, variant: 'info' },
+  // fa-circle-pause (amber)
+  { id: 'status_hold', label: 'Hold', description: 'Paused', icon: PauseCircle, variant: 'warning' },
+  // fa-circle-xmark (rose)
+  { id: 'status_no_show', label: 'No Show', description: 'Missed', icon: XCircle, variant: 'danger' },
 ]
 
+// Section 3 — Shared actions (8). Phosphor equivalents of the Font Awesome
+// icons used in the original HTML design.
 const SHARED_ACTIONS: ActionDef[] = [
+  // fa-comment-dots
   { id: 'send_message', label: 'Send Message', description: 'Chat, SMS, or email', icon: ChatCircleDots },
-  { id: 'call_customer', label: 'Call Customer', description: 'Direct voice call link', icon: ChatCircleDots },
+  // fa-phone
+  { id: 'call_customer', label: 'Call Customer', description: 'Direct voice call link', icon: Phone },
+  // fa-file-lines
   { id: 'add_note', label: 'Add Note', description: 'Activity & record note', icon: FileText },
-  { id: 'view_customer', label: 'View Customer', description: 'Open full client profile', icon: PawPrint },
+  // fa-user
+  { id: 'view_customer', label: 'View Customer', description: 'Open full client profile', icon: User },
+  // fa-dollar-sign (emerald variant)
   { id: 'take_payment', label: 'Take Payment', description: 'Terminal or card on file', icon: CurrencyDollar, variant: 'success' },
-  { id: 'create_invoice', label: 'Create Invoice', description: 'Generate billing invoice', icon: FileText },
-  { id: 'issue_refund', label: 'Issue Refund', description: 'Process customer refund', icon: CurrencyDollar },
-  { id: 'payment_history', label: 'Payment History', description: 'View ledger & receipts', icon: Lightning },
+  // fa-file-invoice
+  { id: 'create_invoice', label: 'Create Invoice', description: 'Generate billing invoice', icon: Receipt },
+  // fa-receipt
+  { id: 'issue_refund', label: 'Issue Refund', description: 'Process customer refund', icon: Receipt },
+  // fa-clock-rotate-left
+  { id: 'payment_history', label: 'Payment History', description: 'View ledger & receipts', icon: ClockClockwise },
 ]
 
 // ---------------------------------------------------------------------------
-// Small presentational helpers
+// Small presentational helpers — each one renders a different card layout
+// matching the original HTML's three card variants (customer grid card,
+// appointment grid card, status transition pill).
 // ---------------------------------------------------------------------------
 
 function SectionHeader({ title, hint }: { title: string; hint: string }) {
@@ -127,6 +167,7 @@ function SectionHeader({ title, hint }: { title: string; hint: string }) {
   )
 }
 
+/** Customer-section card: horizontal layout with 32px icon, label, description, trailing arrow. */
 function CustomerActionCard({ a, onClick }: { a: ActionDef; onClick: () => void }) {
   const v = a.variant || 'primary'
   const vs = VARIANT_STYLES[v]
@@ -148,6 +189,7 @@ function CustomerActionCard({ a, onClick }: { a: ActionDef; onClick: () => void 
   )
 }
 
+/** Appointment-section card: vertical layout with 28px icon top-right, label + description bottom. */
 function GridActionCard({ a, onClick }: { a: ActionDef; onClick: () => void }) {
   const v = a.variant || 'primary'
   const vs = VARIANT_STYLES[v]
@@ -173,6 +215,7 @@ function GridActionCard({ a, onClick }: { a: ActionDef; onClick: () => void }) {
   )
 }
 
+/** Status-transition pill: colored background, icon + label inline. */
 function StatusTransitionPill({ a, onClick }: { a: ActionDef; onClick: () => void }) {
   const v = a.variant || 'primary'
   const vs = VARIANT_STYLES[v]
@@ -228,14 +271,13 @@ export function QuickActionsModal({
 }: QuickActionsModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
 
-  // Escape key closes
+  // Escape key closes; lock body scroll while modal is open.
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
-    // Lock body scroll while modal is open
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
@@ -320,7 +362,7 @@ export function QuickActionsModal({
               {/* Sub-group B: Live Status Transitions */}
               <div className="rounded-xl border border-slate-200 bg-white p-3">
                 <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                  <span className="text-[10px] text-indigo-500">●</span>
+                  <Sliders size={10} weight="fill" className="text-indigo-500" />
                   <span>Live Status Transitions:</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
