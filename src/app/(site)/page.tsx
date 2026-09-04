@@ -51,7 +51,7 @@ export default async function HomePage() {
 
       {/* SERVICES BAND */}
       <section className="bg-ink px-8 py-12 lg:px-12">
-        <div className="grid gap-10 lg:grid-cols-[0.85fr_2.4fr]">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_2.4fr]">
           <div className="lg:border-r lg:border-gold/25 lg:pr-10">
             <p className="eyebrow-dark">OUR SERVICES</p>
             <h2 className="mt-3 font-display text-[30px] leading-[1.18] text-on-dark">Every Pup.<br />Every Breed.<br />Every Detail.</h2>
