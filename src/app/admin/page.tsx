@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from "react"
+import dynamic from "next/dynamic"
 import { useSearchParams } from "next/navigation"
 import {
   DawgNavSection,
@@ -17,22 +18,28 @@ import {
 } from "@/lib/dawg-types"
 import { Sidebar } from "@/components/dawg/Sidebar"
 import { Header } from "@/components/dawg/Header"
-import { DashboardView } from "@/components/dawg/DashboardView"
-import { AppointmentsView } from "@/components/dawg/AppointmentsView"
-import { CustomersView } from "@/components/dawg/CustomersView"
-import { PetsView } from "@/components/dawg/PetsView"
-import { GroomingRecordsView } from "@/components/dawg/GroomingRecordsView"
-import { StaffView } from "@/components/dawg/StaffView"
-import { ServicesView } from "@/components/dawg/ServicesView"
-import { InventoryView } from "@/components/dawg/InventoryView"
-import { SettingsView } from "@/components/dawg/SettingsView"
-import { QuickActionModals } from "@/components/dawg/Modals/QuickActionModals"
-import { FullCalendarView } from "@/components/dawg/FullCalendarView"
-import { GroomerPortalView } from "@/components/dawg/GroomerPortalView"
-import { CustomerPortalView } from "@/components/dawg/CustomerPortalView"
-import { LandingLoginView } from "@/components/dawg/LandingLoginView"
 import { createClient } from "@/lib/auth/client"
 import Link from "next/link"
+
+// ============================================================================
+// LAZY IMPORTS — each view compiles on-demand only when the user navigates
+// to that section. This prevents Turbopack from holding 20,000+ lines of
+// component ASTs in memory simultaneously, which was causing OOM kills.
+// ============================================================================
+const DashboardView = dynamic(() => import("@/components/dawg/DashboardView").then(m => m.DashboardView), { ssr: false })
+const AppointmentsView = dynamic(() => import("@/components/dawg/AppointmentsView").then(m => m.AppointmentsView), { ssr: false })
+const CustomersView = dynamic(() => import("@/components/dawg/CustomersView").then(m => m.CustomersView), { ssr: false })
+const PetsView = dynamic(() => import("@/components/dawg/PetsView").then(m => m.PetsView), { ssr: false })
+const GroomingRecordsView = dynamic(() => import("@/components/dawg/GroomingRecordsView").then(m => m.GroomingRecordsView), { ssr: false })
+const StaffView = dynamic(() => import("@/components/dawg/StaffView").then(m => m.StaffView), { ssr: false })
+const ServicesView = dynamic(() => import("@/components/dawg/ServicesView").then(m => m.ServicesView), { ssr: false })
+const InventoryView = dynamic(() => import("@/components/dawg/InventoryView").then(m => m.InventoryView), { ssr: false })
+const SettingsView = dynamic(() => import("@/components/dawg/SettingsView").then(m => m.SettingsView), { ssr: false })
+const QuickActionModals = dynamic(() => import("@/components/dawg/Modals/QuickActionModals").then(m => m.QuickActionModals), { ssr: false })
+const FullCalendarView = dynamic(() => import("@/components/dawg/FullCalendarView").then(m => m.FullCalendarView), { ssr: false })
+const GroomerPortalView = dynamic(() => import("@/components/dawg/GroomerPortalView").then(m => m.GroomerPortalView), { ssr: false })
+const CustomerPortalView = dynamic(() => import("@/components/dawg/CustomerPortalView").then(m => m.CustomerPortalView), { ssr: false })
+const LandingLoginView = dynamic(() => import("@/components/dawg/LandingLoginView").then(m => m.LandingLoginView), { ssr: false })
 
 // ---- Real data fetching from Supabase via our API ----
 async function fetchAPI<T>(endpoint: string): Promise<T[]> {
