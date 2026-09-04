@@ -30,6 +30,7 @@ import { QuickActionModals } from "@/components/dawg/Modals/QuickActionModals"
 import { FullCalendarView } from "@/components/dawg/FullCalendarView"
 import { GroomerPortalView } from "@/components/dawg/GroomerPortalView"
 import { CustomerPortalView } from "@/components/dawg/CustomerPortalView"
+import { LandingLoginView } from "@/components/dawg/LandingLoginView"
 import { createClient } from "@/lib/auth/client"
 import Link from "next/link"
 
@@ -87,16 +88,7 @@ export default function AdminPage() {
           stationName: role === "groomer" ? "Station #1" : "Central Management",
         })
       }
-      // Auth disabled for dev — if no session, create a default admin user
-      if (!session?.user) {
-        setCurrentUser({
-          id: "dev-admin",
-          name: "Admin User",
-          email: "admin@aapawz.com",
-          role: "admin",
-          stationName: "Central Management",
-        })
-      }
+      // If no session, currentUser stays null → LandingLoginView shows
       setAuthChecked(true)
     })
     return () => { alive = false }
@@ -297,7 +289,27 @@ export default function AdminPage() {
     console.log("New pet:", newPet)
   }
 
-  if (!authChecked || loading) {
+  if (!authChecked) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#fafbfc]">
+        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-600" />
+      </div>
+    )
+  }
+
+  // Not logged in → show LandingLoginView (the auth page you built)
+  if (!currentUser) {
+    return (
+      <LandingLoginView
+        onLogin={(user, initialSection) => {
+          setCurrentUser(user)
+          if (initialSection) setActiveSection(initialSection as DawgNavSection)
+        }}
+      />
+    )
+  }
+
+  if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#fafbfc]">
         <div className="text-center">
