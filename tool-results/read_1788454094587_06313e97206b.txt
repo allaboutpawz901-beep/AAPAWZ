@@ -1,0 +1,451 @@
+     1→     1→"use client"
+     2→     2→
+     3→     3→import { useState, useMemo, useEffect } from "react"
+     4→     4→import { Check, CaretLeft, CaretRight, PawPrint, Calendar, Clock, Scissors, Dog, User, Note, CheckCircle, CreditCard } from "@phosphor-icons/react"
+     5→     5→
+     6→     6→type Breed = { id: string; name: string; sizeCategory: string; coatType: string; akcGroup?: string }
+     7→     7→type Service = { id: string; name: string; price: string; description?: string }
+     8→     8→type Groomer = { id: string; name: string; role: string; bio?: string }
+     9→     9→
+    10→    10→const SIZES = ["SMALL (0-20 lbs)", "MEDIUM (20-50 lbs)", "LARGE (50-90 lbs)", "X-LARGE (90+ lbs)"]
+    11→    11→
+    12→    12→export function BookingWizard({
+    13→    13→  breeds, services, groomers,
+    14→    14→}: {
+    15→    15→  breeds: Breed[]
+    16→    16→  services: Service[]
+    17→    17→  groomers: Groomer[]
+    18→    18→}) {
+    19→    19→  const [bookingType, setBookingType] = useState<"BOOKING" | "CONSULTATION" | "">("")
+    20→    20→  const [step, setStep] = useState(0)
+    21→    21→  const [ownerName, setOwnerName] = useState("")
+    22→    22→  const [phone, setPhone] = useState("")
+    23→    23→  const [email, setEmail] = useState("")
+    24→    24→  const [address, setAddress] = useState("")
+    25→    25→  const [dogName, setDogName] = useState("")
+    26→    26→  const [breedId, setBreedId] = useState("")
+    27→    27→  const [size, setSize] = useState(SIZES[0])
+    28→    28→  const [date, setDate] = useState("")
+    29→    29→  const [time, setTime] = useState("")
+    30→    30→  const [slots, setSlots] = useState<string[]>([])
+    31→    31→  const [loadingSlots, setLoadingSlots] = useState(false)
+    32→    32→  const [closed, setClosed] = useState(false)
+    33→    33→  const [serviceId, setServiceId] = useState("")
+    34→    34→  const [consultationReason, setConsultationReason] = useState("")
+    35→    35→  const [notes, setNotes] = useState("")
+    36→    36→  const [groomerId, setGroomerId] = useState("")
+    37→    37→  const [submitting, setSubmitting] = useState(false)
+    38→    38→  const [redirecting, setRedirecting] = useState(false)
+    39→    39→  const [success, setSuccess] = useState<"booking" | "consultation" | null>(null)
+    40→    40→
+    41→    41→  const selectedBreed = breeds.find((b) => b.id === breedId)
+    42→    42→  const selectedService = services.find((s) => s.id === serviceId)
+    43→    43→  const selectedGroomer = groomers.find((g) => g.id === groomerId)
+    44→    44→
+    45→    45→  useEffect(() => {
+    46→    46→    if (selectedBreed) {
+    47→    47→      const map: Record<string, string> = { "Small": SIZES[0], "Medium": SIZES[1], "Large": SIZES[2], "X-Large": SIZES[3] }
+    48→    48→      if (map[selectedBreed.sizeCategory]) setSize(map[selectedBreed.sizeCategory])
+    49→    49→    }
+    50→    50→  }, [breedId])
+    51→    51→
+    52→    52→  useEffect(() => {
+    53→    53→    if (!date) return
+    54→    54→    setLoadingSlots(true); setClosed(false)
+    55→    55→    fetch(`/api/availability?date=${date}`).then((r) => r.json()).then((d) => { setSlots(d.times || []); setClosed(!!d.closed); setTime("") }).catch(() => setSlots([])).finally(() => setLoadingSlots(false))
+    56→    56→  }, [date])
+    57→    57→
+    58→    58→  // Check URL for success param (return from Stripe)
+    59→    59→  useEffect(() => {
+    60→    60→    const params = new URLSearchParams(window.location.search)
+    61→    61→    if (params.get("success") === "booking") setSuccess("booking")
+    62→    62→    if (params.get("success") === "consultation") setSuccess("consultation")
+    63→    63→  }, [])
+    64→    64→
+    65→    65→  const steps = bookingType === "CONSULTATION"
+    66→    66→    ? ["Your Name", "Contact", "Your Dog", "Date & Time", "Reason", "Notes", "Groomer", "Confirm"]
+    67→    67→    : ["Your Name", "Contact", "Your Dog", "Date & Time", "Service", "Notes", "Groomer", "Deposit"]
+    68→    68→
+    69→    69→  const canNext = useMemo(() => {
+    70→    70→    if (bookingType === "") return false
+    71→    71→    switch (step) {
+    72→    72→      case 0: return !!ownerName.trim()
+    73→    73→      case 1: return !!phone.trim() && !!email.trim()
+    74→    74→      case 2: return !!dogName.trim() && !!breedId
+    75→    75→      case 3: return !!date && !!time
+    76→    76→      case 4: return bookingType === "CONSULTATION" ? !!consultationReason.trim() : !!serviceId
+    77→    77→      case 5: return true
+    78→    78→      case 6: return true
+    79→    79→      case 7: return true
+    80→    80→      default: return false
+    81→    81→    }
+    82→    82→  }, [step, ownerName, phone, email, dogName, breedId, date, time, serviceId, consultationReason, bookingType])
+    83→    83→
+    84→    84→  const submit = async () => {
+    85→    85→    setSubmitting(true)
+    86→    86→    try {
+    87→    87→      const res = await fetch("/api/bookings/checkout", {
+    88→    88→        method: "POST",
+    89→    89→        headers: { "Content-Type": "application/json" },
+    90→    90→        body: JSON.stringify({
+    91→    91→          bookingType, ownerName, phone, email, address,
+    92→    92→          dogName, breedId, breedName: selectedBreed?.name || "", size,
+    93→    93→          date, time, serviceId, serviceName: selectedService?.name || "",
+    94→    94→          consultationReason, notes, groomerId, groomerName: selectedGroomer?.name || "",
+    95→    95→          servicePrice: selectedService?.price || "",
+    96→    96→        }),
+    97→    97→      })
+    98→    98→      const data = await res.json()
+    99→    99→      if (data.url) {
+   100→   100→        setRedirecting(true)
+   101→   101→        window.location.href = data.url
+   102→   102→      } else if (data.type === "consultation") {
+   103→   103→        setSuccess("consultation")
+   104→   104→      }
+   105→   105→    } catch { /* ignore */ }
+   106→   106→    finally { setSubmitting(false) }
+   107→   107→  }
+   108→   108→
+   109→   109→  if (success) {
+   110→   110→    return (
+   111→   111→      <div className="border border-gold/30 bg-card p-10 text-center">
+   112→   112→        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gold-deep">
+   113→   113→          <Check size={32} weight="bold" className="text-cream" />
+   114→   114→        </div>
+   115→   115→        <h2 className="mt-4 font-display text-[28px] text-ink">
+   116→   116→          {success === "booking" ? "Booking Confirmed" : "Consultation Requested"}
+   117→   117→        </h2>
+   118→   118→        <p className="script mt-2 text-[24px]">From Pawz to PAWfection</p>
+   119→   119→        <p className="mt-4 text-[13px] leading-relaxed text-ink-soft">
+   120→   120→          {success === "booking"
+   121→   121→            ? <>Your $25 deposit has been received and your appointment is confirmed. A confirmation email is on its way to {email}.</>
+   122→   122→            : <>We received your consultation request. Our team will reach out personally to schedule your visit.</>}
+   123→   123→        </p>
+   124→   124→        <a href="/" className="btn-gold mt-6 inline-flex">RETURN HOME</a>
+   125→   125→      </div>
+   126→   126→    )
+   127→   127→  }
+   128→   128→
+   129→   129→  // Step 0: Choose booking type
+   130→   130→  if (bookingType === "") {
+   131→   131→    return (
+   132→   132→      <div className="text-center">
+   133→   133→        <h2 className="font-display text-[28px] text-ink">How can we help your pup today?</h2>
+   134→   134→        <p className="mt-2 text-[12.5px] text-ink-soft">Choose an option to get started.</p>
+   135→   135→        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+   136→   136→          <button onClick={() => { setBookingType("BOOKING"); setStep(0) }} className="group border border-gold/35 bg-cream p-8 text-center transition-colors hover:border-gold-deep hover:bg-cream-deep">
+   137→   137→            <Scissors size={32} weight="fill" className="mx-auto text-gold-deep" />
+   138→   138→            <h3 className="mt-3 font-display text-[20px] text-ink">Book Appointment</h3>
+   139→   139→            <p className="mt-1 text-[11.5px] leading-relaxed text-ink-soft">Schedule a grooming service. A $25 deposit secures your appointment.</p>
+   140→   140→          </button>
+   141→   141→          <button onClick={() => { setBookingType("CONSULTATION"); setStep(0) }} className="group border border-gold/35 bg-cream p-8 text-center transition-colors hover:border-gold-deep hover:bg-cream-deep">
+   142→   142→            <PawPrint size={32} weight="fill" className="mx-auto text-gold-deep" />
+   143→   143→            <h3 className="mt-3 font-display text-[20px] text-ink">Free Consultation</h3>
+   144→   144→            <p className="mt-1 text-[11.5px] leading-relaxed text-ink-soft">Meet with our team to discuss your pup&apos;s needs. No charge, no obligation.</p>
+   145→   145→          </button>
+   146→   146→        </div>
+   147→   147→      </div>
+   148→   148→    )
+   149→   149→  }
+   150→   150→
+   151→   151→  const stepIcons = [User, User, Dog, Calendar, Scissors, Note, PawPrint, bookingType === "CONSULTATION" ? Check : CreditCard]
+   152→   152→
+   153→   153→  return (
+   154→   154→    <div className="space-y-6">
+   155→   155→      {/* Stepper */}
+   156→   156→      <div className="flex items-center justify-between border-b border-gold/25 pb-5">
+   157→   157→        {steps.map((s, i) => {
+   158→   158→          const isActive = step === i
+   159→   159→          const isDone = step > i
+   160→   160→          const Icon = stepIcons[i]
+   161→   161→          return (
+   162→   162→            <div key={s} className="flex flex-1 items-center">
+   163→   163→              <button onClick={() => { if (i < step) setStep(i) }} disabled={i > step} className={`flex flex-col items-center gap-1.5 ${i < step ? "cursor-pointer" : "cursor-default"}`}>
+   164→   164→                <span className={`flex h-9 w-9 items-center justify-center rounded-full border-2 text-[12px] font-bold transition-colors ${isActive ? "border-gold-deep bg-gold-deep text-cream" : isDone ? "border-gold-deep bg-gold-deep text-cream" : "border-gold/30 bg-cream text-gold-deep"}`}>
+   165→   165→                  {isDone ? <Check size={14} weight="bold" /> : <Icon size={14} weight="fill" />}
+   166→   166→                </span>
+   167→   167→                <span className={`text-[8px] font-bold tracking-[0.08em] ${isActive ? "text-gold-deep" : "text-ink-soft"}`}>{s.toUpperCase()}</span>
+   168→   168→              </button>
+   169→   169→              {i < steps.length - 1 && <span className={`mx-1 h-px flex-1 ${step > i ? "bg-gold-deep" : "bg-gold/25"}`} />}
+   170→   170→            </div>
+   171→   171→          )
+   172→   172→        })}
+   173→   173→      </div>
+   174→   174→
+   175→   175→      <div className="min-h-[300px]">
+   176→   176→        {/* Step 0: Name */}
+   177→   177→        {step === 0 && (
+   178→   178→          <div className="space-y-5">
+   179→   179→            <div>
+   180→   180→              <h2 className="font-display text-[24px] text-ink">What is your name?</h2>
+   181→   181→              <p className="mt-1 text-[12px] text-ink-soft">So we know who to welcome.</p>
+   182→   182→            </div>
+   183→   183→            <div>
+   184→   184→              <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">FULL NAME</label>
+   185→   185→              <input value={ownerName} onChange={(e) => setOwnerName(e.target.value)} placeholder="Jane Smith" autoFocus className="w-full border border-gold/35 bg-cream px-3.5 py-3 text-[14px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold-deep" />
+   186→   186→            </div>
+   187→   187→          </div>
+   188→   188→        )}
+   189→   189→
+   190→   190→        {/* Step 1: Phone + email + address */}
+   191→   191→        {step === 1 && (
+   192→   192→          <div className="space-y-5">
+   193→   193→            <div>
+   194→   194→              <h2 className="font-display text-[24px] text-ink">Contact details</h2>
+   195→   195→              <p className="mt-1 text-[12px] text-ink-soft">We&apos;ll send your confirmation here.</p>
+   196→   196→            </div>
+   197→   197→            <div className="grid gap-4 sm:grid-cols-2">
+   198→   198→              <div>
+   199→   199→                <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">PHONE</label>
+   200→   200→                <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="(312) 555-0142" className="w-full border border-gold/35 bg-cream px-3.5 py-3 text-[14px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold-deep" />
+   201→   201→              </div>
+   202→   202→              <div>
+   203→   203→                <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">EMAIL</label>
+   204→   204→                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="jane@email.com" className="w-full border border-gold/35 bg-cream px-3.5 py-3 text-[14px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold-deep" />
+   205→   205→              </div>
+   206→   206→              <div className="sm:col-span-2">
+   207→   207→                <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">ADDRESS</label>
+   208→   208→                <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Maple Grove Ave, Riverbend, IL 60614" className="w-full border border-gold/35 bg-cream px-3.5 py-3 text-[14px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold-deep" />
+   209→   209→              </div>
+   210→   210→            </div>
+   211→   211→          </div>
+   212→   212→        )}
+   213→   213→
+   214→   214→        {/* Step 2: Dog */}
+   215→   215→        {step === 2 && (
+   216→   216→          <div className="space-y-5">
+   217→   217→            <div>
+   218→   218→              <h2 className="font-display text-[24px] text-ink">Tell us about your pup</h2>
+   219→   219→              <p className="mt-1 text-[12px] text-ink-soft">Every dog is special. We tailor the experience to their breed.</p>
+   220→   220→            </div>
+   221→   221→            <div className="grid gap-4 sm:grid-cols-2">
+   222→   222→              <div>
+   223→   223→                <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">DOG NAME</label>
+   224→   224→                <input value={dogName} onChange={(e) => setDogName(e.target.value)} placeholder="Cooper" className="w-full border border-gold/35 bg-cream px-3.5 py-3 text-[14px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold-deep" />
+   225→   225→              </div>
+   226→   226→              <div>
+   227→   227→                <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">BREED</label>
+   228→   228→                <BreedDropdown breeds={breeds} value={breedId} onChange={setBreedId} />
+   229→   229→              </div>
+   230→   230→              <div className="sm:col-span-2">
+   231→   231→                <label className="mb-1.5 block text-[9px] font-bold tracking-[0.16em] text-gold-deep">SIZE</label>
+   232→   232→                <div className="flex flex-wrap gap-3">
+   233→   233→                  {SIZES.map((sz) => (
+   234→   234→                    <button key={sz} type="button" onClick={() => setSize(sz)} className={`border px-4 py-2.5 text-[11px] font-bold tracking-[0.1em] transition-colors ${size === sz ? "border-gold-deep bg-gold-deep text-cream" : "border-gold/35 bg-cream text-ink-soft hover:border-gold-deep"}`}>{sz}</button>
+   235→   235→                  ))}
+   236→   236→                </div>
+   237→   237→              </div>
+   238→   238→            </div>
+   239→   239→          </div>
+   240→   240→        )}
+   241→   241→
+   242→   242→        {/* Step 3: Date + Time */}
+   243→   243→        {step === 3 && (
+   244→   244→          <div className="space-y-5">
+   245→   245→            <div>
+   246→   246→              <h2 className="font-display text-[24px] text-ink">When would you like to come in?</h2>
+   247→   247→              <p className="mt-1 text-[12px] text-ink-soft">Open Tue–Sat 9am–6pm, Sun 10am–4pm. Closed Mondays.</p>
+   248→   248→            </div>
+   249→   249→            <div className="grid gap-5 lg:grid-cols-2">
+   250→   250→              <CalendarGrid value={date} onChange={setDate} />
+   251→   251→              <div>
+   252→   252→                {date ? (
+   253→   253→                  <>
+   254→   254→                    <p className="mb-3 text-[11px] font-bold tracking-[0.12em] text-gold-deep">AVAILABLE TIMES — {new Date(date + "T00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</p>
+   255→   255→                    {loadingSlots ? <p className="text-[13px] text-ink-soft">Loading…</p> : closed ? <p className="text-[13px] text-ink-soft">We&apos;re closed on Mondays. Please pick another date.</p> : slots.length === 0 ? <p className="text-[13px] text-ink-soft">All slots are taken. Please try another day.</p> : (
+   256→   256→                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+   257→   257→                        {slots.map((t) => <button key={t} onClick={() => setTime(t)} className={`border px-3 py-2.5 text-[12px] font-semibold transition-colors ${time === t ? "border-gold-deep bg-gold-deep text-cream" : "border-gold/35 bg-cream text-ink hover:border-gold-deep hover:bg-cream-deep"}`}>{t}</button>)}
+   258→   258→                      </div>
+   259→   259→                    )}
+   260→   260→                  </>
+   261→   261→                ) : <p className="text-[13px] text-ink-soft">Pick a date on the calendar to see available times.</p>}
+   262→   262→              </div>
+   263→   263→            </div>
+   264→   264→          </div>
+   265→   265→        )}
+   266→   266→
+   267→   267→        {/* Step 4: Service (booking) or Reason (consultation) */}
+   268→   268→        {step === 4 && bookingType === "BOOKING" && (
+   269→   269→          <div className="space-y-5">
+   270→   270→            <div>
+   271→   271→              <h2 className="font-display text-[24px] text-ink">Choose your service</h2>
+   272→   272→              <p className="mt-1 text-[12px] text-ink-soft">Select what your pup needs today.</p>
+   273→   273→            </div>
+   274→   274→            <div className="space-y-3">
+   275→   275→              {services.map((s) => (
+   276→   276→                <button key={s.id} onClick={() => setServiceId(s.id)} className={`flex w-full items-center justify-between border px-5 py-4 text-left transition-colors ${serviceId === s.id ? "border-gold-deep bg-cream-deep" : "border-gold/35 bg-cream hover:border-gold-deep"}`}>
+   277→   277→                  <div><p className="text-[13px] font-bold text-ink">{s.name}</p>{s.description && <p className="mt-0.5 text-[11px] text-ink-soft">{s.description}</p>}</div>
+   278→   278→                  <span className="text-[14px] font-bold text-gold-deep">{s.price}</span>
+   279→   279→                </button>
+   280→   280→              ))}
+   281→   281→            </div>
+   282→   282→          </div>
+   283→   283→        )}
+   284→   284→        {step === 4 && bookingType === "CONSULTATION" && (
+   285→   285→          <div className="space-y-5">
+   286→   286→            <div>
+   287→   287→              <h2 className="font-display text-[24px] text-ink">What brings you in?</h2>
+   288→   288→              <p className="mt-1 text-[12px] text-ink-soft">Tell us what you&apos;d like to discuss.</p>
+   289→   289→            </div>
+   290→   290→            <div className="space-y-2">
+   291→   291→              {["First visit / new puppy", "Coat or matting concerns", "Special needs or anxiety", "Breed recommendation", "Pricing question", "Product recommendation", "Other"].map((r) => (
+   292→   292→                <button key={r} onClick={() => setConsultationReason(r)} className={`flex w-full items-center border px-5 py-3 text-left text-[13px] transition-colors ${consultationReason === r ? "border-gold-deep bg-cream-deep font-semibold text-gold-deep" : "border-gold/35 bg-cream text-ink hover:border-gold-deep"}`}>
+   293→   293→                  {r}
+   294→   294→                </button>
+   295→   295→              ))}
+   296→   296→            </div>
+   297→   297→          </div>
+   298→   298→        )}
+   299→   299→
+   300→   300→        {/* Step 5: Notes */}
+   301→   301→        {step === 5 && (
+   302→   302→          <div className="space-y-5">
+   303→   303→            <div>
+   304→   304→              <h2 className="font-display text-[24px] text-ink">Special notes</h2>
+   305→   305→              <p className="mt-1 text-[12px] text-ink-soft">Anything we should know about your pup? Temperament, sensitivities, matting, etc.</p>
+   306→   306→            </div>
+   307→   307→            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={6} placeholder="e.g. Cooper is nervous around loud noises. He may need breaks during the groom. Sensitive paws." className="w-full border border-gold/35 bg-cream px-3.5 py-3 text-[14px] text-ink placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold-deep" />
+   308→   308→          </div>
+   309→   309→        )}
+   310→   310→
+   311→   311→        {/* Step 6: Groomer */}
+   312→   312→        {step === 6 && (
+   313→   313→          <div className="space-y-5">
+   314→   314→            <div>
+   315→   315→              <h2 className="font-display text-[24px] text-ink">Preferred groomer</h2>
+   316→   316→              <p className="mt-1 text-[12px] text-ink-soft">Have a favorite? Or let us assign the best fit.</p>
+   317→   317→            </div>
+   318→   318→            <div className="space-y-3">
+   319→   319→              <button onClick={() => setGroomerId("")} className={`flex w-full items-center gap-4 border px-5 py-4 text-left transition-colors ${groomerId === "" ? "border-gold-deep bg-cream-deep" : "border-gold/35 bg-cream hover:border-gold-deep"}`}>
+   320→   320→                <PawPrint size={24} weight="fill" className="text-gold-deep" />
+   321→   321→                <div><p className="text-[13px] font-bold text-ink">No preference</p><p className="text-[11px] text-ink-soft">Assign the best available groomer</p></div>
+   322→   322→              </button>
+   323→   323→              {groomers.map((g) => (
+   324→   324→                <button key={g.id} onClick={() => setGroomerId(g.id)} className={`flex w-full items-center gap-4 border px-5 py-4 text-left transition-colors ${groomerId === g.id ? "border-gold-deep bg-cream-deep" : "border-gold/35 bg-cream hover:border-gold-deep"}`}>
+   325→   325→                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-deep/15 font-display text-[16px] font-bold text-gold-deep">{g.name.charAt(0)}</div>
+   326→   326→                  <div><p className="text-[13px] font-bold text-ink">{g.name}</p><p className="text-[11px] text-ink-soft">{g.role}{g.bio ? ` — ${g.bio}` : ""}</p></div>
+   327→   327→                </button>
+   328→   328→              ))}
+   329→   329→            </div>
+   330→   330→          </div>
+   331→   331→        )}
+   332→   332→
+   333→   333→        {/* Step 7: Review + Checkout */}
+   334→   334→        {step === 7 && (
+   335→   335→          <div className="space-y-5">
+   336→   336→            <div>
+   337→   337→              <h2 className="font-display text-[24px] text-ink">{bookingType === "CONSULTATION" ? "Confirm your consultation" : "Review & pay deposit"}</h2>
+   338→   338→              <p className="mt-1 text-[12px] text-ink-soft">{bookingType === "CONSULTATION" ? "Submit your consultation request — no charge." : "A $25 deposit secures your appointment."}</p>
+   339→   339→            </div>
+   340→   340→            <div className="border border-gold/30 bg-cream-deep p-5">
+   341→   341→              <p className="text-[10px] font-bold tracking-[0.18em] text-gold-deep">BOOKING SUMMARY</p>
+   342→   342→              <div className="mt-3 grid grid-cols-1 gap-y-2 text-[12px] sm:grid-cols-2">
+   343→   343→                <div><span className="text-ink-soft">Owner:</span> <span className="font-semibold text-ink">{ownerName}</span></div>
+   344→   344→                <div><span className="text-ink-soft">Dog:</span> <span className="font-semibold text-ink">{dogName}</span></div>
+   345→   345→                <div><span className="text-ink-soft">Breed:</span> <span className="font-semibold text-ink">{selectedBreed?.name || "—"}</span></div>
+   346→   346→                <div><span className="text-ink-soft">Size:</span> <span className="font-semibold text-ink">{size.split(" ")[0]}</span></div>
+   347→   347→                <div><span className="text-ink-soft">Date:</span> <span className="font-semibold text-ink">{date}</span></div>
+   348→   348→                <div><span className="text-ink-soft">Time:</span> <span className="font-semibold text-ink">{time}</span></div>
+   349→   349→                <div><span className="text-ink-soft">Service:</span> <span className="font-semibold text-ink">{bookingType === "CONSULTATION" ? consultationReason : selectedService?.name}</span></div>
+   350→   350→                <div><span className="text-ink-soft">Groomer:</span> <span className="font-semibold text-ink">{selectedGroomer?.name || "No preference"}</span></div>
+   351→   351→              </div>
+   352→   352→              {notes && <p className="mt-3 border-t border-gold/20 pt-3 text-[11px] italic text-ink-soft">&ldquo;{notes}&rdquo;</p>}
+   353→   353→              {bookingType === "BOOKING" && selectedService && (
+   354→   354→                <div className="mt-3 border-t border-gold/20 pt-3">
+   355→   355→                  <div className="flex justify-between text-[13px]"><span className="text-ink-soft">Service price</span><span className="font-semibold text-ink">{selectedService.price}</span></div>
+   356→   356→                  <div className="mt-1 flex justify-between text-[13px]"><span className="text-ink-soft">Deposit due now</span><span className="font-bold text-gold-deep">$25.00</span></div>
+   357→   357→                </div>
+   358→   358→              )}
+   359→   359→            </div>
+   360→   360→            {redirecting ? (
+   361→   361→              <p className="text-center text-[13px] text-gold-deep">Redirecting to Stripe…</p>
+   362→   362→            ) : (
+   363→   363→              <button onClick={submit} disabled={submitting} className="btn-dark w-full">
+   364→   364→                {submitting ? "Processing…" : bookingType === "CONSULTATION" ? "Submit Consultation Request" : "Pay $25 Deposit & Confirm"}
+   365→   365→                {bookingType === "BOOKING" && <CreditCard size={16} weight="fill" className="ml-2" />}
+   366→   366→              </button>
+   367→   367→            )}
+   368→   368→          </div>
+   369→   369→        )}
+   370→   370→      </div>
+   371→   371→
+   372→   372→      {/* Nav */}
+   373→   373→      <div className="flex items-center justify-between border-t border-gold/25 pt-5">
+   374→   374→        {step > 0 ? (
+   375→   375→          <button onClick={() => setStep(step - 1)} className="btn-ghost"><CaretLeft size={14} weight="bold" /> Back</button>
+   376→   376→        ) : (
+   377→   377→          <button onClick={() => { setBookingType(""); setStep(0) }} className="text-[11px] font-bold tracking-[0.1em] text-ink-soft hover:text-gold-deep"><CaretLeft size={12} weight="bold" /> Start over</button>
+   378→   378→        )}
+   379→   379→        {step < 7 ? (
+   380→   380→          <button onClick={() => canNext && setStep(step + 1)} disabled={!canNext} className={`btn-gold ${!canNext ? "opacity-40 cursor-not-allowed" : ""}`}>
+   381→   381→            Continue <CaretRight size={14} weight="bold" />
+   382→   382→          </button>
+   383→   383→        ) : null}
+   384→   384→      </div>
+   385→   385→    </div>
+   386→   386→  )
+   387→   387→}
+   388→   388→
+   389→   389→function BreedDropdown({ breeds, value, onChange }: { breeds: Breed[]; value: string; onChange: (v: string) => void }) {
+   390→   390→  const [open, setOpen] = useState(false)
+   391→   391→  const [query, setQuery] = useState("")
+   392→   392→  const selected = breeds.find((b) => b.id === value)
+   393→   393→  const filtered = breeds.filter((b) => b.name.toLowerCase().includes(query.toLowerCase()))
+   394→   394→  return (
+   395→   395→    <div className="relative">
+   396→   396→      <button type="button" onClick={() => setOpen(!open)} className={`flex w-full items-center justify-between border bg-cream px-3.5 py-3 text-[14px] focus:outline-none focus:ring-1 focus:ring-gold-deep ${open ? "border-gold-deep" : "border-gold/35"}`}>
+   397→   397→        <span className={selected ? "text-ink" : "text-muted-foreground"}>{selected ? `${selected.name}` : "Select breed…"}</span>
+   398→   398→        <CaretRight size={12} weight="bold" className={`text-gold-deep transition-transform ${open ? "rotate-90" : ""}`} />
+   399→   399→      </button>
+   400→   400→      {open && (
+   401→   401→        <div className="absolute z-30 mt-1 w-full border border-gold/35 bg-cream shadow-lg">
+   402→   402→          <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search 232 breeds…" className="w-full border-b border-gold/25 bg-cream px-3 py-2 text-[12px] text-ink placeholder:text-muted-foreground focus:outline-none" />
+   403→   403→          <div className="max-h-60 overflow-y-auto">
+   404→   404→            {filtered.map((b) => (
+   405→   405→              <button key={b.id} type="button" onClick={() => { onChange(b.id); setOpen(false); setQuery("") }} className={`flex w-full items-center justify-between px-3 py-2 text-left text-[12px] hover:bg-cream-deep ${value === b.id ? "bg-cream-deep font-semibold text-gold-deep" : "text-ink"}`}>
+   406→   406→                {b.name}
+   407→   407→                {b.akcGroup && <span className="text-[9px] uppercase text-ink-soft">{b.akcGroup}</span>}
+   408→   408→              </button>
+   409→   409→            ))}
+   410→   410→            {filtered.length === 0 && <p className="px-3 py-3 text-[12px] text-ink-soft">Not found. Try &ldquo;Other / Breed Not Listed&rdquo;.</p>}
+   411→   411→          </div>
+   412→   412→        </div>
+   413→   413→      )}
+   414→   414→    </div>
+   415→   415→  )
+   416→   416→}
+   417→   417→
+   418→   418→function CalendarGrid({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+   419→   419→  const today = new Date()
+   420→   420→  const [viewMonth, setViewMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
+   421→   421→  const days = useMemo(() => {
+   422→   422→    const first = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1)
+   423→   423→    const last = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 0)
+   424→   424→    const cells: (Date | null)[] = []
+   425→   425→    for (let i = 0; i < first.getDay(); i++) cells.push(null)
+   426→   426→    for (let d = 1; d <= last.getDate(); d++) cells.push(new Date(viewMonth.getFullYear(), viewMonth.getMonth(), d))
+   427→   427→    return cells
+   428→   428→  }, [viewMonth])
+   429→   429→  const fmt = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+   430→   430→  const isPast = (d: Date) => { const t = new Date(); t.setHours(0, 0, 0, 0); return d < t }
+   431→   431→  const isMonday = (d: Date) => d.getDay() === 1
+   432→   432→  return (
+   433→   433→    <div className="border border-gold/30 bg-card p-4">
+   434→   434→      <div className="mb-3 flex items-center justify-between">
+   435→   435→        <button onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() - 1, 1))} className="flex h-7 w-7 items-center justify-center text-gold-deep hover:bg-cream-deep"><CaretLeft size={14} weight="bold" /></button>
+   436→   436→        <span className="font-display text-[16px] text-ink">{viewMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+   437→   437→        <button onClick={() => setViewMonth(new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1))} className="flex h-7 w-7 items-center justify-center text-gold-deep hover:bg-cream-deep"><CaretRight size={14} weight="bold" /></button>
+   438→   438→      </div>
+   439→   439→      <div className="mb-1 grid grid-cols-7 gap-1">{["S","M","T","W","T","F","S"].map((d, i) => <div key={i} className="text-center text-[9px] font-bold text-ink-soft">{d}</div>)}</div>
+   440→   440→      <div className="grid grid-cols-7 gap-1">
+   441→   441→        {days.map((d, i) => {
+   442→   442→          if (!d) return <div key={i} />
+   443→   443→          const ds = fmt(d)
+   444→   444→          const disabled = isPast(d) || isMonday(d)
+   445→   445→          return <button key={i} disabled={disabled} onClick={() => onChange(ds)} className={`aspect-square text-[11px] font-semibold transition-colors ${ds === value ? "bg-gold-deep text-cream" : disabled ? "text-ink-soft/30 cursor-not-allowed" : "text-ink hover:bg-cream-deep"}`}>{d.getDate()}</button>
+   446→   446→        })}
+   447→   447→      </div>
+   448→   448→    </div>
+   449→   449→  )
+   450→   450→}
+   451→   451→
