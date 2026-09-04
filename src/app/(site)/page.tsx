@@ -61,10 +61,10 @@ export default async function HomePage() {
             <Link href="/services" className="btn-gold mt-6">VIEW ALL SERVICES</Link>
           </div>
           <div className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
-            {services.map(({ icon, title, description }, i) => {
+            {services.map(({ id, icon, title, description }, i) => {
               const Icon = getIcon(icon, Scissors)
               return (
-                <div key={title} className={`px-6 text-center ${i > 0 ? "lg:border-l lg:border-gold/25" : ""}`}>
+                <div key={id} className={`px-6 text-center ${i > 0 ? "lg:border-l lg:border-gold/25" : ""}`}>
                   <Icon className="mx-auto h-10 w-10 text-gold" strokeWidth={1.2} />
                   <h3 className="mt-4 text-[11.5px] font-bold tracking-[0.15em] text-gold">{title}</h3>
                   <p className="mt-3 whitespace-pre-line text-[12px] leading-[1.7] text-on-dark-muted">{description}</p>
