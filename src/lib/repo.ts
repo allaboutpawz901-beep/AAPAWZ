@@ -102,7 +102,9 @@ const ORDERED = new Set<CmsResource>([
   "services", "products", "gallery", "packages", "addons", "faqs", "policies", "testimonials",
 ])
 
-const SB_URL = process.env.SUPABASE_URL?.replace(/\/$/, "")
+// Use NEXT_PUBLIC_ vars (available on both server and client) with fallback
+// to the non-public versions for backwards compatibility.
+const SB_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL)?.replace(/\/$/, "")
 const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 export const supabaseReady = !!(SB_URL && SB_KEY)
 export const supabaseConfig = { url: SB_URL, key: SB_KEY }

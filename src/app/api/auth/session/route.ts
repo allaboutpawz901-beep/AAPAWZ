@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js"
 // Returns the current user's session + role + linked CRM record
 // Used by the frontend to determine which portal to show (admin/groomer/customer)
 
-const supabaseUrl = process.env.SUPABASE_URL!
+const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL)!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { autoRefreshToken: false, persistSession: false },

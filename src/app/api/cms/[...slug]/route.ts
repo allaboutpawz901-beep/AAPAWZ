@@ -27,7 +27,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ slug: stri
 
   if (resource === "status") {
     const { getBackend } = await import("@/lib/repo")
-    return NextResponse.json({ backend: await getBackend(), supabaseConfigured: !!process.env.SUPABASE_URL, resendReady: !!process.env.RESEND_API_KEY })
+    return NextResponse.json({ backend: await getBackend(), supabaseConfigured: !!(process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL), resendReady: !!process.env.RESEND_API_KEY })
   }
   if (resource === "stats") return NextResponse.json(await repo.stats())
   if (resource === "settings") return NextResponse.json(await repo.getSettings())

@@ -7,7 +7,7 @@ import Stripe from "stripe"
 // links them to a CRM customer or staff record,
 // and creates a Stripe customer if role is "customer".
 
-const supabaseUrl = process.env.SUPABASE_URL!
+const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL)!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
