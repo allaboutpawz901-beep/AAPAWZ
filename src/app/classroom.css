@@ -60,11 +60,9 @@ button,input,textarea,select{font:inherit;color:inherit}button,a,select{touch-ac
 @media(max-width:620px){.lesson-content{padding-top:15px}.lesson-intro h2{font-size:18px}.work-heading{min-height:65px;padding:11px 13px}.check-surface textarea{height:76px}.builder-fields{grid-template-columns:1fr 70px}.builder-fields>label:last-child{grid-column:1/-1}}
 
 /* ─── All About Pawz Academy brand identity ─── */
-.wordmark{display:flex;align-items:center;gap:10px;padding:0 !important;color:var(--brand-navy)}
-.brand-logo{height:34px;width:34px;object-fit:contain;flex:none}
-.brand-lockup{display:flex;flex-direction:column;line-height:1.1;flex:none}
-.brand-academy{font-family:Manrope,sans-serif;font-weight:800;font-size:15px;letter-spacing:-.4px;color:var(--brand-navy);white-space:nowrap}
-.brand-powered{font-family:DM,sans-serif;font-weight:500;font-size:9px;letter-spacing:.06em;color:var(--brand-orange);text-transform:uppercase;white-space:nowrap;margin-top:1px}
-.brand-divider{width:1px;height:28px;background:var(--line);flex:none}
+.wordmark{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:0 !important;color:var(--brand-navy);line-height:1}
+.brand-academy{font-family:Manrope,sans-serif;font-weight:800;font-size:14px;letter-spacing:-.3px;color:var(--brand-navy);white-space:nowrap}
+.brand-logo{height:22px;width:auto;object-fit:contain;flex:none}
+.brand-divider{width:1px;height:36px;background:var(--line);flex:none}
 .sample-label{background:var(--brand-navy);color:#fff !important;padding:3px 8px;border-radius:4px;font-size:8px;letter-spacing:.1em;font-weight:600}
-@media(max-width:768px){.brand-lockup{display:none}.wordmark{gap:0}}
+@media(max-width:768px){.brand-academy{font-size:12px}.brand-logo{height:18px}}
