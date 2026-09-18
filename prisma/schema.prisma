@@ -298,3 +298,20 @@ model ClassroomMeeting {
 
   course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
+
+// ---- RAG knowledge base (Supabase-ready) ----
+
+model KnowledgeChunk {
+  id           String   @id @default(cuid())
+  ownerId      String
+  sourceId     String
+  pathwayCode  String
+  moduleCode   String
+  text         String
+  safetyFlag   Boolean  @default(false)
+  embedding    String?
+  createdAt    DateTime @default(now())
+
+  @@index([ownerId, pathwayCode])
+  @@index([ownerId, sourceId])
+}

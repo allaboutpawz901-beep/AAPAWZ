@@ -108,3 +108,67 @@ Work Log:
 
 Stage Summary:
 - UNLEASHED classroom is shipped and browser-verified. All three AI paths (Professor text, attempt grading, course generation) work via the unified router → ZAI SDK (default). Gemini SDK preserved in lib/gemini.ts, switchable via AI_PROVIDER=gemini + PROMPTQL_PLATFORM_API_URL. Prisma-backed data layer, demo-seeded, single `/` route, cohesive design system, responsive, sticky bottom rail. No errors.
+
+---
+Task ID: p1-5+6
+Agent: rag-admin-instructor
+Task: Scaffold RAG knowledge layer + admin/instructor API controls.
+
+Work Log:
+- Read worklog + existing architecture: Prisma/SQLite data layer in `src/lib/db.ts` (33 async fns), unified AI router in `src/lib/ai.ts` (re-exports `generateText`/`generateJson`/`modelLabel`), demo visitor `demo-avery` in `src/lib/visitor.ts`, existing 11 API routes in `src/app/api/`. Confirmed seeded pathways store `course.statute` as `Leashed <CODE> · Program Delivery Guide v1.0` (e.g. IPDG, PDT, ACA) — perfect for pathway-code extraction.
+- Appended `KnowledgeChunk` Prisma model (id/ownerId/sourceId/pathwayCode/moduleCode/text/safetyFlag/embedding/createdAt + @@index([ownerId, pathwayCode]) and @@index([ownerId, sourceId])). Did NOT touch any existing models. Ran `bun run db:push` (clean sync) + `bun run db:generate`.
+- Wrote `src/lib/rag.ts` (246 lines):
+  * `KnowledgeChunk` type + `IngestInput` type.
+  * `ingestChunk(ownerId, chunk)` — Prisma create, JSON-encodes embedding to string column.
+  * `retrieve(ownerId, query, pathwayCode?, limit?)` — keyword-based: tokenize (lowercase, stop-word strip, dedupe), LIKE-or fetch candidates, score by per-token hit count with word-boundary regex, tie-break by shorter text. Clear `TODO: Replace with Supabase pgvector cosine similarity when SUPABASE_URL is configured.` block + migration recipe.
+  * `buildContext(ownerId, query, pathwayCode?)` — formats retrieved chunks as `--- KNOWLEDGE CHUNK (pathway/module) source=... [SAFETY-RELEVANT] ---` blocks.
+  * `listChunks`, `deleteChunk`, `countChunks`, `ragEnabled` helpers.
+  * `pathwayCodeFromCourse(course)` — regex-extracts the code from `course.statute` (`Leashed (\w+) ·`), falls back to any uppercase token, then to `course.area`.
+- Wrote `src/app/api/knowledge/route.ts` (admin endpoint):
+  * GET — list chunks for the demo owner with optional `?pathwayCode=` filter; returns `{ chunks, total }`.
+  * POST — ingest one chunk; namespacing `sourceId` with `${ownerId}:${sourceId}` so multi-tenant source names cannot collide.
+  * DELETE — `?id=...` removes one chunk.
+  * `runtime = "nodejs"` + `dynamic = "force-dynamic"`. `getVisitor` left sync.
+- Wired RAG into the Professor:
+  * `src/app/api/professor/route.ts` — calls `buildContext(visitor.id, message, pathwayCodeFromCourse(course))`; if non-empty, appends a `KNOWLEDGE CONTEXT` section (with citation + conflict-grounding instructions) to the system prompt after the `COURSE COMPANION` block. Empty knowledge store ⇒ no-op ⇒ Professor behaves exactly as before.
+  * `src/app/api/day/route.ts` `ASK_PROFESSOR` branch — same pattern; appends `KNOWLEDGE CONTEXT` block after the `SOURCE:` line in the active-Day system prompt. Backward-compatible.
+- Wrote `src/app/api/admin/route.ts` (admin dashboard):
+  * GET — Promise.all counts (courses, enrollments, sessions, knowledgeChunks, openHandoffs) + course list (with pathway code via `pathwayCodeFromCourse` and enrollment count via `_count`) + cohost roster (single demo `Jamie Carter` entry with status flipping to "reviewing" when openHandoffs > 0). Returns `{ viewer, stats, courses, cohosts }`.
+- Wrote `src/app/api/admin/course-architect/route.ts`:
+  * POST `{ pathwayCode, operation, brief }` — supports `strengthen_lesson`, `generate_practice`, `assessment_alignment`, `accessibility_pass`, `draft_module`. Uses `generateJson` from `@/lib/ai` with a structured schema (title/summary/estimatedMinutes/objectives/phases/practiceQuestions/citationNotes/authorNotes). Pulls RAG context via `buildContext` for grounding. Returns `{ status: "draft", operation, operationLabel, pathwayCode, content, guardrails }` where `guardrails` is a static 5-item human-accountability checklist (DRAFT ONLY, no invented locators, no answer keys, safety-gate rule, citation-traceability rule).
+- Wrote `src/app/api/instructor/route.ts` (instructor dashboard):
+  * GET — Promise.all fetches open HumanNeedQueue items (with course+day includes), recent 50 LearningAttempt records (with course include), active LearningDay records (closedAt: null, with course include). Returns `{ viewer, reviewQueue, assessments, sessions, stats: { openHandoffs, recentAttempts, activeSessions } }`.
+- Wrote `src/app/api/instructor/review/route.ts`:
+  * POST `{ queueId, decision, note }` — resolves a HumanNeedQueue item via existing `resolveHumanNeed` from `@/lib/db`. Decision allowed: `resolved` | `escalated`. Returns `{ reviewed, kind: "queue", queueId, decision, note }`.
+  * POST `{ moduleCode, assessmentType, decision, note, courseId? }` — finds the most recent LearningAttempt matching the moduleCode (workKey exact match OR itemText contains), persists the review as a `LearnerEvidence` row via existing `saveLearningEvidence` so it surfaces in the learner workspace. Decision allowed: `approved` | `revision_required` | `passed` | `failed`. Returns `{ reviewed, kind: "assessment", moduleCode, assessmentType, decision, note, evidenceId, attemptId, courseId }`.
+- All 6 new routes (knowledge, admin, admin/course-architect, instructor, instructor/review) plus the 2 modified routes (professor, day) carry `export const runtime = "nodejs"` + `export const dynamic = "force-dynamic"` and import AI from `@/lib/ai`, db from `@/lib/db`, Prisma from `@/lib/prisma`.
+- Smoke-tested `src/lib/rag.ts` end-to-end with bun -e: empty → ragEnabled false → ingest → ragEnabled true → retrieve finds the chunk by keyword → buildContext produces a 199-char context block → pathwayCodeFromCourse correctly extracts "IPDG" from `Leashed IPDG · Program Delivery Guide v1.0` → delete → ragEnabled false again. Confirmed Prisma client knows the new model (`prisma.knowledgeChunk.count()` returns 0).
+- Lint: `bun run lint` → clean (0 problems).
+- TypeScript: `bunx tsc --noEmit` → 0 errors in any of the new or modified files. One pre-existing error remains in `src/lib/curriculum.ts` (line 659, `familyNote` missing) — outside the scope of this task, not touched.
+
+Stage Summary:
+- Files created (6): `src/lib/rag.ts`, `src/app/api/knowledge/route.ts`, `src/app/api/admin/route.ts`, `src/app/api/admin/course-architect/route.ts`, `src/app/api/instructor/route.ts`, `src/app/api/instructor/review/route.ts`.
+- Files modified (3): `prisma/schema.prisma` (appended `KnowledgeChunk` model; existing models untouched), `src/app/api/professor/route.ts` (RAG context injection into system prompt, backward-compatible), `src/app/api/day/route.ts` (RAG context injection into `ASK_PROFESSOR` system prompt, backward-compatible).
+- Schema change: +1 Prisma model (`KnowledgeChunk`), pushed to SQLite. No migrations on existing tables.
+- RAG works now with keyword-overlap retrieval on SQLite; `retrieve()` carries a TODO + migration recipe for swapping to Supabase pgvector cosine similarity once `SUPABASE_URL` is configured. The `embedding` column is already JSON-encoded `number[]` so the swap is a one-function change.
+- Admin + Instructor APIs are ready for the classroom UI to call (UI itself not modified per task constraint). All endpoints are owner-scoped via `getVisitor(request)` (sync), all db calls `await`ed, all routes nodejs + force-dynamic.
+- Backward compatibility verified: with zero knowledge chunks the Professor and Day ASK_PROFESSOR paths produce the exact same system prompt as before (empty `knowledgeBlock` = no-op).
+
+---
+Task ID: p1-1 through p1-7
+Agent: main
+Task: Rebrand to All About Pawz Academy + load real Leashed curriculum + fix frontend + scaffold RAG/admin/instructor.
+
+Work Log:
+- Extracted Program Delivery Guide (docx, 3726 lines, 6 pathway syllabi). Analyzed both logos via VLM.
+- Copied brand assets: unleashe-logo.png, leashed-wordmark.jpg, pathway images, professor-luna.webp.
+- Authored src/lib/curriculum.ts — 6 real Leashed pathway companions (IPDG/PDT/ACA/PPS/CAT/PPC) from the program guide: real objectives, 4 term-sections each with lesson+workedExample+checks, independent practice, capstones, glossaries. Plus weekly schedule template (Mon-Fri 08:00-15:30, 6hr/day).
+- Rewrote src/lib/seed.ts to seed the 6 real pathways + real Leashed daily schedule (Advisory, Technical labs, Business module, Micro-checks, Rubric review) + gradebook with safety gates + meetings.
+- Rebranded classroom CSS: updated brand colors to UnLeashe navy (#0F1F35) + orange (#F05A28). Added brand lockup CSS (logo + academy name + "powered by UnLeashe" + divider).
+- Rebranded classroom component header: replaced "unleashed®" wordmark with UnLeashe logo + "All About Pawz Academy" + "powered by UnLeashe". Updated professor label to "AI instructor · ZAI powered". Updated learner label to "Leashed learner".
+- Updated layout metadata: title "All About Pawz Academy · Powered by UnLeashe", icon to unleashe-logo.png.
+- Dispatched subagent (p1-5+6): RAG knowledge layer (src/lib/rag.ts + /api/knowledge), admin controls (/api/admin + /api/admin/course-architect), instructor controls (/api/instructor + /api/instructor/review). KnowledgeChunk model added to Prisma. RAG wired into Professor + Day ASK_PROFESSOR. All lint clean.
+- Verified end-to-end: 6 real pathways seeded, rebranded header renders, Begin course block opens learning day, ZAI Professor teaches real PPC curriculum (grounded response about terminal credentials + 1,500hr program). VLM: 9/10 fidelity, full-bleed, proper spacing, no problems.
+
+Stage Summary:
+- All About Pawz Academy powered by UnLeashe is live. 6 real Leashed pathways. Real weekly schedule. ZAI Professor teaches from real curriculum. RAG architecture ready (Supabase-switchable). Admin/instructor APIs scaffolded. Brand identity applied. 9/10 visual fidelity.

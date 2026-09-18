@@ -4,11 +4,11 @@ import "./classroom.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "UNLEASHED · The Classroom",
+  title: "All About Pawz Academy · Powered by UnLeashe",
   description:
-    "One school day. One classroom. Led by Professor — a unified classroom product with Gemini + ZAI.",
+    "All About Pawz Academy — a Leashed animal-care learning classroom. Six integrated pathways, AI Professor, real curriculum. Powered by UnLeashe.",
   icons: {
-    icon: "/icon.svg",
+    icon: "/unleashe-logo.png",
   },
 };
 

@@ -15,6 +15,7 @@ import {
   saveAssignmentState,
   saveMessage,
 } from "@/lib/db";
+import { buildContext, pathwayCodeFromCourse } from "@/lib/rag";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -222,6 +223,14 @@ export async function POST(request: NextRequest) {
       const message = String(body.message || "").trim().slice(0, 4000);
       if (!message) return fail("Enter a question.");
       const lesson = currentLesson(course, snapshot.day.currentLesson);
+      // RAG: pull pathway knowledge for the active question. No-op when the
+      // knowledge store is empty, so the Day Professor remains backward
+      // compatible with the pre-RAG build.
+      const pathwayCode = pathwayCodeFromCourse(course);
+      const knowledgeContext = await buildContext(visitor.id, message, pathwayCode);
+      const knowledgeBlock = knowledgeContext
+        ? `\nKNOWLEDGE CONTEXT\nRetrieved from the academy knowledge base. Use these chunks to ground your teaching. Cite the sourceId when you rely on a chunk. If a chunk conflicts with the lesson, prefer the lesson and note the discrepancy.\n${knowledgeContext}\n`
+        : "";
       const system = `You are UNLEASHED Professor conducting an active learning Day.
 You are the instructor responsible for one next instructional move.
 COURSE TITLE: ${course.title}
@@ -237,7 +246,7 @@ ACTIVE WORK TYPE: ${snapshot.day.activeWorkKind}
 ACTIVE WORK TITLE: ${snapshot.day.activeWorkTitle || lesson?.title}
 ACTIVE CHECK OR ASSIGNMENT: ${snapshot.day.currentItem}
 LESSON: ${JSON.stringify(lesson)}
-SOURCE: ${course.companion.sources?.join("; ") || course.statute}`;
+SOURCE: ${course.companion.sources?.join("; ") || course.statute}${knowledgeBlock}`;
       await saveMessage(visitor.id, courseId, "learner", message);
       const history = (await listMessages(visitor.id, courseId)).slice(-12).map((m) => ({
         role: m.role === "learner" ? ("user" as const) : ("model" as const),

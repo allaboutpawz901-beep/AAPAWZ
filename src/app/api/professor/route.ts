@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getVisitor } from "@/lib/visitor";
 import { generateText, modelLabel } from "@/lib/ai";
 import { getCourse, listMessages, saveMessage } from "@/lib/db";
+import { buildContext, pathwayCodeFromCourse } from "@/lib/rag";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,6 +50,15 @@ export async function POST(request: NextRequest) {
     const existing = (await listMessages(visitor.id, courseId)).slice(-16);
     const source = JSON.stringify(course.companion);
 
+    // RAG: pull any matching knowledge chunks for this pathway (no-op when
+    // the knowledge store is empty — keeps the Professor fully backward
+    // compatible with the pre-RAG build).
+    const pathwayCode = pathwayCodeFromCourse(course);
+    const knowledgeContext = await buildContext(visitor.id, message, pathwayCode);
+    const knowledgeBlock = knowledgeContext
+      ? `\n\nKNOWLEDGE CONTEXT\nRetrieved from the academy knowledge base. Use these chunks to ground your teaching. Cite the sourceId when you rely on a chunk. If a chunk conflicts with the companion, prefer the companion and note the discrepancy.\n${knowledgeContext}`
+      : "";
+
     const system = `You are UNLEASHED Professor, teaching one generated Press course.
 
 TEACHING CONTRACT
@@ -69,7 +79,7 @@ Do not claim to monitor emergencies, diagnose risk, contact authorities, provide
 Never claim this course is state-approved. Distinguish a statutory instructional area from detailed standards.
 
 COURSE COMPANION
-${source.slice(0, 28000)}`;
+${source.slice(0, 28000)}${knowledgeBlock}`;
 
     const history = existing.map((item) => ({
       role: item.role === "learner" ? ("user" as const) : ("model" as const),
