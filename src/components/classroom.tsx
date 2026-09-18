@@ -17,7 +17,20 @@ function workItems(c:Course){return [
  ...(c.companion?.appliedProject?[{key:"project",title:c.companion.appliedProject.title,kind:"Project",course:c}]:[]),
  ...(c.companion?.sections||[]).flatMap((s:any,l:number)=>(s.checks||[]).map((title:string,i:number)=>({key:`check-${l}-${i}`,title,kind:"Quiz",course:c})))
 ]}
-async function api(url:string,body?:any){const r=await fetch(url,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:undefined);const j=await r.json();if(!r.ok)throw Error(j.error||"Request failed");return j}
+async function api(url:string,body?:any){
+  let r:Response;
+  try{r=await fetch(url,body?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:undefined)}
+  catch{return Promise.reject(new Error("The classroom service is starting up. Please wait a moment and try again."))}
+  const ct=r.headers.get("content-type")||"";
+  if(!ct.includes("application/json")){
+    // Server returned HTML (error page or gateway) — not a JSON response.
+    throw new Error(r.ok?"The classroom service is reconnecting. Please retry in a moment.":"The classroom service is starting up. Please wait and try again.")
+  }
+  let j:any;
+  try{j=await r.json()}catch{throw new Error("The classroom service returned an unreadable response. Please retry.")}
+  if(!r.ok)throw Error(j.error||"Request failed");
+  return j
+}
 function Empty({title,children}:{title:string;children?:ReactNode}){return <div className="empty-state"><BookOpen size={28}/><h3>{title}</h3><p>{children}</p></div>}
 
 export default function Classroom(){
