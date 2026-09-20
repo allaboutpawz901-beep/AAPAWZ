@@ -43,7 +43,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'IPDG-103',
-    title: 'Handling, Safety Gate & Table Restraints',
+    title: 'Handling, Key Skills Check & Table Restraints',
     trackCode: 'IPDG',
     trackTitle: 'Professional Dog Groomer',
     term: 1,
@@ -51,7 +51,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 10,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Grooming loops, belly straps, bite mitigation, table posture, and safe lifting required before live-animal work.',
+    description: 'MANDATORY KEY SKILLS CHECK: Grooming loops, belly straps, bite mitigation, table posture, and safe lifting required before live-animal work.',
     slug: 'professional-dog-groomer',
   },
   {
@@ -176,7 +176,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'IPDG-402',
-    title: 'Supervised Live-Client Salon Practicum & Speed Benchmarking',
+    title: 'Supervised Live-Client Salon Hands-On Practice & Speed Benchmarking',
     trackCode: 'IPDG',
     trackTitle: 'Professional Dog Groomer',
     term: 4,
@@ -261,7 +261,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 30,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Sit, down, stand, eye contact, hand targets, and fade food lures safely before live client coaching.',
+    description: 'MANDATORY KEY SKILLS CHECK: Sit, down, stand, eye contact, hand targets, and fade food lures safely before live client coaching.',
     slug: 'professional-dog-trainer',
   },
   {
@@ -399,7 +399,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 30,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Tub disinfection, kennel sanitation, identifying parasites (fleas, ticks, mites), and skin lesion reporting.',
+    description: 'MANDATORY KEY SKILLS CHECK: Tub disinfection, kennel sanitation, identifying parasites (fleas, ticks, mites), and skin lesion reporting.',
     slug: 'animal-care-assistant',
   },
   {
@@ -423,7 +423,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     level: '400',
     hours: 12,
     category: 'Applied Capstone',
-    description: 'Portfolio of 30 documented dog baths, hygiene sign-offs, career ladder mapping (bather to salon owner), and interview prep.',
+    description: 'Portfolio of 30 documented dog baths, hygiene approvals, career ladder mapping (bather to salon owner), and interview prep.',
     slug: 'animal-care-assistant',
   },
 
@@ -456,7 +456,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPS-104',
-    title: 'In-Home Handling & Leash Safety Gate',
+    title: 'In-Home Handling & Leash Key Skills Check',
     trackCode: 'PPS',
     trackTitle: 'Professional Pet Sitter',
     term: 1,
@@ -464,7 +464,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 4,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Door bolting prevention, slip leads, harness verification, and outdoor dog encounter protocols.',
+    description: 'MANDATORY KEY SKILLS CHECK: Door bolting prevention, slip leads, harness verification, and outdoor dog encounter protocols.',
     slug: 'professional-pet-sitter',
   },
   {
@@ -477,7 +477,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 3,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Administering oral/topical medications, insulin injections basics, CPR, choking response, and vet transport.',
+    description: 'MANDATORY KEY SKILLS CHECK: Administering oral/topical medications, insulin injections basics, CPR, choking response, and vet transport.',
     slug: 'professional-pet-sitter',
   },
   {
@@ -510,7 +510,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'CAT-102',
-    title: 'Low-Stress Feline Handling & Towel Wraps Safety Gate',
+    title: 'Low-Stress Feline Handling & Towel Wraps Key Skills Check',
     trackCode: 'CAT',
     trackTitle: 'Professional Cat Groomer',
     term: 1,
@@ -518,7 +518,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 4,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Reading feline body language (ears, whiskers, tail), burrito towel wraps, scruffing alternatives, and bite avoidance.',
+    description: 'MANDATORY KEY SKILLS CHECK: Reading feline body language (ears, whiskers, tail), burrito towel wraps, scruffing alternatives, and bite avoidance.',
     slug: 'professional-cat-groomer',
   },
   {
@@ -611,7 +611,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-105',
-    title: 'Salon Sanitation & Infection Control Safety Gate',
+    title: 'Salon Sanitation & Infection Control Key Skills Check',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 1,
@@ -619,7 +619,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 20,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Pathogen containment (Parvo, Kennel Cough, Ringworm), chemical safety (OSHA SDS), and kennel sanitation.',
+    description: 'MANDATORY KEY SKILLS CHECK: Pathogen containment (Parvo, Kennel Cough, Ringworm), chemical safety (OSHA SDS), and kennel sanitation.',
     slug: 'pet-care-business-ownership',
   },
   {
@@ -636,7 +636,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-201',
-    title: 'Intermediate Canine Grooming & Scissor Control Safety Gate',
+    title: 'Intermediate Canine Grooming & Scissor Control Key Skills Check',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 2,
@@ -644,7 +644,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 35,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Blade safety (#10, #7F, #5F, #4F), guard comb clipping, shear balance, and sanitary trims.',
+    description: 'MANDATORY KEY SKILLS CHECK: Blade safety (#10, #7F, #5F, #4F), guard comb clipping, shear balance, and sanitary trims.',
     slug: 'pet-care-business-ownership',
   },
   {
@@ -757,7 +757,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-306',
-    title: 'High-Risk Handling & Aggression Protocols Safety Gate',
+    title: 'High-Risk Handling & Aggression Protocols Key Skills Check',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 3,
@@ -765,7 +765,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 30,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Defensive leash work, basket muzzles, bite stick protocols, and high-risk client intake boundaries.',
+    description: 'MANDATORY KEY SKILLS CHECK: Defensive leash work, basket muzzles, bite stick protocols, and high-risk client intake boundaries.',
     slug: 'pet-care-business-ownership',
   },
   {
@@ -794,7 +794,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-403',
-    title: 'Emergency First Responder & Triage Safety Gate',
+    title: 'Emergency First Responder & Triage Key Skills Check',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 4,
@@ -802,7 +802,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 10,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Gastric torsion (bloat) triage, vehicle accident stabilization, and transport packaging.',
+    description: 'MANDATORY KEY SKILLS CHECK: Gastric torsion (bloat) triage, vehicle accident stabilization, and transport packaging.',
     slug: 'pet-care-business-ownership',
   },
   {
@@ -819,7 +819,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-405',
-    title: 'Complex Behavior Case Management Safety Gate',
+    title: 'Complex Behavior Case Management Key Skills Check',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 4,
@@ -827,7 +827,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 10,
     category: 'Technical',
     safetyGate: true,
-    description: 'MANDATORY SAFETY GATE: Severe separation anxiety case plans, veterinary behavioral partnerships, and psychotropic medication awareness.',
+    description: 'MANDATORY KEY SKILLS CHECK: Severe separation anxiety case plans, veterinary behavioral partnerships, and psychotropic medication awareness.',
     slug: 'pet-care-business-ownership',
   },
   {
@@ -856,7 +856,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-408',
-    title: 'Private Training Class Delivery Practicum',
+    title: 'Private Training Class Delivery Hands-On Practice',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 4,
@@ -869,7 +869,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-409',
-    title: 'Multi-Service Practicum Supervised Client Log',
+    title: 'Multi-Service Hands-On Practice Supervised Client Log',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 4,
@@ -882,7 +882,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
   },
   {
     code: 'PPC-410',
-    title: 'Terminal Safety & Master Operator Board Safety Gate',
+    title: 'Terminal Safety & Master Operator Board Key Skills Check',
     trackCode: 'PPC',
     trackTitle: 'Professional Pet Care & Business Ownership',
     term: 4,
@@ -890,7 +890,7 @@ export const ALL_CATALOG_MODULES: CatalogModule[] = [
     hours: 10,
     category: 'Technical',
     safetyGate: true,
-    description: 'FINAL SAFETY GATE: Comprehensive practical exam evaluating handling, blade safety, biosecurity, and legal risk governance.',
+    description: 'FINAL KEY SKILLS CHECK: Comprehensive practical exam evaluating handling, blade safety, biosecurity, and legal risk governance.',
     slug: 'pet-care-business-ownership',
   },
   {
@@ -1035,7 +1035,7 @@ export function searchCatalog(query: string): CatalogModule[] {
       m.category.toLowerCase().includes(q) ||
       (q.includes('safety') && m.safetyGate) ||
       (q.includes('gate') && m.safetyGate) ||
-      (q.includes('practicum') && m.practicum)
+      (q.includes('practice') && m.practicum)
     );
   });
 }

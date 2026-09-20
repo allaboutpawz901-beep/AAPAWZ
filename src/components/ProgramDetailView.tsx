@@ -35,7 +35,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
   const [openTermIndex, setOpenTermIndex] = useState<number | null>(0);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
-  // Retrieve matching institutional syllabus
+  // Retrieve matching program syllabus
   const syllabus: ProgramInstitutionalData | undefined =
     ALL_PROGRAM_SYLLABI[program.code.toUpperCase()] || ALL_PROGRAM_SYLLABI[program.id.toLowerCase()];
 
@@ -71,10 +71,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
         <div className="marble bg-cream px-6 sm:px-10 lg:px-14 py-10 lg:py-14 flex flex-col justify-center">
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-gold-light/20 border border-gold/30 text-xs font-semibold uppercase tracking-wider text-gold-deep">
-              {program.badge} · CODE: {program.code}
-            </span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-gold-deep/10 text-gold-deep border border-gold-deep/30 font-mono font-medium">
-              Accredited Delivery Guide v1.0
+              PROGRAM: {program.code}
             </span>
           </div>
 
@@ -112,7 +109,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">Hours</span>
               </div>
               <div className="text-sm font-bold text-ink">{program.stats.hours}</div>
-              <div className="text-[0.7rem] text-ink-soft mt-0.5">Audited Clock Hrs</div>
+              <div className="text-[0.7rem] text-ink-soft mt-0.5">Hands-on Hours</div>
             </div>
 
             <div className="p-3 rounded-xl bg-cream-deep border border-gold/25">
@@ -161,11 +158,11 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             <div className="border-b border-[#e4dfd4] mb-8 overflow-x-auto scrollbar-none">
               <nav className="flex space-x-8 min-w-max" aria-label="Program sections">
                 {[
-                  { id: 'overview', label: 'Program Overview' },
-                  { id: 'curriculum', label: 'Curriculum & Schedule' },
-                  { id: 'outcomes', label: 'Career Outcomes & Rubrics' },
-                  { id: 'requirements', label: 'Admissions & Safety Gates' },
-                  { id: 'faq', label: 'Accreditation FAQ' },
+                  { id: 'overview', label: 'Program' },
+                  { id: 'curriculum', label: 'Curriculum' },
+                  { id: 'outcomes', label: 'Career Outcomes' },
+                  { id: 'requirements', label: 'Admissions' },
+                  { id: 'faq', label: 'FAQ' },
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -188,7 +185,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 {/* Program Description & Core Competencies */}
                 <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-3">
-                    <GraduationCap className="w-4 h-4 text-gold" /> Institutional Objectives & Scope
+                    <GraduationCap className="w-4 h-4 text-gold" /> What You'll Learn
                   </div>
                   <h2 className="font-display text-2xl font-bold text-ink mb-4">
                     About the {program.title}
@@ -222,13 +219,13 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                   </div>
                 </section>
 
-                {/* Clock-Hour Distribution & Donut Breakdown */}
+                {/* How Your Time Is Spent - Donut Breakdown */}
                 <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <h2 className="font-display text-2xl font-bold text-ink mb-2">
-                    Clock-Hour Distribution & Curriculum Architecture
+                    How Your Time Is Spent
                   </h2>
                   <p className="text-xs sm:text-sm text-[#5a6b5f] mb-6">
-                    All hours represent audited clock hours under vocational training standards. 1 clock hour = 50–60 minutes of supervised technical laboratory, business workshop, or practicum.
+                    All hours are hands-on training time.
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
@@ -415,7 +412,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                 {man.type}
                               </span>
                             </td>
-                            <td className="p-3 text-[#16a34a] font-semibold flex items-center gap-1">
+                            <td className="p-3 text-gold-deep font-semibold flex items-center gap-1">
                               <Check className="w-3.5 h-3.5" /> Required in LMS
                             </td>
                           </tr>
@@ -495,7 +492,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                 <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-[#5a6b5f]">
                                   <span>{term.durationWeeks}</span>
                                   <span>•</span>
-                                  <span>{term.clockHours} Clock Hours</span>
+                                  <span>{term.clockHours} Hours</span>
                                   <span>•</span>
                                   <span>{term.modulesCount} Modules</span>
                                 </div>
@@ -513,7 +510,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                             <div className="p-6 pt-0 border-t border-[#e4dfd4]/70 bg-cream/50 space-y-6">
                               <p className="text-sm text-[#5a6b5f] leading-relaxed pt-4">{term.description}</p>
 
-                              {/* Clock Hour Allocation Bar */}
+                              {/* Time Breakdown */}
                               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-lg bg-cream border border-[#e4dfd4]">
                                 <div>
                                   <div className="text-xs text-[#5a6b5f]">Technical Lab Hours</div>
@@ -550,7 +547,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                         <span className="font-mono text-xs font-bold text-[#8a6d2b] px-2 py-0.5 rounded bg-[#8a6d2b]/10">
                                           {mod.code}
                                         </span>
-                                        <span className="text-xs font-medium text-[#5a6b5f]">{mod.hours} Clock Hrs</span>
+                                        <span className="text-xs font-medium text-[#5a6b5f]">{mod.hours} Hrs</span>
                                       </div>
                                       <h5 className="font-semibold text-sm text-ink mb-1">{mod.title}</h5>
                                       <p className="text-xs text-[#5a6b5f] leading-relaxed">{mod.description}</p>
@@ -575,7 +572,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                           Week-by-Week Delivery Schedule (Part B Syllabi)
                         </h3>
                         <p className="text-xs text-[#5a6b5f]">
-                          Exact pacing of technical modules, business/personal spine modules, clock hours, and weekly assessments.
+                          Exact pacing of technical modules, business/personal spine modules, hours, and weekly assessments.
                         </p>
                       </div>
                       <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-[#8a6d2b]/10 text-[#8a6d2b]">
@@ -605,7 +602,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                               <td className="p-3 font-mono font-bold bg-cream">{entry.hoursFormatted}</td>
                               <td className="p-3 text-xs">
                                 {entry.assessments.includes('Safety Gate') ? (
-                                  <span className="text-[#dc2626] font-semibold flex items-center gap-1">
+                                  <span className="text-gold-deep font-semibold flex items-center gap-1">
                                     <AlertTriangle className="w-3 h-3 shrink-0" /> {entry.assessments}
                                   </span>
                                 ) : entry.assessments.includes('Defense') || entry.assessments.includes('Checkpoint') ? (
@@ -648,7 +645,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                 {m.code}
                               </span>
                               <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-medium text-[#5a6b5f]">{m.hours} Clock Hrs</span>
+                                <span className="text-xs font-medium text-[#5a6b5f]">{m.hours} Hrs</span>
                                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#faf6ee] font-semibold text-[#5a6b5f]">
                                   {m.level}
                                 </span>
@@ -659,8 +656,8 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                           </div>
 
                           {m.safetyGate && (
-                            <div className="pt-2 border-t border-[#fee2e2] text-[11px] font-semibold text-[#dc2626] flex items-center gap-1.5">
-                              <Shield className="w-3.5 h-3.5" /> Mandatory Safety-Critical Gate
+                            <div className="pt-2 border-t border-gold-deep/20 text-[11px] font-semibold text-gold-deep flex items-center gap-1.5">
+                              <Shield className="w-3.5 h-3.5" /> Key Skills Check
                             </div>
                           )}
                         </div>
@@ -671,7 +668,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               </div>
             )}
 
-            {/* TAB 3: CAREER OUTCOMES & RUBRICS */}
+            {/* TAB 3: CAREER OUTCOMES */}
             {activeTab === 'outcomes' && (
               <div className="space-y-8">
                 {/* Career Pathways & Wage Ladder */}
@@ -683,7 +680,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     Career Pathways & Graduate Compensation
                   </h2>
                   <p className="text-xs sm:text-sm text-[#5a6b5f] mb-6">
-                    Institutional standard: 75%+ verified 6-month placement or business launch rate. Graduates enter both entrepreneurial owner-operator tracks and salaried clinical leadership roles.
+                    75%+ of graduates are working or running their own business within 6 months.
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -699,20 +696,20 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                         <div className="pt-3 border-t border-[#e4dfd4]">
                           <div className="text-[10px] uppercase font-bold text-[#5a6b5f]">Typical Compensation</div>
                           <div className="text-sm font-mono font-bold text-[#8a6d2b]">{outcome.typicalComp}</div>
-                          <div className="text-[11px] text-[#16a34a] font-medium mt-0.5">Market Demand: {outcome.marketDemand}</div>
+                          <div className="text-[11px] text-gold-deep font-medium mt-0.5">Market Demand: {outcome.marketDemand}</div>
                         </div>
                       </div>
                     ))}
                   </div>
                 </section>
 
-                {/* Institutional Competency Rubric */}
+                {/* Skills You'll Master */}
                 <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <h2 className="font-display text-2xl font-bold text-ink mb-2">
-                    Official Institutional Competency Rubric
+                    Skills You'll Master
                   </h2>
                   <p className="text-xs sm:text-sm text-[#5a6b5f] mb-6">
-                    To receive graduation sign-off, every student must demonstrate a minimum rating of "Competent" across all evaluated technical and personal-business domains.
+                    To graduate, you'll demonstrate every skill on your checklist with your instructor.
                   </p>
 
                   <div className="space-y-4">
@@ -740,34 +737,34 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               </div>
             )}
 
-            {/* TAB 4: ADMISSIONS & SAFETY GATES */}
+            {/* TAB 4: ADMISSIONS */}
             {activeTab === 'requirements' && (
               <div className="space-y-8">
-                {/* Mandatory Safety Gates */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#dc2626]/30 shadow-sm">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#dc2626] mb-2">
-                    <Shield className="w-4 h-4" /> Safety-Critical Gates & Live-Animal Contact Protocol
+                {/* Key Skills You'll Demonstrate */}
+                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-gold-deep/30 shadow-sm">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gold-deep mb-2">
+                    <Shield className="w-4 h-4" /> Key Skills You'll Demonstrate
                   </div>
                   <h2 className="font-display text-2xl font-bold text-ink mb-2">
-                    Mandatory Safety Gate Checkpoints
+                    Key Skills You'll Demonstrate
                   </h2>
                   <p className="text-xs sm:text-sm text-[#5a6b5f] mb-6">
-                    Zero-tolerance animal and human safety threshold. Students cannot advance to live-client animals without 100% binary instructor sign-off on these checkpoints.
+                    Safety skills you must demonstrate before working with live animals. You'll practice these skills with your instructor before working with real animals.
                   </p>
 
                   <div className="space-y-3">
                     {syllabus?.safetyGates.map((gate) => (
-                      <div key={gate.code} className="p-4 rounded-lg bg-[#fef2f2] border border-[#fecaca] flex items-start gap-3">
-                        <AlertTriangle className="w-5 h-5 text-[#dc2626] shrink-0 mt-0.5" />
+                      <div key={gate.code} className="p-4 rounded-lg bg-gold-deep/5 border border-gold-deep/20 flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-gold-deep shrink-0 mt-0.5" />
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-mono text-xs font-bold text-[#dc2626]">{gate.code}</span>
+                            <span className="font-mono text-xs font-bold text-gold-deep">{gate.code}</span>
                             <span className="font-semibold text-sm text-ink">{gate.title}</span>
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-[#fee2e2] text-[#991b1b] font-bold">
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-gold-deep/10 text-gold-deep font-bold">
                               {gate.stage}
                             </span>
                           </div>
-                          <p className="text-xs text-[#7f1d1d] leading-relaxed">{gate.requirement}</p>
+                          <p className="text-xs text-ink-soft leading-relaxed">{gate.requirement}</p>
                         </div>
                       </div>
                     ))}
@@ -778,7 +775,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <section className="bg-cream p-6 rounded-xl border border-[#e4dfd4] shadow-sm">
                     <h3 className="font-display text-lg font-bold text-ink mb-3">
-                      Admissions Criteria (Institutional Standard)
+                      What You Need to Enroll
                     </h3>
                     <ul className="space-y-2.5 text-xs text-[#5a6b5f]">
                       {syllabus?.admissionRequirements.map((req, idx) => (
@@ -792,7 +789,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                   <section className="bg-cream p-6 rounded-xl border border-[#e4dfd4] shadow-sm">
                     <h3 className="font-display text-lg font-bold text-ink mb-3">
-                      Clock-Hour Attendance & Makeup Policy
+                      Attendance Policy
                     </h3>
                     <p className="text-xs text-[#5a6b5f] leading-relaxed mb-4">
                       {syllabus?.attendancePolicy}
@@ -815,7 +812,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                   Frequently Asked Questions
                 </h2>
                 <p className="text-xs sm:text-sm text-[#5a6b5f] mb-6">
-                  Official guidance on clock-hour audit, Louisiana Board of Regents proprietary compliance, live animal safety, and credential stacking.
+                  Guidance on attendance, safety, and building your credentials.
                 </p>
 
                 <div className="space-y-3">
@@ -855,7 +852,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               
               <div className="space-y-3 text-xs text-[#5a6b5f] mb-6 pt-3 border-t border-[#e4dfd4]">
                 <div className="flex justify-between">
-                  <span className="text-[#5a6b5f]">Total Clock Hours:</span>
+                  <span className="text-[#5a6b5f]">Total Hours:</span>
                   <span className="font-mono font-bold text-ink">{program.totalClockHours} hrs</span>
                 </div>
                 <div className="flex justify-between">
@@ -883,7 +880,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 href={'/learn/classroom'}
                 className="btn-ghost w-full"
               >
-                Open AI Classroom Sandbox
+                Practice in the Classroom
               </Link>
             </div>
 
@@ -891,14 +888,14 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             {syllabus && (
               <div className="bg-[#8a6d2b] text-on-dark rounded-xl p-6 shadow-sm">
                 <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">
-                  Stackable Architecture
+                  Build on Your Credentials
                 </span>
-                <h4 className="font-display text-base font-bold text-on-dark mb-2">Articulation & Stacking</h4>
+                <h4 className="font-display text-base font-bold text-on-dark mb-2">Build on Your Credentials</h4>
                 <p className="text-xs text-[#d5e0d8] leading-relaxed mb-4">
                   {syllabus.stacksInto}
                 </p>
                 <div className="text-[11px] text-[#a0b2a6] font-mono">
-                  All completed clock hours transfer automatically into higher credential pathways.
+                  Your completed hours transfer into advanced programs.
                 </div>
               </div>
             )}

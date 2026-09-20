@@ -190,7 +190,7 @@ export function CoursesCatalogView() {
             View All Academy Courses
           </h1>
           <p className="mt-4 max-w-[460px] text-[13px] leading-[1.8] text-ink-soft">
-            Explore our complete curriculum of 6 integrated career pathways and over 160 accredited course modules. Search by specific module code, safety gate, skill, or credential, and jump directly into the full term-by-term syllabus.
+            Explore our 6 career pathways and 160+ courses. Search by module code, skill, or credential to find your path.
           </p>
 
           {/* Quick Route Shortcut to Enroll */}
@@ -221,17 +221,17 @@ export function CoursesCatalogView() {
                 <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">Flexible Formats</span>
               </div>
               <p className="text-[0.75rem] text-ink-soft leading-relaxed">
-                6 to 52 weeks with hybrid and practicum tracks.
+                6 to 52 weeks with hybrid and hands-on tracks.
               </p>
             </div>
 
             <div>
               <div className="flex items-center gap-2 text-gold-deep mb-1">
                 <BookOpen className="w-4 h-4" strokeWidth={1.5} />
-                <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">Live Practicum</span>
+                <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">Hands-on Practice</span>
               </div>
               <p className="text-[0.75rem] text-ink-soft leading-relaxed">
-                Safety gates, live client animals, and portfolios.
+                Key skills checks, real animals, and portfolios.
               </p>
             </div>
           </div>
@@ -302,7 +302,7 @@ export function CoursesCatalogView() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="e.g. IPDG-103, safety gate, lion cut..."
+                      placeholder="e.g. IPDG-103, key skills check, lion cut..."
                       className="w-full bg-cream border border-gold/30 rounded-lg pl-3 pr-8 py-2 text-xs text-ink focus:outline-none focus:border-gold-deep"
                     />
                     {searchQuery ? (
@@ -351,7 +351,7 @@ export function CoursesCatalogView() {
                     <option value="100">100 Level – Foundation &amp; Safety</option>
                     <option value="200">200 Level – Core Skills</option>
                     <option value="300">300 Level – Advanced Skills</option>
-                    <option value="400">400 Level – Practicum &amp; Capstone</option>
+                    <option value="400">400 Level – Hands-on Practice &amp; Capstone</option>
                   </select>
                 </div>
 
@@ -377,7 +377,7 @@ export function CoursesCatalogView() {
                     Popular Inquiries
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {['Safety Gate', 'IPDG-103', 'PDT-201', 'Lion Cut', 'Bathing', 'Obedience'].map((term) => (
+                    {['Key Skills Check', 'IPDG-103', 'PDT-201', 'Lion Cut', 'Bathing', 'Obedience'].map((term) => (
                       <button
                         key={term}
                         onClick={() => setSearchQuery(term)}
@@ -551,7 +551,7 @@ export function CoursesCatalogView() {
                                   <div className="text-xs font-bold text-ink">{program.totalModules}</div>
                                 </div>
                                 <div>
-                                  <div className="text-[0.68rem] text-ink-soft font-semibold uppercase">Clock Hrs</div>
+                                  <div className="text-[0.68rem] text-ink-soft font-semibold uppercase">Hours</div>
                                   <div className="text-xs font-bold text-ink">{program.totalClockHours}</div>
                                 </div>
                               </div>
@@ -569,8 +569,8 @@ export function CoursesCatalogView() {
                                         <span className="font-mono font-bold text-gold-deep">{m.code}:</span>
                                         <span className="truncate">{m.title}</span>
                                         {m.safetyGate && (
-                                          <span className="shrink-0 text-[0.62rem] px-1 rounded bg-rose-600 text-on-dark font-bold">
-                                            Safety Gate
+                                          <span className="shrink-0 text-[0.62rem] px-1 rounded bg-gold-deep/10 text-gold-deep font-bold">
+                                            Key Skills Check
                                           </span>
                                         )}
                                       </div>
@@ -644,7 +644,7 @@ export function CoursesCatalogView() {
                         Academic Course Modules Catalog
                       </h2>
                       <p className="text-xs text-[#5a6b5f]">
-                        Showing {filteredModules.length} accredited modules from the Delivery Guide v1.0
+                        Showing {filteredModules.length} courses
                       </p>
                     </div>
                     {hasActiveFilters && (
@@ -694,12 +694,12 @@ export function CoursesCatalogView() {
                               {m.safetyGate && (
                                 <span className="inline-flex items-center gap-1 text-[0.68rem] font-bold px-2 py-0.5 rounded bg-[#b56548] text-on-dark">
                                   <Shield className="w-3 h-3" />
-                                  <span>Safety Gate</span>
+                                  <span>Key Skills Check</span>
                                 </span>
                               )}
                               {m.practicum && (
                                 <span className="inline-flex items-center gap-1 text-[0.68rem] font-bold px-2 py-0.5 rounded bg-[#8a6d2b] text-on-dark">
-                                  <span>Live Practicum</span>
+                                  <span>Hands-on Practice</span>
                                 </span>
                               )}
                             </div>
@@ -715,7 +715,7 @@ export function CoursesCatalogView() {
 
                           <div className="sm:text-right shrink-0 flex sm:flex-col items-center sm:items-end justify-between gap-2">
                             <div className="text-xs font-bold text-ink bg-cream-deep sm:bg-transparent px-2.5 py-1 sm:p-0 rounded-md">
-                              {m.hours} Clock Hours
+                              {m.hours} Hours
                             </div>
                             <Link
                               href={`/learn/courses/${m.slug}`}

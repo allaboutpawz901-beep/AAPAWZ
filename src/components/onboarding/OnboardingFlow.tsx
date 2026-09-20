@@ -58,7 +58,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
   // Step 5 Details
   const [dateOfBirth, setDateOfBirth] = useState('2000-01-01');
   const [phone, setPhone] = useState('(555) 123-4567');
-  const [educationLevel, setEducationLevel] = useState('Some College / Vocational');
+  const [educationLevel, setEducationLevel] = useState('Some College');
   const [hearAboutUs, setHearAboutUs] = useState('Shelter / Vet Referral');
 
   // Step 6 Guardian
@@ -119,7 +119,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       imageAlt: 'Golden retriever and caregiver',
     },
     2: {
-      tag: 'LEASHED ADMISSIONS',
+      tag: 'Get Started',
       title: 'Real Skills. Meaningful Careers.',
       subtitle:
         'Join hundreds of students mastering professional grooming, training, and ethical pet care business operations.',
@@ -130,15 +130,15 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       tag: 'ROLE PERSONALIZATION',
       title: 'Designed for Every Path.',
       subtitle:
-        'Whether you are starting from zero or leading cohorts, our learning pathways adapt to your professional goals.',
+        'Whether you are starting from zero or leading classs, our learning pathways adapt to your professional goals.',
       image: '/images/golden_portrait.jpg',
       imageAlt: 'Companion dog portrait',
     },
     4: {
-      tag: 'VOCATIONAL CURRICULUM',
+      tag: 'HANDS-ON CURRICULUM',
       title: 'Hands-On Mastery That Counts.',
       subtitle:
-        'Select your craft. Our 160+ clock-hour modules combine live practical safety gates with industry credentials.',
+        'Choose your path. 160+ hands-on courses with real-world skills and industry credentials.',
       image: '/images/dog_groomer.jpg',
       imageAlt: 'Hands-on grooming practical demonstration',
     },
@@ -146,7 +146,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       tag: 'LEARNER PROFILE',
       title: 'A Supportive Community That Cares.',
       subtitle:
-        'Tell us about your background so we can connect you with dedicated mentorship and cohort advisors.',
+        'Tell us about your background so we can connect you with dedicated mentorship and advisors.',
       image: '/images/health_woman_cat.jpg',
       imageAlt: 'Caregiver with feline friend',
     },
@@ -154,7 +154,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       tag: 'SAFETY & COMPLIANCE',
       title: 'High Standards From Day One.',
       subtitle:
-        'We adhere to professional animal welfare and student safety standards across all virtual and in-person practicums.',
+        'We adhere to professional animal welfare and student safety standards across all virtual and in-person hands-on sessions.',
       image: '/images/vet_cat_checkup.jpg',
       imageAlt: 'Professional pet care safety and checkup',
     },
@@ -170,7 +170,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       tag: 'ENROLLMENT CONFIRMED',
       title: "You're Ready to Begin!",
       subtitle:
-        'Your profile is verified. Access your classroom portal, explore course modules, and meet your cohort.',
+        'Your profile is verified. Access your classroom portal, explore course modules, and meet your class.',
       image: '/images/orange_cat.jpg',
       imageAlt: 'Enrolled student mascot cat',
     },
@@ -324,20 +324,20 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
           </div>
 
           {/* ===================================================================
-              STEP 1: Getting Started Gate — The Enroll Process Starts Here
+              STEP 1: Getting Started — The Enroll Process Starts Here
               =================================================================== */}
           {currentStep === 1 && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="space-y-2">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.7rem] font-bold tracking-wider uppercase bg-[#e8efe9] text-[#8a6d2b] border border-[#d1e0d3]">
                   <PawPrint className="w-3 h-3 text-[#8a6d2b]" />
-                  <span>Getting Started Gate</span>
+                  <span>Getting Started</span>
                 </span>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
                   The Enroll Process Starts Here
                 </h2>
                 <p className="text-xs sm:text-sm text-[#5a6b5f] leading-relaxed">
-                  Your journey to a rewarding career in animal care, grooming, and pet business begins now. Follow this seamless 8-step admissions sequence to set up your learner profile, confirm your vocational standards, and unlock your interactive Classroom Canvas.
+                  Your journey to a rewarding career in animal care, grooming, and pet business begins now. Follow this seamless 8-step enrollment sequence to set up your learner profile, confirm your training goals, and unlock your interactive Classroom Canvas.
                 </p>
               </div>
 
@@ -374,7 +374,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                   <div>
                     <h3 className="text-xs font-bold text-ink">Dedicated Support</h3>
                     <p className="text-[0.72rem] text-[#5a6b5f]">
-                      1-on-1 mentorship, cohort advising &amp; interactive AI tutoring
+                      1-on-1 mentorship, class advising &amp; interactive AI tutoring
                     </p>
                   </div>
                 </div>
@@ -563,7 +563,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                   {
                     id: 'org_admin',
                     title: 'Organization Admin',
-                    desc: 'I manage a program, cohort, or organization.',
+                    desc: 'I manage a program, class, or organization.',
                     icon: Building,
                   },
                   {
@@ -773,7 +773,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
                   >
                     <option>High School / GED</option>
-                    <option>Some College / Vocational</option>
+                    <option>Some College</option>
                     <option>Associate Degree</option>
                     <option>Bachelor&apos;s Degree</option>
                     <option>Master&apos;s or Doctorate</option>

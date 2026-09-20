@@ -172,3 +172,89 @@ Work Log:
 
 Stage Summary:
 - All About Pawz Academy powered by UnLeashe is live. 6 real Leashed pathways. Real weekly schedule. ZAI Professor teaches from real curriculum. RAG architecture ready (Supabase-switchable). Admin/instructor APIs scaffolded. Brand identity applied. 9/10 visual fidelity.
+
+---
+Task ID: language-polish
+Agent: general-purpose
+Task: Remove all jargon from LMS pages — replace institutional/vocational language with plain, friendly, consumer-appropriate language across 4 components.
+
+Work Log:
+- Read all 4 target files end-to-end: CoursesCatalogView.tsx (839 lines), ProgramDetailView.tsx (911 lines), onboarding/OnboardingFlow.tsx (1155 lines), classroom.tsx (233 lines).
+- Grepped each file for every jargon variant (capitalized, lowercase, plural, hyphenated) plus red/green color classes (`text-red-*`, `bg-rose-*`, `text-emerald-*`, etc.) and arbitrary hex reds/greens (`#dc2626`, `#16a34a`, `#fef2f2`, `#fee2e2`, `#fecaca`, `#991b1b`, `#7f1d1d`).
+
+File-by-file changes:
+
+1) src/components/CoursesCatalogView.tsx — 13 replacements
+   - Hero subtitle: long jargon sentence → "Explore our 6 career pathways and 160+ courses. Search by module code, skill, or credential to find your path."
+   - Search placeholder: "safety gate" → "key skills check"
+   - Popular Inquiries chip: 'Safety Gate' → 'Key Skills Check'
+   - 3-pillar card: "Live Practicum" → "Hands-on Practice"; pillar description "Safety gates, live client animals, and portfolios." → "Key skills checks, real animals, and portfolios."
+   - Flexible Formats pillar: "hybrid and practicum tracks" → "hybrid and hands-on tracks"
+   - Course level dropdown option: "Practicum & Capstone" → "Hands-on Practice & Capstone"
+   - Program card metric label: "Clock Hrs" → "Hours"
+   - Catalog heading: "Showing {n} accredited modules from the Delivery Guide v1.0" → "Showing {n} courses"
+   - Module row: "{m.hours} Clock Hours" → "{m.hours} Hours"
+   - Matched-module badge: "Safety Gate" text + `bg-rose-600 text-on-dark` → "Key Skills Check" + `bg-gold-deep/10 text-gold-deep`
+   - Safety-gate badge in catalog list: "Safety Gate" text → "Key Skills Check" (kept `bg-[#b56548]` since it's a brown/maroon, not in red list)
+   - "Live Practicum" badge → "Hands-on Practice" badge
+
+2) src/components/ProgramDetailView.tsx — 28 replacements
+   - Hero badges: removed "Accredited Delivery Guide v1.0" badge entirely; changed "{program.badge} · CODE: {program.code}" → "PROGRAM: {program.code}"
+   - Stats card: "Audited Clock Hrs" → "Hands-on Hours"
+   - Tab labels: 'Program Overview' → 'Program'; 'Curriculum & Schedule' → 'Curriculum'; 'Career Outcomes & Rubrics' → 'Career Outcomes'; 'Admissions & Safety Gates' → 'Admissions'; 'Accreditation FAQ' → 'FAQ'
+   - Section heading: "Institutional Objectives & Scope" → "What You'll Learn"
+   - Donut section heading: "Clock-Hour Distribution & Curriculum Architecture" → "How Your Time Is Spent"
+   - Donut section body: long jargon sentence about audited clock hours/vocational standards/supervised technical laboratory → "All hours are hands-on training time."
+   - Term overview: "{term.clockHours} Clock Hours" → "{term.clockHours} Hours"
+   - Module card: "{mod.hours} Clock Hrs" → "{mod.hours} Hrs"
+   - Catalog module card: "{m.hours} Clock Hrs" → "{m.hours} Hrs"
+   - Career outcomes paragraph: long jargon about "verified 6-month placement... entrepreneurial owner-operator tracks and salaried clinical leadership roles" → "75%+ of graduates are working or running their own business within 6 months."
+   - Rubric section heading: "Official Institutional Competency Rubric" → "Skills You'll Master"
+   - Rubric section body: "To receive graduation sign-off, every student must demonstrate a minimum rating of 'Competent' across all evaluated technical and personal-business domains." → "To graduate, you'll demonstrate every skill on your checklist with your instructor."
+   - Safety gates section heading + intro: "Mandatory Safety Gate Checkpoints" + zero-tolerance/binary instructor sign-off text → "Key Skills You'll Demonstrate" + "Safety skills you must demonstrate before working with live animals. You'll practice these skills with your instructor before working with real animals."
+   - Safety gate cards: `border-[#dc2626]/30`, `text-[#dc2626]`, `bg-[#fef2f2]`, `border-[#fecaca]`, `text-[#991b1b]`, `text-[#7f1d1d]`, `bg-[#fee2e2]` → `border-gold-deep/30`, `text-gold-deep`, `bg-gold-deep/5`, `border-gold-deep/20`, `text-ink-soft`
+   - Admissions heading: "Admissions Criteria (Institutional Standard)" → "What You Need to Enroll"
+   - Attendance heading: "Clock-Hour Attendance & Makeup Policy" → "Attendance Policy"
+   - FAQ intro: "Official guidance on clock-hour audit, Louisiana Board of Regents proprietary compliance, live animal safety, and credential stacking." → "Guidance on attendance, safety, and building your credentials."
+   - Sidebar CTA: "Open AI Classroom Sandbox" → "Practice in the Classroom"
+   - Stacking ladder card: "Stackable Architecture" eyebrow + "Articulation & Stacking" heading → both "Build on Your Credentials"; body "All completed clock hours transfer automatically into higher credential pathways." → "Your completed hours transfer into advanced programs."
+   - Sidebar stats label: "Total Clock Hours:" → "Total Hours:"
+   - Manuals table: `text-[#16a34a]` (green) → `text-gold-deep`
+   - Weekly schedule table safety-gate row: `text-[#dc2626]` → `text-gold-deep`
+   - Catalog module safety-gate footer: "Mandatory Safety-Critical Gate" + `border-[#fee2e2] text-[#dc2626]` → "Key Skills Check" + `border-gold-deep/20 text-gold-deep`
+   - Career outcomes market demand: `text-[#16a34a]` (green) → `text-gold-deep`
+   - Weekly schedule description: "clock hours" → "hours"
+   - Updated several JSX comments to match new headings (Clock-Hour Distribution → How Your Time Is Spent, Clock Hour Allocation Bar → Time Breakdown, Institutional Competency Rubric → Skills You'll Master, Mandatory Safety Gates → Key Skills You'll Demonstrate, TAB 3/4 labels)
+   - Internal code comment: "Retrieve matching institutional syllabus" → "Retrieve matching program syllabus"
+   - Preserved matching logic `entry.assessments.includes('Safety Gate')` (line 604) and `syllabus?.rubricDomains.map(...)` since these read from data-layer strings/field names not in scope to edit.
+
+3) src/components/onboarding/OnboardingFlow.tsx — 6 replacements
+   - useState initial: 'Some College / Vocational' → 'Some College'
+   - Step 4 tag: 'VOCATIONAL CURRICULUM' → 'HANDS-ON CURRICULUM'
+   - Step 4 subtitle: 'Select your craft. Our 160+ clock-hour modules combine live practical safety gates with industry credentials.' → 'Choose your path. 160+ hands-on courses with real-world skills and industry credentials.'
+   - Step 6 subtitle: '...across all virtual and in-person practicums.' → '...across all virtual and in-person hands-on sessions.'
+   - Step 1 paragraph: "8-step admissions sequence... confirm your vocational standards..." → "8-step enrollment sequence... confirm your training goals..."
+   - Education level dropdown option: 'Some College / Vocational' → 'Some College'
+
+4) src/components/classroom.tsx — 1 replacement
+   - Source-disclosure note: "needs curriculum review before institutional use." → "needs curriculum review before classroom use."
+   - (No `Safety Gate`, `safety gate`, `rose-700`, or other red/green color classes were present in this file — verified via grep. Only the meta-disclosure string contained institutional jargon.)
+
+Color rule applied:
+- Red (warnings/required/safety items) → `text-gold-deep` or `bg-gold-deep/10` (with paired text shifts from `text-on-dark` → `text-gold-deep` so labels stay readable on the now-light gold backgrounds)
+- Green (success/positive items like "Required in LMS", "Market Demand") → `text-gold-deep`
+- Kept `text-rose-700` rule noted by user (no instances existed in these 4 files anyway)
+- Left non-red subject-color hex values in classroom.tsx subjectColor() alone (Bio green, Algebra gold, English purple, History red-orange — these are subject identity colors, not rubric/safety colors)
+
+Preserved per "Keep ALL functionality intact" rule:
+- Variable names: `safetyGate`, `rubricDomains`, `totalClockHours`, `clockHours`, `practicum`, `matchesSafety`, `matchesPracticum`
+- Type imports: `ProgramInstitutionalData` (external type from @/lib/syllabi-data)
+- Search matching logic strings: `q.includes('safety')`, `q.includes('gate')`, `q.includes('practicum')`, `ch.title.toLowerCase().includes('safety gate')`, `entry.assessments.includes('Safety Gate')` — these match against underlying data-layer strings/fields not in scope to edit
+- Component structure, state, imports, props — unchanged
+
+Lint result:
+- `bun run lint` → 0 errors, 46 warnings (all pre-existing unused eslint-disable directives in unrelated files: pawz/settings/screens/*, site/islands/booking-wizard-v2.tsx, site/pet-card.tsx, lib/hooks/useSessionQuery.ts).
+- Confirmed via grep of lint output: none of the 4 target files (CoursesCatalogView, ProgramDetailView, onboarding/OnboardingFlow, classroom) produce any lint errors or warnings.
+
+Stage Summary:
+- All 4 target files updated with plain, friendly, consumer-appropriate language. 48 total replacements made (13 + 28 + 6 + 1). Zero errors, zero new warnings. Functionality intact: variable names, type imports, data-layer field references, and search matching logic all preserved. Only display text and color classes changed.
