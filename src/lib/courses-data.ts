@@ -32,6 +32,9 @@ export type ProgramDetails = {
   coreCompetencies: { icon: string; label: string }[];
   donutData: { technical: number; businessPersonal: number; applied: number };
   breakdown: { type: string; percent: string; hours: number; description: string }[];
+  manuals: { id: string; title: string; type: string }[];
+  deliveryAndAccess: { icon: string; title: string; description: string }[];
+  completionRequirements: string[];
   terms: {
     termNumber: number;
     name: string;
@@ -43,6 +46,7 @@ export type ProgramDetails = {
     appliedHours: number;
     termHours: number;
     durationWeeks: string;
+    courseHighlights: { code: string; title: string; hours: number; description: string }[];
   }[];
 };
 
@@ -90,6 +94,12 @@ const ipdg: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "69%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "2%", hours: 24, description: "GRM-BIZ Applied Salon Capstone" },
   ],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
   terms: [
     { termNumber: 1, name: "Foundation", technicalModules: ["IPDG-101", "IPDG-102", "IPDG-103", "IPDG-104"], businessModules: "36 modules: LSH 101–105, PER 101–105, BUS 101–106, MKT 101–105, TEC 101–105, FIN 101–105, LEG 101–105", appliedModule: null, techHours: 95, businessHours: 216, appliedHours: 0, termHours: 311, durationWeeks: "≈ 11 Weeks" },
     { termNumber: 2, name: "Core Skill", technicalModules: ["IPDG-201", "IPDG-202", "IPDG-203", "IPDG-204"], businessModules: "36 modules: LSH 201–205, PER 201–205, BUS 201–206, MKT 201–205, TEC 201–205, FIN 201–205, LEG 201–205", appliedModule: null, techHours: 95, businessHours: 216, appliedHours: 0, termHours: 311, durationWeeks: "≈ 11 Weeks" },
@@ -142,6 +152,12 @@ const pdt: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "78%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "2%", hours: 24, description: "TRN-BIZ Applied Training Capstone" },
   ],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
   terms: [
     { termNumber: 1, name: "Foundation", technicalModules: ["PDT-101", "PDT-102", "PDT-103"], businessModules: "36 modules: LSH 101–105, PER 101–105, BUS 101–106, MKT 101–105, TEC 101–105, FIN 101–105, LEG 101–105", appliedModule: null, techHours: 40, businessHours: 216, appliedHours: 0, termHours: 256, durationWeeks: "≈ 9 Weeks" },
     { termNumber: 2, name: "Core Skill", technicalModules: ["PDT-201", "PDT-202"], businessModules: "36 modules: LSH 201–205, PER 201–205, BUS 201–206, MKT 201–205, TEC 201–205, FIN 201–205, LEG 201–205", appliedModule: null, techHours: 50, businessHours: 216, appliedHours: 0, termHours: 266, durationWeeks: "≈ 9 Weeks" },
@@ -194,6 +210,12 @@ const aca: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "87%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "1%", hours: 12, description: "ACA-BIZ Applied Career Capstone" },
   ],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
   terms: [
     { termNumber: 1, name: "Foundation", technicalModules: ["ACA-101", "ACA-102", "ACA-103"], businessModules: "36 modules: LSH 101–105, PER 101–105, BUS 101–106, MKT 101–105, TEC 101–105, FIN 101–105, LEG 101–105", appliedModule: null, techHours: 32, businessHours: 216, appliedHours: 0, termHours: 248, durationWeeks: "≈ 9 Weeks" },
     { termNumber: 2, name: "Core Skill", technicalModules: ["ACA-201"], businessModules: "36 modules: LSH 201–205, PER 201–205, BUS 201–206, MKT 201–205, TEC 201–205, FIN 201–205, LEG 201–205", appliedModule: null, techHours: 30, businessHours: 216, appliedHours: 0, termHours: 246, durationWeeks: "≈ 9 Weeks" },
@@ -245,6 +267,12 @@ const pps: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "64%", hours: 36, description: "6 Business Modules" },
     { type: "Applied Capstone Hours", percent: "11%", hours: 6, description: "PPS-BIZ Applied Capstone" },
   ],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
   terms: [
     { termNumber: 1, name: "Foundation", technicalModules: ["PPS-101", "PPS-102", "PPS-104", "PPS-105"], businessModules: "BUS-101, FIN-101, LEG-101, LEG-103", appliedModule: null, techHours: 14, businessHours: 24, appliedHours: 0, termHours: 38, durationWeeks: "≈ 2 Weeks" },
     { termNumber: 2, name: "Core Skill", technicalModules: [], businessModules: "BUS-203", appliedModule: null, techHours: 0, businessHours: 6, appliedHours: 0, termHours: 6, durationWeeks: "≈ 1 Day" },
@@ -297,6 +325,12 @@ const cat: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "62%", hours: 36, description: "6 Business Modules" },
     { type: "Applied Capstone Hours", percent: "10%", hours: 6, description: "CAT-BIZ Applied Capstone" },
   ],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
   terms: [
     { termNumber: 1, name: "Foundation", technicalModules: ["CAT-101", "CAT-102", "CAT-103", "CAT-104"], businessModules: "BUS-101, FIN-101, LEG-101, LEG-103", appliedModule: null, techHours: 16, businessHours: 24, appliedHours: 0, termHours: 40, durationWeeks: "≈ 2 Weeks" },
     { termNumber: 2, name: "Core Skill", technicalModules: [], businessModules: "BUS-203", appliedModule: null, techHours: 0, businessHours: 6, appliedHours: 0, termHours: 6, durationWeeks: "≈ 1 Day" },
@@ -349,6 +383,12 @@ const ppc: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "58%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "2%", hours: 36, description: "PPC-BIZ Multi-Service Enterprise Capstone" },
   ],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
+  manuals: [],
+  deliveryAndAccess: [],
+  completionRequirements: [],
   terms: [
     { termNumber: 1, name: "Foundation", technicalModules: ["PPC-101", "PPC-102", "PPC-103", "PPC-104", "PPC-105", "PPC-106"], businessModules: "36 modules: LSH 101–105, PER 101–105, BUS 101–106, MKT 101–105, TEC 101–105, FIN 101–105, LEG 101–105", appliedModule: null, techHours: 115, businessHours: 216, appliedHours: 0, termHours: 331, durationWeeks: "≈ 12 Weeks" },
     { termNumber: 2, name: "Core Skill", technicalModules: ["PPC-201", "PPC-202", "PPC-203", "PPC-204", "PPC-205"], businessModules: "36 modules: LSH 201–205, PER 201–205, BUS 201–206, MKT 201–205, TEC 201–205, FIN 201–205, LEG 201–205", appliedModule: null, techHours: 170, businessHours: 216, appliedHours: 0, termHours: 386, durationWeeks: "≈ 13 Weeks" },
