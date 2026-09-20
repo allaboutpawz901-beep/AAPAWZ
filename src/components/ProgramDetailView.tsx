@@ -857,7 +857,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 href={'/learn/classroom'}
                 className="btn-ghost w-full"
               >
-                Practice in the Classroom
+                Enter Classroom
               </Link>
             </div>
 
