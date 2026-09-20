@@ -1,5 +1,4 @@
-'use client';
-import { CoursesCatalogView } from '@/components/CoursesCatalogView';
+import Classroom from "@/components/classroom";
 export default function LearnPage() {
-  return <CoursesCatalogView />;
+  return <Classroom />;
 }
