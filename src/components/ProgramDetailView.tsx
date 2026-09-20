@@ -131,9 +131,9 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               <span>Enroll in this Pathway</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/learn/classroom" className="btn-ghost">
+            <Link href="/learn/enroll" className="btn-ghost">
               <Sparkles className="w-4 h-4" />
-              <span>Launch AI Classroom</span>
+              <span>View Enrollment Steps</span>
             </Link>
           </div>
         </div>
@@ -854,10 +854,10 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               </Link>
 
               <Link
-                href={'/learn/classroom'}
+                href="/learn/enroll"
                 className="btn-ghost w-full"
               >
-                Enter Classroom
+                View Enrollment Steps
               </Link>
             </div>
 
