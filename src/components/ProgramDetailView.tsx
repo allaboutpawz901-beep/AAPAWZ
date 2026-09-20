@@ -142,17 +142,17 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
         </div>
 
         {/* Right Photo Column */}
-        <div className="relative bg-cream-deep">
+        <div className="relative bg-cream-deep overflow-hidden">
           <img
             src={program.heroImage}
             alt={program.title}
-            className="w-full h-full object-cover object-center min-h-[320px] lg:min-h-[560px]"
+            className="w-full h-full object-cover object-center min-h-[320px] lg:min-h-[480px] max-h-[600px]"
           />
         </div>
       </section>
 
-      {/* Main Container */}
-      <div className="w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1">
+      {/* Main Container — full-bleed */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-10 flex-1">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
           
           {/* Main Left Content Area */}
@@ -186,7 +186,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             {activeTab === 'overview' && (
               <div className="space-y-10">
                 {/* Program Description & Core Competencies */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm">
+                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-3">
                     <GraduationCap className="w-4 h-4 text-gold" /> Institutional Objectives & Scope
                   </div>
@@ -223,7 +223,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 </section>
 
                 {/* Clock-Hour Distribution & Donut Breakdown */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm">
+                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <h2 className="font-display text-2xl font-bold text-ink mb-2">
                     Clock-Hour Distribution & Curriculum Architecture
                   </h2>
@@ -314,7 +314,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 </section>
 
                 {/* Table A4: Weekly Schedule Template */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm">
+                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
@@ -381,7 +381,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 </section>
 
                 {/* Textbooks & Reference Bibliography (Part B & C) */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm">
+                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
                       Required Textbooks & Official Syllabi Manuals
@@ -675,7 +675,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             {activeTab === 'outcomes' && (
               <div className="space-y-8">
                 {/* Career Pathways & Wage Ladder */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm">
+                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-2">
                     <Briefcase className="w-4 h-4 text-gold" /> Professional Pathways & Economic Mobility
                   </div>
@@ -707,7 +707,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 </section>
 
                 {/* Institutional Competency Rubric */}
-                <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm">
+                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <h2 className="font-display text-2xl font-bold text-ink mb-2">
                     Official Institutional Competency Rubric
                   </h2>
@@ -807,7 +807,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
             {/* TAB 5: ACCREDITATION FAQ */}
             {activeTab === 'faq' && (
-              <section className="bg-cream p-6 sm:p-8 rounded-xl border border-[#e4dfd4] shadow-sm space-y-4">
+              <section className="bg-cream p-6 sm:p-8 border-t border-gold/25 space-y-4">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-2">
                   <HelpCircle className="w-4 h-4 text-gold" /> Compliance & Operations FAQ
                 </div>

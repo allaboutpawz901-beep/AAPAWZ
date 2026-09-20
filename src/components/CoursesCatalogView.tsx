@@ -566,7 +566,7 @@ export function CoursesCatalogView() {
                                   <div className="space-y-1">
                                     {matchedModules.slice(0, 2).map((m) => (
                                       <div key={m.code} className="flex items-center gap-1.5 text-[0.72rem] text-ink">
-                                        <span className="font-mono font-bold text-emerald-800">{m.code}:</span>
+                                        <span className="font-mono font-bold text-gold-deep">{m.code}:</span>
                                         <span className="truncate">{m.title}</span>
                                         {m.safetyGate && (
                                           <span className="shrink-0 text-[0.62rem] px-1 rounded bg-rose-600 text-on-dark font-bold">
@@ -578,7 +578,7 @@ export function CoursesCatalogView() {
                                     {matchedModules.length > 2 && (
                                       <button
                                         onClick={() => setViewMode('modules')}
-                                        className="text-[0.68rem] font-bold text-emerald-800 hover:underline block pt-1"
+                                        className="text-[0.68rem] font-bold text-gold-deep hover:underline block pt-1"
                                       >
                                         + {matchedModules.length - 2} more matching modules in catalog →
                                       </button>
@@ -598,7 +598,7 @@ export function CoursesCatalogView() {
                                       key={t.termNumber}
                                       className="px-2 py-1 rounded-lg bg-cream-deep border border-gold/25 truncate font-medium flex items-center gap-1"
                                     >
-                                      <span className="font-bold text-emerald-800">T{t.termNumber}:</span>
+                                      <span className="font-bold text-gold-deep">T{t.termNumber}:</span>
                                       <span className="truncate">{t.name}</span>
                                     </div>
                                   ))}
