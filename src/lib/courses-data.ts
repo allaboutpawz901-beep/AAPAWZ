@@ -46,6 +46,10 @@ export type ProgramDetails = {
     appliedHours: number;
     termHours: number;
     durationWeeks: string;
+    description: string;
+    modulesCount: number;
+    clockHours: number;
+    modulesSummary: { technicalHours: number; businessHours: number; appliedHours: number };
     courseHighlights: { code: string; title: string; hours: number; description: string }[];
   }[];
 };
