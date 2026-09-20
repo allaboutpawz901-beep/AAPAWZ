@@ -54,6 +54,189 @@ export type ProgramDetails = {
   }[];
 };
 
+// ─── Required & Reference Texts ───────────────────────────────────────────
+// Single source of truth for textbook metadata, sourced verbatim from the
+// Program Delivery Guide (Sections B1–B6, "Required & Reference Texts" tables).
+// Each pathway selects its subset via the *_TEXT_IDS arrays below.
+const TEXTS: Record<string, { title: string; type: string }> = {
+  // Core manuals (Section C2 build status + per-pathway text lists)
+  'MAN-IPDG': { title: 'Professional Dog Groomer (merged: v1 200 hr + v2 300 hr + PPC grooming track)', type: 'Core manual' },
+  'MAN-PDT': { title: 'Professional Dog Trainer', type: 'Core manual' },
+  'MAN-ACA': { title: 'Bather–Animal Care Assistant', type: 'Core manual' },
+  'MAN-PPS': { title: 'Professional Pet Sitter', type: 'Core manual' },
+  'MAN-CAT': { title: 'Professional Cat Groomer', type: 'Core manual' },
+  'MAN-LSH': { title: 'Life Skills & Personal Readiness', type: 'Core manual' },
+  'MAN-BUS': { title: 'Business & Leadership: Ownership, Operations & Expansion (merged BUS + LDR)', type: 'Core manual' },
+  'MAN-PER': { title: 'Personal Mastery & Lifelong Growth', type: 'Core manual' },
+  'MAN-MKT': { title: 'Marketing, Branding & SEO Mastery', type: 'Core manual' },
+  'MAN-TEC': { title: 'AI & Technology Systems', type: 'Core manual' },
+  'MAN-FIN': { title: 'Financial Mastery, Bookkeeping & Tax Strategy', type: 'Core manual' },
+  'MAN-LEG': { title: 'Legal, Risk, Compliance & Ethical Governance', type: 'Core manual' },
+
+  // Reference & supplementary texts
+  'REF-GRM-01': { title: 'Dog Grooming for Beginners', type: 'Reference text · Book' },
+  'REF-GRM-02': { title: 'Grooming Manual for Dog and Cat', type: 'Reference text · DOCX manuscript' },
+  'REF-GRM-03': { title: 'The Everything Dog Grooming Book', type: 'Reference text · DOCX manuscript' },
+  'REF-GRM-04': { title: 'The Stone Guide to Dog Grooming for All Breeds', type: 'Reference text · Book' },
+  'REF-BEH-01': { title: 'Handbook of Applied Dog Behavior and Training, Vol. 3', type: 'Reference text · Book' },
+  'REF-TRN-01': { title: "Nate Schoemer's Dog Training Manual", type: 'Reference text · Book' },
+  'REF-PPS-01': { title: 'Pet Care Givers and Families', type: 'Reference text · Book' },
+  'REF-HLTH-01': { title: 'National Geographic Guide to Pet Health, Behavior, and Happiness', type: 'Reference text · Book' },
+  'REF-MED-01': { title: 'Small Animal Critical Care Medicine', type: 'Reference text · Book' },
+  'REF-AI-01': { title: 'AI for Animals: Revolutionizing Veterinary Care', type: 'Supplementary text · Book' },
+  'REF-ANI-01': { title: 'Beastly: The 40,000-Year Story of Animals and Us', type: 'Supplementary text · Book' },
+  'REF-CARE-01': { title: 'Knack Dog Care and Training', type: 'Reference text · Book' },
+  'REF-BIZ-01': { title: 'Business Cycles', type: 'Supplementary text · Book' },
+  'REF-BIZ-02': { title: 'Building a Successful Business', type: 'Reference text · Book' },
+  'REF-BIZ-03': { title: 'The Disruptors', type: 'Supplementary text · Book' },
+  'REF-BIZ-04': { title: 'Go It Alone!', type: 'Reference text · Book' },
+  'REF-BIZ-05': { title: 'The Successful Entrepreneur Playbook', type: 'Reference text · Book' },
+  'REF-BIZ-06': { title: '4-Hour Work Day', type: 'Supplementary text · Book' },
+  'REF-BIZ-07': { title: 'The Business Bible', type: 'Reference text · Book' },
+  'REF-BIZ-08': { title: 'Poverty Traps', type: 'Supplementary text · Book' },
+  'REF-LDR-01': { title: 'Leadership Presence', type: 'Reference text · Book' },
+  'REF-LDR-02': { title: 'Leadership and Ethics', type: 'Reference text · Book' },
+  'REF-MKT-01': { title: 'Multi-Channel Marketing, Branding and Retail Design', type: 'Reference text · Book' },
+  'REF-MKT-02': { title: 'Marketing is not Rocket Science', type: 'Reference text · Book' },
+  'REF-MKT-03': { title: 'Unconscious Branding', type: 'Supplementary text · Book' },
+  'REF-MKT-04': { title: 'Content Branding Solutions for Entrepreneur Strategic Content Marketing', type: 'Reference text · Book' },
+  'REF-MKT-05': { title: 'Branding: What You Need to Know About Building a Personal Brand…', type: 'Reference text · Book' },
+  'REF-MKT-06': { title: 'Business Branding Guide', type: 'Reference text · Book' },
+  'REF-MKT-07': { title: 'Salon Marketing', type: 'Reference text · Book' },
+  'REF-CX-01': { title: 'Customer Service in Health Care', type: 'Reference text · Book' },
+  'REF-CX-02': { title: 'Can Your Customer Service Do This?', type: 'Reference text · Book' },
+  'REF-CX-03': { title: 'Crushing the Competition with Service', type: 'Reference text · Book' },
+  'REF-CX-04': { title: 'Customer Service Is Just Foreplay', type: 'Supplementary text · Book' },
+  'REF-FIN-01': { title: "J.K. Lasser's Small Business Taxes 2025", type: 'Reference text · Book' },
+  'REF-FIN-02': { title: 'Tax Accounting: A Guide for Small Business Owners', type: 'Reference text · Book' },
+  'REF-FIN-03': { title: 'Small Time Operator', type: 'Reference text · Book' },
+  'REF-FIN-04': { title: '475 Tax Deductions for All Small Businesses', type: 'Reference text · Book' },
+  'REF-LEG-01': { title: 'Cybersecurity: Ethics, Legal, Risks', type: 'Reference text · Book' },
+  'REF-LEG-02': { title: 'The Tax and Legal Playbook', type: 'Reference text · Book' },
+  'REF-LEG-03': { title: 'Reimagining Fairness: Equity, Cultural Diversity, and Inclusion Competency Approach', type: 'Reference text · Book' },
+  'REF-LEG-04': { title: 'PCI Compliance', type: 'Reference text · Book' },
+  'REF-LEG-05': { title: 'The Guide to OSHA Compliance', type: 'Reference text · Book' },
+  'REF-LEG-06': { title: 'Security-First Compliance for Small Businesses', type: 'Reference text · Book' },
+  'REF-LEG-07': { title: 'Transfer Pricing: Rules, Compliance and Controversy', type: 'Supplementary text · Book' },
+  'REF-LEG-08': { title: 'Stop Harming Customers: A Compliance Manifesto', type: 'Reference text · Book' },
+  'REF-LEG-09': { title: 'Tools of Effective Compliance', type: 'Reference text · Book' },
+  'REF-LSH-01': { title: 'Teaching life skills in intermediate phase', type: 'Reference text · Book' },
+  'REF-LSH-02': { title: 'Stuff Students Should Know: Learn Essential Life Skills', type: 'Reference text · Book' },
+  'REF-LSH-03': { title: '10 Proven Ways to Relieve Stress Now', type: 'Supplementary text · Book' },
+  'REF-LSH-04': { title: 'Personal Finance', type: 'Reference text · Book' },
+  'REF-PER-01': { title: 'The Personal MBA', type: 'Reference text · Book' },
+  'REF-PER-02': { title: 'Self-Talk Your Way to Success', type: 'Reference text · Book' },
+  'REF-PER-03': { title: 'Are You Ready to Succeed?', type: 'Reference text · Book' },
+  'REF-PER-04': { title: 'Trigger High Performance', type: 'Reference text · Book' },
+  'REF-PER-05': { title: 'Rebuilding Relationships in Recovery', type: 'Reference text · Book' },
+  'REF-PER-06': { title: 'Trust Yourself: Stop Overthinking and Channel Your Emotions for Success at Work', type: 'Reference text · Book' },
+  'REF-AI-02': { title: 'LinkedIn Personal Branding and Marketing', type: 'Reference text · Book' },
+  'REF-AI-03': { title: 'The Marketing Mindset: 100 ChatGPT Prompts', type: 'Reference text · Book' },
+  'REF-AI-04': { title: 'Enterprise AI', type: 'Reference text · Book' },
+  'REF-AI-05': { title: 'AI In Finance', type: 'Reference text · Book' },
+  'REF-AI-06': { title: 'AI Timekeeper', type: 'Reference text · Book' },
+  'REF-AI-07': { title: 'AI Profit Hacks', type: 'Reference text · Book' },
+  'REF-AI-08': { title: 'AI Startup Strategy', type: 'Reference text · Book' },
+  'REF-AI-09': { title: 'AI and the Boardroom', type: 'Reference text · Book' },
+  'REF-AI-10': { title: 'Foundations of Agentic AI for Retail', type: 'Reference text · Book' },
+  'REF-AI-11': { title: 'Retail 4.0: How AI is Shaping the Future of Shopping', type: 'Supplementary text · Book' },
+  'REF-AI-12': { title: 'AI-Powered Accounting with Excel and Power BI', type: 'Reference text · Book' },
+  'REF-AI-13': { title: 'The AI Revolution in Customer Service', type: 'Reference text · Book' },
+  'REF-AI-14': { title: 'Natural Language Processing with Python: Building your Own Customer Service ChatBot', type: 'Reference text · Book' },
+  'REF-AI-15': { title: 'Teaching and Learning in the Age of Generative AI', type: 'Reference text · Book' },
+};
+
+function textsFor(ids: string[]): { id: string; title: string; type: string }[] {
+  return ids.map((id) => ({ id, title: TEXTS[id].title, type: TEXTS[id].type }));
+}
+
+// Per-pathway text ID lists, in the order each pathway's table appears in the guide.
+// IPDG (B1): 8 core manuals + 66 reference/supplementary texts
+const IPDG_TEXT_IDS = [
+  'MAN-IPDG', 'MAN-LSH', 'MAN-BUS', 'MAN-PER', 'MAN-MKT', 'MAN-TEC', 'MAN-FIN', 'MAN-LEG',
+  'REF-GRM-01', 'REF-GRM-02', 'REF-GRM-03', 'REF-BEH-01', 'REF-MED-01', 'REF-AI-01', 'REF-ANI-01', 'REF-CARE-01',
+  'REF-BIZ-01', 'REF-BIZ-02', 'REF-BIZ-03', 'REF-BIZ-04', 'REF-BIZ-05', 'REF-BIZ-06', 'REF-BIZ-07', 'REF-BIZ-08',
+  'REF-LDR-01', 'REF-LDR-02',
+  'REF-MKT-01', 'REF-MKT-02', 'REF-MKT-03', 'REF-MKT-04', 'REF-MKT-05', 'REF-MKT-06', 'REF-MKT-07',
+  'REF-CX-01', 'REF-CX-02', 'REF-CX-03', 'REF-CX-04',
+  'REF-FIN-01', 'REF-FIN-02', 'REF-FIN-03', 'REF-FIN-04',
+  'REF-LEG-01', 'REF-LEG-02', 'REF-LEG-03', 'REF-LEG-04', 'REF-LEG-05', 'REF-LEG-06', 'REF-LEG-07', 'REF-LEG-08', 'REF-LEG-09',
+  'REF-LSH-01', 'REF-LSH-02', 'REF-LSH-03', 'REF-LSH-04',
+  'REF-PER-01', 'REF-PER-02', 'REF-PER-03', 'REF-PER-04', 'REF-PER-05', 'REF-PER-06',
+  'REF-AI-02', 'REF-AI-03', 'REF-AI-04', 'REF-AI-05', 'REF-AI-06', 'REF-AI-07', 'REF-AI-08', 'REF-AI-09', 'REF-AI-10', 'REF-AI-11', 'REF-AI-12', 'REF-AI-13', 'REF-AI-14', 'REF-AI-15',
+];
+
+// PDT (B2): 8 core manuals + 65 reference/supplementary texts
+const PDT_TEXT_IDS = [
+  'MAN-PDT', 'MAN-LSH', 'MAN-BUS', 'MAN-PER', 'MAN-MKT', 'MAN-TEC', 'MAN-FIN', 'MAN-LEG',
+  'REF-BEH-01', 'REF-TRN-01', 'REF-HLTH-01', 'REF-MED-01', 'REF-AI-01', 'REF-ANI-01', 'REF-CARE-01',
+  'REF-BIZ-01', 'REF-BIZ-02', 'REF-BIZ-03', 'REF-BIZ-04', 'REF-BIZ-05', 'REF-BIZ-06', 'REF-BIZ-07', 'REF-BIZ-08',
+  'REF-LDR-01', 'REF-LDR-02',
+  'REF-MKT-01', 'REF-MKT-02', 'REF-MKT-03', 'REF-MKT-04', 'REF-MKT-05', 'REF-MKT-06', 'REF-MKT-07',
+  'REF-CX-01', 'REF-CX-02', 'REF-CX-03', 'REF-CX-04',
+  'REF-FIN-01', 'REF-FIN-02', 'REF-FIN-03', 'REF-FIN-04',
+  'REF-LEG-01', 'REF-LEG-02', 'REF-LEG-03', 'REF-LEG-04', 'REF-LEG-05', 'REF-LEG-06', 'REF-LEG-07', 'REF-LEG-08', 'REF-LEG-09',
+  'REF-LSH-01', 'REF-LSH-02', 'REF-LSH-03', 'REF-LSH-04',
+  'REF-PER-01', 'REF-PER-02', 'REF-PER-03', 'REF-PER-04', 'REF-PER-05', 'REF-PER-06',
+  'REF-AI-02', 'REF-AI-03', 'REF-AI-04', 'REF-AI-05', 'REF-AI-06', 'REF-AI-07', 'REF-AI-08', 'REF-AI-09', 'REF-AI-10', 'REF-AI-11', 'REF-AI-12', 'REF-AI-13', 'REF-AI-14', 'REF-AI-15',
+];
+
+// ACA (B3): 8 core manuals + 68 reference/supplementary texts
+const ACA_TEXT_IDS = [
+  'MAN-ACA', 'MAN-LSH', 'MAN-BUS', 'MAN-PER', 'MAN-MKT', 'MAN-TEC', 'MAN-FIN', 'MAN-LEG',
+  'REF-GRM-01', 'REF-GRM-02', 'REF-GRM-03', 'REF-BEH-01', 'REF-GRM-04', 'REF-PPS-01', 'REF-HLTH-01', 'REF-AI-01', 'REF-ANI-01', 'REF-CARE-01',
+  'REF-BIZ-01', 'REF-BIZ-02', 'REF-BIZ-03', 'REF-BIZ-04', 'REF-BIZ-05', 'REF-BIZ-06', 'REF-BIZ-07', 'REF-BIZ-08',
+  'REF-LDR-01', 'REF-LDR-02',
+  'REF-MKT-01', 'REF-MKT-02', 'REF-MKT-03', 'REF-MKT-04', 'REF-MKT-05', 'REF-MKT-06', 'REF-MKT-07',
+  'REF-CX-01', 'REF-CX-02', 'REF-CX-03', 'REF-CX-04',
+  'REF-FIN-01', 'REF-FIN-02', 'REF-FIN-03', 'REF-FIN-04',
+  'REF-LEG-01', 'REF-LEG-02', 'REF-LEG-03', 'REF-LEG-04', 'REF-LEG-05', 'REF-LEG-06', 'REF-LEG-07', 'REF-LEG-08', 'REF-LEG-09',
+  'REF-LSH-01', 'REF-LSH-02', 'REF-LSH-03', 'REF-LSH-04',
+  'REF-PER-01', 'REF-PER-02', 'REF-PER-03', 'REF-PER-04', 'REF-PER-05', 'REF-PER-06',
+  'REF-AI-02', 'REF-AI-03', 'REF-AI-04', 'REF-AI-05', 'REF-AI-06', 'REF-AI-07', 'REF-AI-08', 'REF-AI-09', 'REF-AI-10', 'REF-AI-11', 'REF-AI-12', 'REF-AI-13', 'REF-AI-14', 'REF-AI-15',
+];
+
+// PPS (B4): 5 core manuals + 15 reference/supplementary texts
+const PPS_TEXT_IDS = [
+  'MAN-PPS', 'MAN-BUS', 'MAN-MKT', 'MAN-FIN', 'MAN-LEG',
+  'REF-PPS-01', 'REF-HLTH-01', 'REF-MED-01', 'REF-CARE-01',
+  'REF-BIZ-02', 'REF-BIZ-04', 'REF-BIZ-07',
+  'REF-LDR-02',
+  'REF-MKT-07',
+  'REF-FIN-03',
+  'REF-LEG-02', 'REF-LEG-05', 'REF-LEG-08',
+  'REF-LSH-04',
+  'REF-PER-01',
+];
+
+// CAT (B5): 5 core manuals + 13 reference/supplementary texts
+const CAT_TEXT_IDS = [
+  'MAN-CAT', 'MAN-BUS', 'MAN-MKT', 'MAN-FIN', 'MAN-LEG',
+  'REF-GRM-02', 'REF-GRM-04', 'REF-HLTH-01',
+  'REF-BIZ-02', 'REF-BIZ-04', 'REF-BIZ-07',
+  'REF-LDR-02',
+  'REF-MKT-07',
+  'REF-FIN-03',
+  'REF-LEG-02', 'REF-LEG-08',
+  'REF-LSH-04',
+  'REF-PER-01',
+];
+
+// PPC (B6): 11 core manuals + 70 reference/supplementary texts
+const PPC_TEXT_IDS = [
+  'MAN-IPDG', 'MAN-PDT', 'MAN-PPS', 'MAN-CAT', 'MAN-LSH', 'MAN-BUS', 'MAN-PER', 'MAN-MKT', 'MAN-TEC', 'MAN-FIN', 'MAN-LEG',
+  'REF-GRM-01', 'REF-GRM-02', 'REF-GRM-03', 'REF-BEH-01', 'REF-GRM-04', 'REF-TRN-01', 'REF-PPS-01', 'REF-HLTH-01', 'REF-MED-01', 'REF-AI-01', 'REF-ANI-01', 'REF-CARE-01',
+  'REF-BIZ-01', 'REF-BIZ-02', 'REF-BIZ-03', 'REF-BIZ-04', 'REF-BIZ-05', 'REF-BIZ-06', 'REF-BIZ-07', 'REF-BIZ-08',
+  'REF-LDR-01', 'REF-LDR-02',
+  'REF-MKT-01', 'REF-MKT-02', 'REF-MKT-03', 'REF-MKT-04', 'REF-MKT-05', 'REF-MKT-06', 'REF-MKT-07',
+  'REF-CX-01', 'REF-CX-02', 'REF-CX-03', 'REF-CX-04',
+  'REF-FIN-01', 'REF-FIN-02', 'REF-FIN-03', 'REF-FIN-04',
+  'REF-LEG-01', 'REF-LEG-02', 'REF-LEG-03', 'REF-LEG-04', 'REF-LEG-05', 'REF-LEG-06', 'REF-LEG-07', 'REF-LEG-08', 'REF-LEG-09',
+  'REF-LSH-01', 'REF-LSH-02', 'REF-LSH-03', 'REF-LSH-04',
+  'REF-PER-01', 'REF-PER-02', 'REF-PER-03', 'REF-PER-04', 'REF-PER-05', 'REF-PER-06',
+  'REF-AI-02', 'REF-AI-03', 'REF-AI-04', 'REF-AI-05', 'REF-AI-06', 'REF-AI-07', 'REF-AI-08', 'REF-AI-09', 'REF-AI-10', 'REF-AI-11', 'REF-AI-12', 'REF-AI-13', 'REF-AI-14', 'REF-AI-15',
+];
+
 // ─── IPDG — Professional Dog Groomer ───────────────────────────────────────
 const ipdg: ProgramDetails = {
   id: "ipdg",
@@ -98,10 +281,7 @@ const ipdg: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "69%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "2%", hours: 24, description: "GRM-BIZ Applied Salon Capstone" },
   ],
-  manuals: [],
-  deliveryAndAccess: [],
-  completionRequirements: [],
-  manuals: [],
+  manuals: textsFor(IPDG_TEXT_IDS),
   deliveryAndAccess: [],
   completionRequirements: [],
   terms: [
@@ -156,10 +336,7 @@ const pdt: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "78%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "2%", hours: 24, description: "TRN-BIZ Applied Training Capstone" },
   ],
-  manuals: [],
-  deliveryAndAccess: [],
-  completionRequirements: [],
-  manuals: [],
+  manuals: textsFor(PDT_TEXT_IDS),
   deliveryAndAccess: [],
   completionRequirements: [],
   terms: [
@@ -214,10 +391,7 @@ const aca: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "87%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "1%", hours: 12, description: "ACA-BIZ Applied Career Capstone" },
   ],
-  manuals: [],
-  deliveryAndAccess: [],
-  completionRequirements: [],
-  manuals: [],
+  manuals: textsFor(ACA_TEXT_IDS),
   deliveryAndAccess: [],
   completionRequirements: [],
   terms: [
@@ -271,10 +445,7 @@ const pps: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "64%", hours: 36, description: "6 Business Modules" },
     { type: "Applied Capstone Hours", percent: "11%", hours: 6, description: "PPS-BIZ Applied Capstone" },
   ],
-  manuals: [],
-  deliveryAndAccess: [],
-  completionRequirements: [],
-  manuals: [],
+  manuals: textsFor(PPS_TEXT_IDS),
   deliveryAndAccess: [],
   completionRequirements: [],
   terms: [
@@ -329,10 +500,7 @@ const cat: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "62%", hours: 36, description: "6 Business Modules" },
     { type: "Applied Capstone Hours", percent: "10%", hours: 6, description: "CAT-BIZ Applied Capstone" },
   ],
-  manuals: [],
-  deliveryAndAccess: [],
-  completionRequirements: [],
-  manuals: [],
+  manuals: textsFor(CAT_TEXT_IDS),
   deliveryAndAccess: [],
   completionRequirements: [],
   terms: [
@@ -387,10 +555,7 @@ const ppc: ProgramDetails = {
     { type: "Business & Personal Hours", percent: "58%", hours: 864, description: "144 Business & Personal Modules" },
     { type: "Applied Capstone Hours", percent: "2%", hours: 36, description: "PPC-BIZ Multi-Service Enterprise Capstone" },
   ],
-  manuals: [],
-  deliveryAndAccess: [],
-  completionRequirements: [],
-  manuals: [],
+  manuals: textsFor(PPC_TEXT_IDS),
   deliveryAndAccess: [],
   completionRequirements: [],
   terms: [
