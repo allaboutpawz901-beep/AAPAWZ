@@ -1,18 +1,33 @@
-// RAG knowledge layer for the UNLEASHED classroom.
+// RAG knowledge layer for the All About Pawz classroom.
 //
 // Architecture:
-//   - Today: chunks are stored in Prisma (SQLite) and retrieval is keyword
-//     overlap (LIKE + token counting). Works anywhere with zero config.
-//   - Tomorrow: when SUPABASE_URL is configured, switch `retrieve()` to call
-//     Supabase pgvector cosine_similarity over the `embedding` column.
-//     The ingest path already stores `embedding` as a JSON-encoded number[]
-//     string so the migration is a one-function swap.
+//   - Default: chunks stored in Prisma (SQLite), retrieval is keyword overlap.
+//   - Supabase: when SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY are configured,
+//     retrieve() calls the `match_knowledge_chunks` RPC (pgvector cosine
+//     similarity) for semantic search. Ingest mirrors to both stores.
 //
 // Owner scoping: every chunk is owned by a single demo visitor (ownerId).
-// The admin knowledge endpoint prefixes `sourceId` with the ownerId so a
-// source namespace survives multi-tenant use without a separate column.
 
 import { prisma } from "./prisma";
+
+let supabaseClient: any = null;
+async function getSupabase() {
+  if (supabaseClient !== null) return supabaseClient;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    supabaseClient = createClient(url, key);
+    return supabaseClient;
+  } catch {
+    return null;
+  }
+}
+
+export function isSupabaseEnabled(): boolean {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
 
 export type KnowledgeChunk = {
   id: string;
@@ -112,18 +127,23 @@ export async function ingestChunk(
 }
 
 // ---------------- Retrieve ----------------
-
-// TODO: Replace with Supabase pgvector cosine similarity when SUPABASE_URL is configured.
-// Steps to migrate:
-//   1. Add a `supabase` client (env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY).
-//   2. Mirror KnowledgeChunk rows into a Supabase table with a `vector` column
-//      (pgvector, dimension matching the embedding model — e.g. 1536).
-//   3. In retrieve(), if process.env.SUPABASE_URL is set, call:
-//        supabase.rpc("match_knowledge_chunks", {
-//          query_embedding, pathway_code, owner_id, match_count
-//        })
-//      where match_knowledge_chunks orders by embedding <=> query_embedding.
-//   4. Otherwise fall through to the keyword path below.
+//
+// When Supabase is configured (SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY),
+// retrieval uses pgvector cosine similarity via the `match_knowledge_chunks`
+// RPC. Otherwise it falls back to keyword-overlap on SQLite.
+//
+// The Supabase RPC signature:
+//   match_knowledge_chunks(
+//     query_text text,
+//     p_pathway_code text DEFAULT NULL,
+//     p_owner_id text DEFAULT NULL,
+//     match_count int DEFAULT 5
+//   ) RETURNS TABLE(id text, source_id text, pathway_code text,
+//                   module_code text, text text, safety_flag boolean,
+//                   similarity float)
+//
+// The RPC generates an embedding from query_text using OpenAI
+// text-embedding-3-small and orders by embedding <=> query_embedding.
 export async function retrieve(
   ownerId: string,
   query: string,
@@ -131,6 +151,34 @@ export async function retrieve(
   limit: number = DEFAULT_LIMIT,
 ): Promise<KnowledgeChunk[]> {
   const cappedLimit = Math.max(1, Math.min(MAX_LIMIT, limit || DEFAULT_LIMIT));
+
+  // --- Supabase pgvector path ---
+  const supabase = await getSupabase();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.rpc("match_knowledge_chunks", {
+        query_text: query,
+        p_pathway_code: pathwayCode || null,
+        p_owner_id: ownerId,
+        match_count: cappedLimit,
+      });
+      if (!error && data) {
+        return (data as any[]).map((row) => ({
+          id: String(row.id),
+          sourceId: row.source_id || row.sourceId || "",
+          pathwayCode: row.pathway_code || row.pathwayCode || "",
+          moduleCode: row.module_code || row.moduleCode || "",
+          text: row.text || "",
+          safetyFlag: Boolean(row.safety_flag ?? row.safetyFlag),
+          embedding: null,
+        }));
+      }
+    } catch {
+      // Fall through to keyword path
+    }
+  }
+
+  // --- Keyword fallback path (SQLite) ---
   const tokens = tokenize(query);
   if (tokens.length === 0) return [];
 
