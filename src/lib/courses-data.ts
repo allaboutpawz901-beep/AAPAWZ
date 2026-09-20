@@ -315,7 +315,7 @@ const cat: ProgramDetails = {
   safetyGates: ["CAT-102"],
   capstoneCode: "CAT-BIZ",
   stacksInto: "IPDG or PPC (CAT-101–104 and the 6 micro-owner modules credited)",
-  admissionRequirements: "Age 18+; prior grooming experience or ACA/IPDG enrollment recommended; signed animal-handling risk acknowledgement.",
+  admissionRequirements: "Age 18+; signed animal-handling risk acknowledgement.",
   coreCompetencies: [
     { icon: "PawPrint", label: "Cat Breed Identification" },
     { icon: "Shield", label: "Safe Cat Handling" },

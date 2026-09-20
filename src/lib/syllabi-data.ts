@@ -456,7 +456,7 @@ export const CAT_SYLLABUS: ProgramData = {
     'Recognize cat breeds · Read cat temperament and handle safely · Bathe and dry cats safely · Perform short, long and shave-down cat grooms · Add a profitable, safe cat-grooming service line to a business.',
   admissionRequirements: [
     'Age 18+',
-    'Prior animal handling experience or concurrent grooming enrollment recommended',
+    
     'Signed Feline-Handling Risk Acknowledgement',
   ],
   attendancePolicy: '100% attendance required across the 2-week intensive.',
