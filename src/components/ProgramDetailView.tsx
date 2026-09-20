@@ -347,13 +347,13 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-lg bg-[#0d9488]/5 border border-[#0d9488]/20">
-                      <div className="text-xs font-mono font-bold text-[#0d9488] uppercase mb-1">
+                    <div className="p-4 rounded-lg bg-gold-deep/5 border border-gold-deep/20">
+                      <div className="text-xs font-mono font-bold text-gold-deep uppercase mb-1">
                         Block 3 · 14:30 – 15:30 (1.0 hr)
                       </div>
-                      <div className="text-sm font-bold text-ink mb-1">Micro-checks & AI/RAG Synthesis</div>
+                      <div className="text-sm font-bold text-ink mb-1">Daily Review & Practice</div>
                       <p className="text-xs text-[#5a6b5f]">
-                        10 Micro-checks, portfolio evidence uploads, RAG retrieval verification, and daily attendance logging.
+                        Quick checks, portfolio uploads, and daily attendance.
                       </p>
                     </div>
                   </div>

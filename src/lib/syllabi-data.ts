@@ -82,7 +82,7 @@ export const IPDG_SYLLABUS: ProgramData = {
   appliedHours: 24,
   scheduledWeeks: 44,
   partTimeWeeks: 84,
-  scheduleTemplate: 'Mon–Fri 08:00–15:30 (30 hrs/wk) · 08:00–12:00 Technical Lab | 12:30–14:30 Business/Personal Spine | 14:30–15:30 Micro-checks & AI/RAG Workflow',
+  scheduleTemplate: 'Mon–Fri 08:00–15:30 (30 hrs/wk) · 08:00–12:00 Technical Lab | 12:30–14:30 Business/Personal Spine | 14:30–15:30 Daily Review & Practice',
   programObjective:
     'Identify dog stages and understand dog life · Recognize breeds · Recognize grooming tools · Identify workplace safety · Provide basic and advanced grooming techniques · Provide handling and pet care · Understand sanitation · Supervised live-client salon services · Build, price, market and operate a grooming business · Manage personal readiness, finances and well-being as an owner · Provide CPR and first aid.',
   admissionRequirements: [
@@ -95,7 +95,7 @@ export const IPDG_SYLLABUS: ProgramData = {
   attendancePolicy:
     'Clock hours are earned exclusively for documented, attended blocks. Minimum 95% attendance per term is strictly enforced. Any missed laboratory hours must be made up during scheduled Friday open lab sessions within the active term. Attendance below 90% triggers mandatory coach remediation.',
   gradingStandards:
-    'Every module requires: 10 hands-on activities + 10 micro-checks, 2 intermediate checkpoints, a final knowledge quiz (≥ 80% passing grade), and accepted capstone artifacts. Program completion requires rating at "Competent" on every skills checklist domain.',
+    'Every module requires: 10 hands-on activities + 10 quick checks, 2 intermediate checkpoints, a final knowledge quiz (≥ 80% passing grade), and accepted capstone artifacts. Program completion requires rating at "Competent" on every skills checklist domain.',
   safetyGates: [
     { code: 'IPDG-103', title: 'Handling, Key Skills Check & Table Restraints', stage: 'Term 1', requirement: 'MANDATORY KEY SKILLS CHECK: Grooming loops, belly straps, bite mitigation, table posture, and safe lifting required before live-animal contact.', isMandatoryBeforeLiveWork: true },
     { code: 'IPDG-302', title: 'Advanced Pattern Trims & Breed Profiles [Key Skills Check]', stage: 'Term 3', requirement: 'MANDATORY KEY SKILLS CHECK: Precision shear control on sanitary areas, hocks, and facial expression points.', isMandatoryBeforeLiveWork: true },
@@ -158,7 +158,7 @@ export const IPDG_SYLLABUS: ProgramData = {
     { week: 44, term: 'T4 Capstone', technicalModules: 'IPDG-402', businessModules: 'GRM-BIZ', hoursFormatted: '4 / 24', technicalHours: 4, businessHours: 24, assessments: 'Quizzes: IPDG-402 (CPR Key Skills Check), GRM-BIZ Capstone Panel Defense · Diploma Award Audit' },
   ],
   assessmentCalendar: [
-    { point: 'Module Quizzes & Evidence', when: 'Weekly (end of each module)', instrument: '10 Micro-checks + 2 Checkpoints + LMS Final Quiz + Artifact', passStandard: '≥ 80% on quiz; artifact accepted' },
+    { point: 'Module Quizzes & Evidence', when: 'Weekly (end of each module)', instrument: '10 quick checks + 2 Checkpoints + LMS Final Quiz + Artifact', passStandard: '≥ 80% on quiz; artifact accepted' },
     { point: 'Level Checkpoint 1', when: 'End of Term 1 (Week 11)', instrument: 'Skills Checklist level rows + Hour attendance ledger', passStandard: 'Competent on all rows; ≥ 95% attendance' },
     { point: 'Level Checkpoint 2', when: 'End of Term 2 (Week 22)', instrument: 'Skills Checklist level rows + Salon floor technique audit', passStandard: 'Competent on all rows; ≥ 95% attendance' },
     { point: 'Level Checkpoint 3', when: 'End of Term 3 (Week 34)', instrument: 'Skills Checklist level rows + Timed breed styling evaluation', passStandard: 'Competent on all rows; ≥ 95% attendance' },
@@ -199,7 +199,7 @@ export const PDT_SYLLABUS: ProgramData = {
   appliedHours: 24,
   scheduledWeeks: 39,
   partTimeWeeks: 75,
-  scheduleTemplate: 'Mon–Fri 08:00–15:30 (30 hrs/wk) · 08:00–12:00 Technical Training Ring | 12:30–14:30 Business/Personal Spine | 14:30–15:30 Micro-checks & RAG Lab',
+  scheduleTemplate: 'Mon–Fri 08:00–15:30 (30 hrs/wk) · 08:00–12:00 Technical Training Ring | 12:30–14:30 Business/Personal Spine | 14:30–15:30 Daily Review & Practice',
   programObjective:
     'Recognize/search dog history · Offer guidance to new owners · Follow vaccination & ADA guides · Identify 10 most important AKC breeds · Recognize training equipment · Recognize personalities & behavior problems · Choose effective solutions · Train basic obedience · Train advanced obedience · Use in-motion commands, verbal & hand signals · Make corrections · Design private classes · Build, price, market and operate a training business · Manage personal readiness, finances and well-being as an owner · Understand continuous education · Provide CPR and first aid.',
   admissionRequirements: [
@@ -211,7 +211,7 @@ export const PDT_SYLLABUS: ProgramData = {
   attendancePolicy:
     'Clock hours require 95% attendance minimum per term. Missed training ring hours must be made up during Friday ring hands-on practice sessions within the same term.',
   gradingStandards:
-    'Module completion requires: 10 activities + 10 micro-checks, 2 checkpoints, and quiz at ≥ 80%. Program graduation requires Competent on all behavior and training skills checklist rows.',
+    'Module completion requires: 10 activities + 10 quick checks, 2 checkpoints, and quiz at ≥ 80%. Program graduation requires Competent on all behavior and training skills checklist rows.',
   safetyGates: [
     { code: 'PDT-201', title: 'Canine Learning Theory & Marker Training [Key Skills Check]', stage: 'Term 2', requirement: 'MANDATORY KEY SKILLS CHECK: Demonstration of clear marker timing, reward mechanics, and threshold management.', isMandatoryBeforeLiveWork: true },
     { code: 'PDT-402', title: 'CPR, First Aid & Field Safety Protocols', stage: 'Term 4', requirement: 'MANDATORY KEY SKILLS CHECK: Canine CPR, emergency bite intervention, and heat/hydration management.', isMandatoryBeforeLiveWork: true },
@@ -268,7 +268,7 @@ export const PDT_SYLLABUS: ProgramData = {
     { week: 39, term: 'T4 Capstone', technicalModules: 'PDT-402', businessModules: 'LEG-405, TRN-BIZ', hoursFormatted: '2 / 27', technicalHours: 2, businessHours: 27, assessments: 'Quizzes: PDT-402 (Key Skills Check), LEG-405, TRN-BIZ Capstone Panel Defense · Diploma Award Audit' },
   ],
   assessmentCalendar: [
-    { point: 'Weekly Quizzes & Micro-checks', when: 'End of each module', instrument: '10 Micro-checks + Checkpoints + LMS Quiz', passStandard: '≥ 80%' },
+    { point: 'Weekly Quizzes & Quick Checks', when: 'End of each module', instrument: '10 quick checks + Checkpoints + LMS Quiz', passStandard: '≥ 80%' },
     { point: 'Term 1 Evaluation', when: 'Week 9', instrument: 'Learning Theory & Equipment handling checkoff', passStandard: 'Competent on all rows; ≥ 95% attendance' },
     { point: 'Term 2 Safety Checkpoint', when: 'Week 18', instrument: 'PDT-201 Marker timing & live-dog handler check', passStandard: 'Competent on all rows; ≥ 95% attendance' },
     { point: 'Term 3 Advanced Checkpoint', when: 'Week 30', instrument: 'Behavior modification plan evaluation', passStandard: 'Competent on all rows; ≥ 95% attendance' },
@@ -303,7 +303,7 @@ export const ACA_SYLLABUS: ProgramData = {
   appliedHours: 12,
   scheduledWeeks: 35,
   partTimeWeeks: 66,
-  scheduleTemplate: 'Mon–Fri 08:00–15:30 (30 hrs/wk) · 08:00–12:00 Bather/Care Lab | 12:30–14:30 Business/Personal Spine | 14:30–15:30 Micro-checks',
+  scheduleTemplate: 'Mon–Fri 08:00–15:30 (30 hrs/wk) · 08:00–12:00 Bather/Care Lab | 12:30–14:30 Business/Personal Spine | 14:30–15:30 Quick Checks',
   programObjective:
     'Identify a puppy and understand puppy life · Recognize breeds · Recognize grooming tools · Identify workplace safety · Provide basic handling and basic dog care · Understand sanitation process · Enter the workforce with personal readiness and customer-service skills · Understand the bather-to-owner career ladder.',
   admissionRequirements: [
@@ -315,7 +315,7 @@ export const ACA_SYLLABUS: ProgramData = {
   attendancePolicy:
     'Minimum 95% attendance per term. Friday open labs provide required makeup opportunities.',
   gradingStandards:
-    'All modules require 10 activities, 10 micro-checks, checkpoints, and quizzes at ≥ 80%. Skills Checklist Competent on handling and sanitation.',
+    'All modules require 10 activities, 10 quick checks, checkpoints, and quizzes at ≥ 80%. Skills Checklist Competent on handling and sanitation.',
   safetyGates: [
     { code: 'ACA-201', title: 'Hygiene, Key Skills Check & Bather Protocol', stage: 'Term 2', requirement: 'MANDATORY KEY SKILLS CHECK: Water temperature control, ear canal protection, eye lubrication, and tub slip prevention.', isMandatoryBeforeLiveWork: true },
   ],
@@ -366,7 +366,7 @@ export const ACA_SYLLABUS: ProgramData = {
     { week: 35, term: 'T4 Capstone', technicalModules: '—', businessModules: 'LEG-403, LEG-404, LEG-405, ACA-BIZ', hoursFormatted: '0 / 29', technicalHours: 0, businessHours: 29, assessments: 'Quizzes: LEG-403, LEG-404, LEG-405, ACA-BIZ Capstone Panel Defense' },
   ],
   assessmentCalendar: [
-    { point: 'Module Quizzes', when: 'Weekly', instrument: 'Micro-checks + Final LMS Quiz', passStandard: '≥ 80%' },
+    { point: 'Module Quizzes', when: 'Weekly', instrument: 'Quick Checks + Final LMS Quiz', passStandard: '≥ 80%' },
     { point: 'Safety Checkpoint', when: 'Week 18 (ACA-201)', instrument: 'Bather Key Skills Check Checklist', passStandard: 'Pass/Fail' },
     { point: 'Applied Capstone', when: 'Week 35 (ACA-BIZ)', instrument: 'Bather Career Ladder & Operations Portfolio', passStandard: 'Panel Acceptance' },
   ],
@@ -515,7 +515,7 @@ export const PPC_SYLLABUS: ProgramData = {
   attendancePolicy:
     '95% minimum attendance per term across all 52 scheduled weeks. Friday makeup labs mandatory for missed hours.',
   gradingStandards:
-    'All 172 modules require 10 activities, 10 micro-checks, checkpoints, and quizzes at ≥ 80%. PPC-BIZ panel defense required.',
+    'All 172 modules require 10 activities, 10 quick checks, checkpoints, and quizzes at ≥ 80%. PPC-BIZ panel defense required.',
   safetyGates: [
     { code: 'PPC-105', title: 'Salon Sanitation & Infection Control [Key Skills Check]', stage: 'Term 1', requirement: 'MANDATORY KEY SKILLS CHECK: Pathogen control, chemical safety, and sterilization.', isMandatoryBeforeLiveWork: true },
     { code: 'PPC-201', title: 'Intermediate Canine Grooming & Scissor Control [Key Skills Check]', stage: 'Term 2', requirement: 'MANDATORY KEY SKILLS CHECK: Scissor technique on sanitary areas and face.', isMandatoryBeforeLiveWork: true },
@@ -588,7 +588,7 @@ export const PPC_SYLLABUS: ProgramData = {
     { week: 52, term: 'T4 Capstone', technicalModules: 'PPC-410', businessModules: 'PPC-BIZ', hoursFormatted: '8 / 21', technicalHours: 8, businessHours: 21, assessments: 'Quizzes: PPC-410 (Key Skills Check), PPC-BIZ Comprehensive Capstone Defense · Advanced Diploma Award' },
   ],
   assessmentCalendar: [
-    { point: 'Weekly Module Quizzes', when: 'Weeks 1–52', instrument: 'Micro-checks + Final LMS Quiz', passStandard: '≥ 80%' },
+    { point: 'Weekly Module Quizzes', when: 'Weeks 1–52', instrument: 'Quick Checks + Final LMS Quiz', passStandard: '≥ 80%' },
     { point: 'Term 1 Foundation Check', when: 'Week 12', instrument: 'Sanitation Gate + Term 1 Skills Checklist', passStandard: 'Competent; ≥ 95% attendance' },
     { point: 'Term 2 Core Skills Check', when: 'Week 25', instrument: 'Scissor Control & Basic Obedience Checkoff', passStandard: 'Competent; ≥ 95% attendance' },
     { point: 'Term 3 Advanced Check', when: 'Week 40', instrument: 'Daycare & Feline Key Skills Checks', passStandard: 'Competent; ≥ 95% attendance' },

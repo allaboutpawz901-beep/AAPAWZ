@@ -699,7 +699,7 @@ export function allPathwayCompanions(): Array<{ seed: PathwaySeed; companion: Co
 }
 
 // The weekly schedule template from the guide (A4): Mon–Fri 08:00–15:30, 6 hr/day.
-// Block types: TECHNICAL_LAB, BUSINESS_MODULE, MICRO_CHECKS, PRACTICUM, CAPSTONE, RUBRIC_REVIEW.
+// Block types: TECHNICAL_LAB, BUSINESS_MODULE, QUICK_CHECKS, PRACTICUM, CAPSTONE, RUBRIC_REVIEW.
 export type ScheduleBlock = {
   blockType: string;
   title: string;
@@ -717,11 +717,11 @@ export function weeklyScheduleForPathway(
     // Monday
     { blockType: "TECHNICAL_LAB", title: "Technical lab — Mon", start: "08:00", end: "12:00", courseIndex },
     { blockType: "BUSINESS_MODULE", title: "Business module — Mon", start: "12:30", end: "14:30", courseIndex },
-    { blockType: "MICRO_CHECKS", title: "Micro-checks + AI workflow log — Mon", start: "14:30", end: "15:30", courseIndex },
+    { blockType: "QUICK_CHECKS", title: "Daily review and practice — Mon", start: "14:30", end: "15:30", courseIndex },
     // Tuesday
     { blockType: "TECHNICAL_LAB", title: "Technical lab — Tue", start: "08:00", end: "12:00", courseIndex },
     { blockType: "PERSONAL_MODULE", title: "Personal module — Tue", start: "12:30", end: "14:30", courseIndex },
-    { blockType: "MICRO_CHECKS", title: "Micro-checks + AI workflow log — Tue", start: "14:30", end: "15:30", courseIndex },
+    { blockType: "QUICK_CHECKS", title: "Daily review and practice — Tue", start: "14:30", end: "15:30", courseIndex },
     // Wednesday
     { blockType: "TECHNICAL_LAB", title: "Technical lab — Wed", start: "08:00", end: "12:00", courseIndex },
     { blockType: "BUSINESS_MODULE", title: "Business module — Wed", start: "12:30", end: "14:30", courseIndex },
@@ -729,7 +729,7 @@ export function weeklyScheduleForPathway(
     // Thursday
     { blockType: "TECHNICAL_LAB", title: "Technical lab — Thu", start: "08:00", end: "12:00", courseIndex },
     { blockType: "BUSINESS_MODULE", title: "Business module — Thu", start: "12:30", end: "14:30", courseIndex },
-    { blockType: "MICRO_CHECKS", title: "Micro-checks + AI workflow log — Thu", start: "14:30", end: "15:30", courseIndex },
+    { blockType: "QUICK_CHECKS", title: "Daily review and practice — Thu", start: "14:30", end: "15:30", courseIndex },
     // Friday
     { blockType: "PRACTICUM", title: "Practicum / open lab — Fri", start: "08:00", end: "12:00", courseIndex },
     { blockType: "CAPSTONE", title: "Applied capstone work — Fri", start: "12:30", end: "14:30", courseIndex },
