@@ -155,7 +155,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
           {/* Main Left Content Area */}
           <main className="w-full lg:flex-1 min-w-0">
             {/* Top Navigation Tabs */}
-            <div className="border-b border-[#e4dfd4] mb-8 overflow-x-auto scrollbar-none">
+            <div className="border-b border-gold/25 mb-8 overflow-x-auto scrollbar-none">
               <nav className="flex space-x-8 min-w-max" aria-label="Program sections">
                 {[
                   { id: 'overview', label: 'Program' },
@@ -194,23 +194,17 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     {program.overviewParagraphs.map((para, i) => (
                       <p key={i}>{para}</p>
                     ))}
-                    {syllabus && (
-                      <div className="p-4 rounded-lg bg-[#faf6ee] border border-[#e4dfd4] text-xs sm:text-sm text-[#243328] font-mono leading-relaxed">
-                        <strong className="text-ink font-bold text-[#8a6d2b] block mb-1 uppercase tracking-wide">Program Objectives:</strong>
-                        {syllabus.programObjective}
-                      </div>
-                    )}
                   </div>
 
                   {/* Core Competencies Badges */}
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#5a6b5f] mb-4">
-                    Primary Competency Domains
+                    What You Will Master
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {program.coreCompetencies.map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-3 p-3.5 rounded-lg bg-cream border border-[#e4dfd4] text-ink text-xs sm:text-sm font-medium"
+                        className="flex items-center gap-3 p-3.5 rounded-lg bg-cream border border-gold/25 text-ink text-xs sm:text-sm font-medium"
                       >
                         <DynamicIcon name={item.icon} className="w-4 h-4 text-[#8a6d2b] shrink-0" />
                         <span>{item.label}</span>
@@ -230,7 +224,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                     {/* SVG Donut Chart */}
-                    <div className="md:col-span-4 flex flex-col items-center justify-center p-4 bg-cream rounded-xl border border-[#e4dfd4]">
+                    <div className="md:col-span-4 flex flex-col items-center justify-center p-4 bg-cream rounded-xl border border-gold/25">
                       <div className="relative w-44 h-44">
                         <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                           {/* Background Circle */}
@@ -285,7 +279,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     {/* Breakdown items */}
                     <div className="md:col-span-8 space-y-4">
                       {program.breakdown.map((item, idx) => (
-                        <div key={idx} className="p-4 rounded-lg bg-cream border border-[#e4dfd4]">
+                        <div key={idx} className="p-4 rounded-lg bg-cream border border-gold/25">
                           <div className="flex items-center justify-between mb-1.5">
                             <div className="flex items-center gap-2">
                               <span
@@ -295,7 +289,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                               />
                               <span className="text-sm font-bold text-ink">{item.type}</span>
                             </div>
-                            <span className="text-xs font-mono font-bold text-[#8a6d2b] bg-cream px-2 py-0.5 rounded border border-[#e4dfd4]">
+                            <span className="text-xs font-mono font-bold text-[#8a6d2b] bg-cream px-2 py-0.5 rounded border border-gold/25">
                               {item.hours} Hours ({item.percent})
                             </span>
                           </div>
@@ -310,71 +304,54 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                   </div>
                 </section>
 
-                {/* Table A4: Weekly Schedule Template */}
+                {/* Weekly Schedule */}
                 <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
-                        Standard Daily & Weekly Schedule (Template A4)
+                        Weekly Schedule
                       </h2>
                       <p className="text-xs sm:text-sm text-[#5a6b5f]">
-                        30 Hours per week · Monday through Friday structured delivery
+                        30 hours per week · Monday through Friday
                       </p>
                     </div>
-                    <span className="text-xs font-mono px-3 py-1 bg-[#8a6d2b]/10 text-[#8a6d2b] rounded-full font-semibold">
+                    <span className="text-xs font-mono px-3 py-1 bg-gold-deep/10 text-gold-deep rounded-full font-semibold">
                       Mon – Fri | 08:00 – 15:30
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div className="p-4 rounded-lg bg-[#8a6d2b]/5 border border-[#8a6d2b]/20">
-                      <div className="text-xs font-mono font-bold text-[#8a6d2b] uppercase mb-1">
-                        Block 1 · 08:00 – 12:00 (4.0 hrs)
-                      </div>
-                      <div className="text-sm font-bold text-ink mb-1">Technical Skills Laboratory</div>
-                      <p className="text-xs text-[#5a6b5f]">
-                        Live salon floor, wet prep tubs, obedience rings, handling mechanics, and supervised safety drills.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-lg bg-[#d9b589]/10 border border-[#d9b589]/30">
-                      <div className="text-xs font-mono font-bold text-[#8c6527] uppercase mb-1">
-                        Block 2 · 12:30 – 14:30 (2.0 hrs)
-                      </div>
-                      <div className="text-sm font-bold text-ink mb-1">Business & Personal Mastery Spine</div>
-                      <p className="text-xs text-[#5a6b5f]">
-                        LSH, PER, BUS, MKT, TEC, FIN, and LEG daily interactive business and self-governance workshops.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-lg bg-gold-deep/5 border border-gold-deep/20">
+                    <div className="p-4 border border-gold/25">
                       <div className="text-xs font-mono font-bold text-gold-deep uppercase mb-1">
-                        Block 3 · 14:30 – 15:30 (1.0 hr)
+                        08:00 – 12:00
                       </div>
-                      <div className="text-sm font-bold text-ink mb-1">Daily Review & Practice</div>
+                      <div className="text-sm font-bold text-ink mb-1">Hands-On Practice</div>
                       <p className="text-xs text-[#5a6b5f]">
-                        Quick checks, portfolio uploads, and daily attendance.
+                        Salon floor, grooming stations, training ring, and real animal handling.
+                      </p>
+                    </div>
+
+                    <div className="p-4 border border-gold/25">
+                      <div className="text-xs font-mono font-bold text-gold-deep uppercase mb-1">
+                        12:30 – 14:30
+                      </div>
+                      <div className="text-sm font-bold text-ink mb-1">Business & Life Skills</div>
+                      <p className="text-xs text-[#5a6b5f]">
+                        Business operations, marketing, finance, legal, and personal readiness.
+                      </p>
+                    </div>
+
+                    <div className="p-4 border border-gold/25">
+                      <div className="text-xs font-mono font-bold text-gold-deep uppercase mb-1">
+                        14:30 – 15:30
+                      </div>
+                      <div className="text-sm font-bold text-ink mb-1">Daily Review</div>
+                      <p className="text-xs text-[#5a6b5f]">
+                        Quick checks, portfolio uploads, and daily progress.
                       </p>
                     </div>
                   </div>
 
-                  {/* Staffing & Facilities (from Program Delivery Guide A5 & A6) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[#e4dfd4] text-xs text-[#5a6b5f]">
-                    <div className="flex items-start gap-3">
-                      <Users className="w-5 h-5 text-[#8a6d2b] shrink-0" />
-                      <div>
-                        <strong className="text-ink block font-semibold">Staffing:</strong>
-                        Grooming instructor 1:6 on salon floor · Training instructor 1:8 · Animal care instructor 1:8 · Business instructor 1:15 · Personal readiness coach 1:15 with weekly 1:1 check-ins.
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Building className="w-5 h-5 text-[#8a6d2b] shrink-0" />
-                      <div>
-                        <strong className="text-ink block font-semibold">Facilities:</strong>
-                        Salon floor with 6 grooming stations, 3 tubs, drying area, sanitation station, cat room separated from dogs. Training floor with indoor ring, outdoor secure yard, equipment storage. Business studio for 15 with laptops and booking tools.
-                      </div>
-                    </div>
-                  </div>
                 </section>
 
                 {/* Textbooks & Reference Bibliography (Part B & C) */}
@@ -387,8 +364,8 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                   </div>
 
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border border-[#e4dfd4]">
-                      <thead className="bg-[#faf6ee] text-ink font-bold border-b border-[#e4dfd4]">
+                    <table className="w-full text-left text-xs border border-gold/25">
+                      <thead className="bg-cream text-ink font-bold border-b border-gold/25">
                         <tr>
                           <th className="p-3">Reference Code</th>
                           <th className="p-3">Title & Publication Standard</th>
@@ -428,13 +405,13 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             {activeTab === 'curriculum' && (
               <div className="space-y-8">
                 {/* View Mode Switcher */}
-                <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-cream rounded-xl border border-[#e4dfd4]">
+                <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-cream rounded-xl border border-gold/25">
                   <div>
                     <h2 className="font-display text-xl font-bold text-ink">Curriculum Delivery & Master Schedule</h2>
                     <p className="text-xs text-[#5a6b5f]">Select a view mode to inspect terms, the week-by-week master schedule, or granular course modules.</p>
                   </div>
 
-                  <div className="inline-flex rounded-lg bg-[#faf6ee] p-1 border border-[#e4dfd4]">
+                  <div className="inline-flex rounded-lg bg-cream p-1 border border-gold/25">
                     <button
                       onClick={() => setCurriculumViewMode('terms')}
                       className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
@@ -476,7 +453,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                       return (
                         <div
                           key={term.termNumber}
-                          className="bg-cream rounded-xl border border-[#e4dfd4] overflow-hidden shadow-sm transition-all"
+                          className="bg-cream rounded-xl border border-gold/25 overflow-hidden shadow-sm transition-all"
                         >
                           <button
                             onClick={() => setOpenTermIndex(isOpen ? null : index)}
@@ -507,11 +484,11 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                           </button>
 
                           {isOpen && (
-                            <div className="p-6 pt-0 border-t border-[#e4dfd4]/70 bg-cream/50 space-y-6">
+                            <div className="p-6 pt-0 border-t border-gold/25/70 bg-cream/50 space-y-6">
                               <p className="text-sm text-[#5a6b5f] leading-relaxed pt-4">{term.description}</p>
 
                               {/* Time Breakdown */}
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-lg bg-cream border border-[#e4dfd4]">
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-lg bg-cream border border-gold/25">
                                 <div>
                                   <div className="text-xs text-[#5a6b5f]">Technical Lab Hours</div>
                                   <div className="text-base font-bold text-[#8a6d2b]">
@@ -541,7 +518,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                   {term.courseHighlights.map((mod) => (
                                     <div
                                       key={mod.code}
-                                      className="p-4 rounded-lg bg-cream border border-[#e4dfd4] hover:border-[#8a6d2b]/40 transition-colors"
+                                      className="p-4 rounded-lg bg-cream border border-gold/25 hover:border-[#8a6d2b]/40 transition-colors"
                                     >
                                       <div className="flex items-center justify-between mb-1.5">
                                         <span className="font-mono text-xs font-bold text-[#8a6d2b] px-2 py-0.5 rounded bg-[#8a6d2b]/10">
@@ -565,7 +542,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                 {/* VIEW 2: WEEK-BY-WEEK MASTER DELIVERY SCHEDULE */}
                 {curriculumViewMode === 'weekly' && (
-                  <div className="bg-cream rounded-xl border border-[#e4dfd4] p-6 shadow-sm">
+                  <div className="bg-cream rounded-xl border border-gold/25 p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h3 className="font-display text-xl font-bold text-ink">
@@ -581,8 +558,8 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     </div>
 
                     <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs border border-[#e4dfd4]">
-                        <thead className="bg-[#faf6ee] text-ink font-bold border-b border-[#e4dfd4]">
+                      <table className="w-full text-left text-xs border border-gold/25">
+                        <thead className="bg-cream text-ink font-bold border-b border-gold/25">
                           <tr>
                             <th className="p-3 w-16">Week</th>
                             <th className="p-3 w-28">Term</th>
@@ -624,7 +601,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 {/* VIEW 3: FULL COURSE MODULE CATALOG */}
                 {curriculumViewMode === 'catalog' && (
                   <div className="space-y-4">
-                    <div className="bg-cream p-4 rounded-xl border border-[#e4dfd4] flex items-center justify-between">
+                    <div className="bg-cream p-4 rounded-xl border border-gold/25 flex items-center justify-between">
                       <span className="text-xs font-semibold text-ink">
                         Displaying {programCatalogModules.length} accredited course descriptions for {program.code}
                       </span>
@@ -638,7 +615,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {programCatalogModules.map((m) => (
-                        <div key={m.code} className="p-5 rounded-xl bg-cream border border-[#e4dfd4] shadow-sm flex flex-col justify-between">
+                        <div key={m.code} className="p-5 rounded-xl bg-cream border border-gold/25 shadow-sm flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#8a6d2b]/10 text-[#8a6d2b]">
@@ -646,7 +623,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                               </span>
                               <div className="flex items-center gap-1.5">
                                 <span className="text-xs font-medium text-[#5a6b5f]">{m.hours} Hrs</span>
-                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#faf6ee] font-semibold text-[#5a6b5f]">
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-cream font-semibold text-[#5a6b5f]">
                                   {m.level}
                                 </span>
                               </div>
@@ -685,7 +662,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {syllabus?.careerOutcomes.map((outcome, idx) => (
-                      <div key={idx} className="p-5 rounded-xl bg-cream border border-[#e4dfd4] flex flex-col justify-between">
+                      <div key={idx} className="p-5 rounded-xl bg-cream border border-gold/25 flex flex-col justify-between">
                         <div>
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#8a6d2b]/10 text-[#8a6d2b] uppercase tracking-wider block w-fit mb-2">
                             {outcome.employmentType}
@@ -693,7 +670,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                           <h3 className="font-semibold text-base text-ink mb-1">{outcome.title}</h3>
                           <p className="text-xs text-[#5a6b5f] leading-relaxed mb-4">{outcome.roleDescription}</p>
                         </div>
-                        <div className="pt-3 border-t border-[#e4dfd4]">
+                        <div className="pt-3 border-t border-gold/25">
                           <div className="text-[10px] uppercase font-bold text-[#5a6b5f]">Typical Compensation</div>
                           <div className="text-sm font-mono font-bold text-[#8a6d2b]">{outcome.typicalComp}</div>
                           <div className="text-[11px] text-gold-deep font-medium mt-0.5">Market Demand: {outcome.marketDemand}</div>
@@ -714,18 +691,18 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                   <div className="space-y-4">
                     {syllabus?.rubricDomains.map((r, idx) => (
-                      <div key={idx} className="p-4 rounded-xl border border-[#e4dfd4] bg-cream">
+                      <div key={idx} className="p-4 rounded-xl border border-gold/25 bg-cream">
                         <div className="font-display font-bold text-sm text-ink mb-1">{r.domain}</div>
                         <div className="text-xs text-[#5a6b5f] mb-3">
                           <strong className="text-ink">Core Skills Evaluated:</strong> {r.coreSkills}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                          <div className="p-3 rounded bg-cream border border-[#e4dfd4]">
+                          <div className="p-3 rounded bg-cream border border-gold/25">
                             <span className="font-bold text-[#8a6d2b] block mb-1">Competent Benchmark (Graduation Standard):</span>
                             <span className="text-[#5a6b5f]">{r.competentBenchmark}</span>
                           </div>
-                          <div className="p-3 rounded bg-cream border border-[#e4dfd4]">
+                          <div className="p-3 rounded bg-cream border border-gold/25">
                             <span className="font-bold text-[#8c6527] block mb-1">Mastery / Honors Benchmark:</span>
                             <span className="text-[#5a6b5f]">{r.masteryThreshold}</span>
                           </div>
@@ -773,7 +750,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                 {/* Admission Requirements & Attendance Policy */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <section className="bg-cream p-6 rounded-xl border border-[#e4dfd4] shadow-sm">
+                  <section className="bg-cream p-6 rounded-xl border border-gold/25 shadow-sm">
                     <h3 className="font-display text-lg font-bold text-ink mb-3">
                       What You Need to Enroll
                     </h3>
@@ -787,14 +764,14 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     </ul>
                   </section>
 
-                  <section className="bg-cream p-6 rounded-xl border border-[#e4dfd4] shadow-sm">
+                  <section className="bg-cream p-6 rounded-xl border border-gold/25 shadow-sm">
                     <h3 className="font-display text-lg font-bold text-ink mb-3">
                       Attendance Policy
                     </h3>
                     <p className="text-xs text-[#5a6b5f] leading-relaxed mb-4">
                       {syllabus?.attendancePolicy}
                     </p>
-                    <div className="p-3 rounded-lg bg-[#faf6ee] text-xs font-mono text-[#8a6d2b] font-semibold">
+                    <div className="p-3 rounded-lg bg-cream text-xs font-mono text-[#8a6d2b] font-semibold">
                       Friday 08:00–12:00: Open Laboratory Makeup Block
                     </div>
                   </section>
@@ -819,16 +796,16 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                   {syllabus?.faqs.map((faq, idx) => {
                     const isOpen = openFaqIndex === idx;
                     return (
-                      <div key={idx} className="border border-[#e4dfd4] rounded-lg overflow-hidden">
+                      <div key={idx} className="border border-gold/25 rounded-lg overflow-hidden">
                         <button
                           onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                          className="w-full text-left p-4 bg-cream flex items-center justify-between gap-4 font-semibold text-sm text-ink hover:bg-[#faf6ee] transition-colors"
+                          className="w-full text-left p-4 bg-cream flex items-center justify-between gap-4 font-semibold text-sm text-ink hover:bg-cream transition-colors"
                         >
                           <span>{faq.question}</span>
                           <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                         </button>
                         {isOpen && (
-                          <div className="p-4 bg-cream text-xs sm:text-sm text-[#5a6b5f] leading-relaxed border-t border-[#e4dfd4]">
+                          <div className="p-4 bg-cream text-xs sm:text-sm text-[#5a6b5f] leading-relaxed border-t border-gold/25">
                             {faq.answer}
                           </div>
                         )}
@@ -842,7 +819,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
           {/* Right Sidebar: Program Card & Action Pane */}
           <aside className="w-full lg:w-80 shrink-0 space-y-6">
-            <div className="bg-cream rounded-xl border border-[#e4dfd4] p-6 shadow-sm">
+            <div className="bg-cream rounded-xl border border-gold/25 p-6 shadow-sm">
               <span className="text-[10px] font-bold tracking-widest text-[#8a6d2b] uppercase block mb-1">
                 Official Credential
               </span>
@@ -850,7 +827,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 {program.credential}
               </h3>
               
-              <div className="space-y-3 text-xs text-[#5a6b5f] mb-6 pt-3 border-t border-[#e4dfd4]">
+              <div className="space-y-3 text-xs text-[#5a6b5f] mb-6 pt-3 border-t border-gold/25">
                 <div className="flex justify-between">
                   <span className="text-[#5a6b5f]">Total Hours:</span>
                   <span className="font-mono font-bold text-ink">{program.totalClockHours} hrs</span>
