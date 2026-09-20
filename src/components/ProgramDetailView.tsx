@@ -196,7 +196,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     ))}
                     {syllabus && (
                       <div className="p-4 rounded-lg bg-[#faf6ee] border border-[#e4dfd4] text-xs sm:text-sm text-[#243328] font-mono leading-relaxed">
-                        <strong className="font-sans font-bold text-[#8a6d2b] block mb-1 uppercase tracking-wide">Accredited Program Objectives:</strong>
+                        <strong className="text-ink font-bold text-[#8a6d2b] block mb-1 uppercase tracking-wide">Program Objectives:</strong>
                         {syllabus.programObjective}
                       </div>
                     )}
@@ -358,20 +358,20 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     </div>
                   </div>
 
-                  {/* Staffing & Facilities Specs (Table A5 & A6) */}
+                  {/* Staffing & Facilities (from Program Delivery Guide A5 & A6) */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[#e4dfd4] text-xs text-[#5a6b5f]">
                     <div className="flex items-start gap-3">
                       <Users className="w-5 h-5 text-[#8a6d2b] shrink-0" />
                       <div>
-                        <strong className="text-ink block font-semibold">Staffing Ratios (Table A5):</strong>
-                        1:8 instructor-to-student ratio during live animal labs; 1:16 during business lectures. Lead instructor maintains Master credential.
+                        <strong className="text-ink block font-semibold">Staffing:</strong>
+                        Grooming instructor 1:6 on salon floor · Training instructor 1:8 · Animal care instructor 1:8 · Business instructor 1:15 · Personal readiness coach 1:15 with weekly 1:1 check-ins.
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Building className="w-5 h-5 text-[#8a6d2b] shrink-0" />
                       <div>
-                        <strong className="text-ink block font-semibold">Facility Standards (Table A6):</strong>
-                        Commercial-grade hydraulic grooming tables, non-slip electric tubs, dedicated ventilation, isolation kennel, and secure outdoor training yards.
+                        <strong className="text-ink block font-semibold">Facilities:</strong>
+                        Salon floor with 6 grooming stations, 3 tubs, drying area, sanitation station, cat room separated from dogs. Training floor with indoor ring, outdoor secure yard, equipment storage. Business studio for 15 with laptops and booking tools.
                       </div>
                     </div>
                   </div>
