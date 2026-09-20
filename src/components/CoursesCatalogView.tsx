@@ -17,7 +17,6 @@ import {
   Sparkles,
   GraduationCap,
 } from 'lucide-react';
-import { EnrollmentModal } from '@/components/lms-design-system/EnrollmentModal';
 import { COURSES_PROGRAMS, ProgramDetails } from '@/lib/courses-data';
 import { ALL_CATALOG_MODULES, CatalogModule } from '@/lib/catalog-modules';
 
@@ -41,8 +40,7 @@ export function CoursesCatalogView() {
   const [sortBy, setSortBy] = useState<string>('featured');
   const [viewMode, setViewMode] = useState<'programs' | 'modules'>('programs');
   const [activeCourseModal, setActiveCourseModal] = useState<ProgramDetails | null>(null);
-  const [enrollModalOpen, setEnrollModalOpen] = useState<boolean>(false);
-  const [selectedProgramForEnroll, setSelectedProgramForEnroll] = useState<string>('ipdg');
+
 
   // 1. Filtered Modules from ALL_CATALOG_MODULES
   const filteredModules = useMemo(() => {
@@ -816,16 +814,13 @@ export function CoursesCatalogView() {
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#faf6ee]">
-              <button
-                onClick={() => {
-                  setSelectedProgramForEnroll(activeCourseModal.id);
-                  setActiveCourseModal(null);
-                  setEnrollModalOpen(true);
-                }}
+              <Link
+                href="/learn/enroll"
+                onClick={() => setActiveCourseModal(null)}
                 className="px-4 py-2 rounded-full bg-gold-light text-ink font-bold text-xs hover:bg-[#c9a96e] transition-colors"
               >
                 Enroll Now
-              </button>
+              </Link>
 
               <Link
                 href={`/learn/courses/${activeCourseModal.slug}`}
@@ -839,12 +834,6 @@ export function CoursesCatalogView() {
         </div>
       )}
 
-      {/* Enrollment Modal */}
-      <EnrollmentModal
-        isOpen={enrollModalOpen}
-        onClose={() => setEnrollModalOpen(false)}
-        initialProgramId={selectedProgramForEnroll}
-      />
     </div>
   );
 }

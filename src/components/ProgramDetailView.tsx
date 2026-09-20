@@ -20,7 +20,6 @@ import {
   HelpCircle,
   Briefcase,
 } from 'lucide-react';
-import { EnrollmentModal } from '@/components/lms-design-system/EnrollmentModal';
 import { DynamicIcon } from '@/components/DynamicIcon';
 import { ProgramDetails } from '@/lib/courses-data';
 import { ALL_PROGRAM_SYLLABI, ProgramInstitutionalData } from '@/lib/syllabi-data';
@@ -35,7 +34,6 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
   const [curriculumViewMode, setCurriculumViewMode] = useState<'terms' | 'weekly' | 'catalog'>('terms');
   const [openTermIndex, setOpenTermIndex] = useState<number | null>(0);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [enrollModalOpen, setEnrollModalOpen] = useState(false);
 
   // Retrieve matching institutional syllabus
   const syllabus: ProgramInstitutionalData | undefined =
@@ -129,13 +127,13 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-6">
-            <button
-              onClick={() => setEnrollModalOpen(true)}
+            <Link
+              href="/learn/enroll"
               className="btn-gold"
             >
               <span>Enroll in this Pathway</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
             <Link href="/learn/classroom" className="btn-ghost">
               <Sparkles className="w-4 h-4" />
               <span>Launch AI Classroom</span>
@@ -874,12 +872,12 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 </div>
               </div>
 
-              <button
-                onClick={() => setEnrollModalOpen(true)}
+              <Link
+                href="/learn/enroll"
                 className="btn-gold w-full mb-3"
               >
                 Enroll in Program <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
 
               <Link
                 href={'/learn/classroom'}
@@ -908,11 +906,6 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
         </div>
       </div>
 
-      <EnrollmentModal
-        isOpen={enrollModalOpen}
-        onClose={() => setEnrollModalOpen(false)}
-        initialProgramId={program.id}
-      />
     </div>
   );
 }
