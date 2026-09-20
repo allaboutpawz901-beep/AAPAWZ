@@ -47,7 +47,7 @@ export function HeroSection() {
 
             {/* CTA Button */}
             <Link
-              href="/enroll"
+              href="/learn/enroll"
               className="inline-flex items-center justify-center gap-2 font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d9b589] bg-[#d9b589] text-[#141b16] hover:bg-[#e4c69e] active:bg-[#c9a579] px-7 py-3.5 text-sm sm:text-base tracking-wide shadow-lg"
             >
               <span>Get Started &amp; Enroll</span>

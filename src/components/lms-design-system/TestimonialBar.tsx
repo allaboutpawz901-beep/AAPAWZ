@@ -36,7 +36,7 @@ export function TestimonialBar() {
           {/* Action Button */}
           <div className="shrink-0">
             <Link
-              href="/enroll"
+              href="/learn/enroll"
               className="inline-flex items-center justify-center gap-2 font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none border border-[#43594b] hover:border-[#678572] bg-white/5 hover:bg-white/10 text-white px-6 py-3 text-xs sm:text-sm tracking-wide"
             >
               <span>Start Your Journey</span>

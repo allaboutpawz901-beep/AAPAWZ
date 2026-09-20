@@ -66,7 +66,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
   const strokeApp = appRatio * circ;
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream font-sans text-ink">
+    <div className="min-h-screen flex flex-col bg-cream text-ink">
       {/* Hero Header Banner — split grid: marble cream left, photo right */}
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr]">
         {/* Left Content Column — marble on cream */}
@@ -123,7 +123,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                 <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">Award</span>
               </div>
               <div className="text-xs font-bold text-ink leading-tight">{program.credential}</div>
-              <div className="text-[0.7rem] text-ink-soft mt-0.5">State Approved</div>
+              <div className="text-[0.7rem] text-ink-soft mt-0.5">Credential</div>
             </div>
           </div>
 
@@ -882,7 +882,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               </button>
 
               <Link
-                href={`/classroom`}
+                href={'/learn/classroom'}
                 className="btn-ghost w-full"
               >
                 Open AI Classroom Sandbox

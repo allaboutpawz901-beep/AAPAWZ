@@ -36,9 +36,9 @@ export function Navbar({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginEmail }),
       });
-      router.push('/classroom');
+      router.push('/learn/classroom');
     } catch {
-      router.push('/classroom');
+      router.push('/learn/classroom');
     } finally {
       setLoginLoading(false);
       setLoginModalOpen(false);
@@ -53,9 +53,9 @@ export function Navbar({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ provider: 'google', email: 'google.learner@leashed.edu' }),
       });
-      router.push('/classroom');
+      router.push('/learn/classroom');
     } catch {
-      router.push('/classroom');
+      router.push('/learn/classroom');
     } finally {
       setGoogleLoading(false);
       setLoginModalOpen(false);
@@ -114,7 +114,7 @@ export function Navbar({
 
             {/* Log In Link -> /sign-in */}
             <Link
-              href="/sign-in"
+              href="/learn/sign-in"
               className="text-[#d5e0d8] hover:text-white font-medium text-xs sm:text-sm px-3.5 py-2 rounded-full hover:bg-white/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d9b589]"
               aria-label="Learner Sign In"
             >
@@ -123,7 +123,7 @@ export function Navbar({
 
             {/* Get Started / Enroll CTA Button */}
             <Link
-              href="/enroll"
+              href="/learn/enroll"
               className="inline-flex items-center justify-center font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d9b589] bg-[#e4cfb2] hover:bg-[#ebd9c1] text-[#141b16] px-5 sm:px-6 py-2 sm:py-2.5 text-xs font-bold tracking-wide shadow-sm"
               aria-label="Get Started with Enrollment"
             >
@@ -219,7 +219,7 @@ export function Navbar({
               <p className="text-xs text-[#8ea093]">
                 New student?{' '}
                 <Link
-                  href="/enroll"
+                  href="/learn/enroll"
                   onClick={() => setLoginModalOpen(false)}
                   className="text-[#d9b589] hover:underline font-semibold inline-flex items-center gap-1"
                 >

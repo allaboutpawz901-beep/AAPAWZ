@@ -74,7 +74,7 @@ export function ProgramsSection({ onSelectProgram }: ProgramsSectionProps) {
               Whether your passion lies in styling, hands-on care, or launching your own business, LEASHED offers structured, accredited training designed for real career outcomes.
             </p>
             <Link
-              href="/enroll"
+              href="/learn/enroll"
               className="inline-flex items-center justify-center gap-2 font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a2920] bg-[#1a2920] text-white hover:bg-[#25392d] active:bg-[#121c16] px-6 py-3 text-xs tracking-wide shadow-sm"
             >
               <span>Get Started / Enroll</span>

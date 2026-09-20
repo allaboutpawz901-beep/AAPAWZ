@@ -81,7 +81,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       // Step 8 complete -> Route to /classroom
-      router.push('/classroom');
+      router.push('/learn/classroom');
     }
   };
 
@@ -1133,7 +1133,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
               {/* Primary Action to Classroom */}
               <div className="pt-4">
                 <button
-                  onClick={() => router.push('/classroom')}
+                  onClick={() => router.push('/learn/classroom')}
                   className="btn-gold w-full rounded-xl shadow-md hover:shadow-lg active:scale-[0.99]"
                 >
                   <span>Go to Classroom</span>

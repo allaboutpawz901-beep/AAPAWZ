@@ -58,7 +58,7 @@ export function LeashedAdvantageSection({ onExploreAll }: LeashedAdvantageSectio
               Our programs give you more than technical skills — they give you confidence, community, and a clear path to a rewarding career in the pet care industry.
             </p>
             <Link
-              href="/enroll"
+              href="/learn/enroll"
               className="inline-flex items-center justify-center gap-2 font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a2920] bg-[#1a2920] text-white hover:bg-[#25392d] active:bg-[#121c16] px-6 py-3 text-xs sm:text-sm tracking-wide shadow-sm"
             >
               <span>Start Your Enrollment</span>

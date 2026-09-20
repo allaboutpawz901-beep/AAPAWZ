@@ -39,7 +39,7 @@ export function Footer() {
               );
             })}
             <Link
-              href="/enroll"
+              href="/learn/enroll"
               className="text-xs sm:text-[0.82rem] text-[#d9b589] hover:text-[#ebd5b9] transition-colors duration-150 font-semibold"
             >
               Get Started / Enroll

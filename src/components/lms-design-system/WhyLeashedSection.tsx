@@ -73,7 +73,7 @@ export function WhyLeashedSection() {
                 LEASHED isn&apos;t just about education — it&apos;s about creating opportunities. Our programs are built to give you the practical skills, professional credentials, and ongoing support you need to build a career you love.
               </p>
               <Link
-                href="/enroll"
+                href="/learn/enroll"
                 className="inline-flex items-center justify-center gap-2 font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d9b589] bg-[#d9b589] text-[#141b16] hover:bg-[#e4c69e] active:bg-[#c9a579] px-6 py-3 text-xs sm:text-sm tracking-wide shadow-sm"
               >
                 <span>Enroll in LEASHED</span>

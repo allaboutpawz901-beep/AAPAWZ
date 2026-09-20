@@ -179,7 +179,7 @@ export function CoursesCatalogView() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream font-sans text-ink">
+    <div className="min-h-screen flex flex-col bg-cream text-ink">
       {/* Hero Header Banner — split grid: marble/cream left, image right */}
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr]">
         <div className="marble flex flex-col justify-center bg-cream px-8 py-16 lg:px-12">
@@ -249,11 +249,11 @@ export function CoursesCatalogView() {
         </div>
       </section>
 
-      {/* Main Catalog View: Left Sidebar + Right Content Area */}
-      <main className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {/* Main Catalog View: full-width to align with hero edges */}
+      <main className="flex-1 w-full px-0 py-8 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
           {/* Left Sidebar Filters */}
-          <aside className="lg:col-span-4 xl:col-span-3 space-y-6">
+          <aside className="lg:col-span-4 xl:col-span-3 space-y-6 px-8 lg:px-12">
             <div className="bg-cream rounded-2xl p-6 border border-gold/25 shadow-sm sticky top-24">
               {/* Academy Nav Header */}
               <div className="flex items-center justify-between pb-4 border-b border-gold/25">
@@ -276,7 +276,7 @@ export function CoursesCatalogView() {
                 {COURSES_PROGRAMS.map((prog) => (
                   <Link
                     key={prog.id}
-                    href={`/courses/${prog.slug}`}
+                    href={`/learn/courses/${prog.slug}`}
                     className="flex items-center justify-between py-1.5 px-2 rounded-lg text-ink-soft hover:bg-cream-deep hover:text-ink font-medium transition-colors"
                   >
                     <span className="truncate">{prog.title}</span>
@@ -418,7 +418,7 @@ export function CoursesCatalogView() {
           </aside>
 
           {/* Right Main Catalog Content */}
-          <section className="lg:col-span-8 xl:col-span-9 space-y-6">
+          <section className="lg:col-span-8 xl:col-span-9 space-y-6 px-8 lg:px-12">
             {/* Top Toolbar: View Switcher + Count + Sort */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-gold/20">
               {/* Tabs: Programs vs Modules */}
@@ -531,11 +531,6 @@ export function CoursesCatalogView() {
                                   {program.code}
                                 </span>
                               </div>
-                              <div className="absolute top-3 right-3">
-                                <span className="px-2.5 py-1 rounded-full bg-ink/85 text-emerald-300 font-sans font-medium text-[0.68rem] tracking-wider uppercase backdrop-blur-md shadow-xs border border-white/10">
-                                  {program.credential}
-                                </span>
-                              </div>
                             </div>
 
                             {/* Card Body */}
@@ -626,7 +621,7 @@ export function CoursesCatalogView() {
 
                             {/* See More Button Routing to Dedicated Course Page & Syllabus */}
                             <Link
-                              href={`/courses/${program.slug}`}
+                              href={`/learn/courses/${program.slug}`}
                               className="btn-gold"
                             >
                               <span>Full Syllabus &amp; Schedule</span>
@@ -725,7 +720,7 @@ export function CoursesCatalogView() {
                               {m.hours} Clock Hours
                             </div>
                             <Link
-                              href={`/courses/${m.slug}`}
+                              href={`/learn/courses/${m.slug}`}
                               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gold-deep hover:bg-ink text-on-dark font-bold text-[0.72rem] transition-colors"
                             >
                               <span>View Track &amp; Syllabus</span>
@@ -833,7 +828,7 @@ export function CoursesCatalogView() {
               </button>
 
               <Link
-                href={`/courses/${activeCourseModal.slug}`}
+                href={`/learn/courses/${activeCourseModal.slug}`}
                 className="px-5 py-2 rounded-full bg-gold-deep hover:bg-ink text-on-dark font-bold text-xs transition-colors flex items-center gap-1.5"
               >
                 <span>Full Syllabus &amp; Catalog</span>

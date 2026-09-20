@@ -84,7 +84,7 @@ export function EnrollmentModal({
               </p>
               <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm">
                 <Link
-                  href="/enroll"
+                  href="/learn/enroll"
                   onClick={() => {
                     setSubmitted(false);
                     onClose();

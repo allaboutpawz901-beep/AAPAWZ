@@ -47,13 +47,13 @@ export function SignInView() {
       });
 
       if (res.ok) {
-        router.push('/classroom');
+        router.push('/learn/classroom');
       } else {
         const data = await res.json();
         setErrorMessage(data.error || 'Authentication failed. Please try again.');
       }
     } catch {
-      router.push('/classroom');
+      router.push('/learn/classroom');
     } finally {
       setIsLoading(false);
     }
@@ -75,12 +75,12 @@ export function SignInView() {
       });
 
       if (res.ok) {
-        router.push('/classroom');
+        router.push('/learn/classroom');
       } else {
-        router.push('/classroom');
+        router.push('/learn/classroom');
       }
     } catch {
-      router.push('/classroom');
+      router.push('/learn/classroom');
     } finally {
       setIsGoogleLoading(false);
     }
@@ -343,7 +343,7 @@ export function SignInView() {
             <p className="text-xs text-[#5c7063]">
               Don&apos;t have an account?{' '}
               <Link
-                href="/enroll"
+                href="/learn/enroll"
                 className="text-[#1b3d2b] font-bold hover:underline inline-flex items-center gap-1 ml-0.5"
               >
                 <span>Create your account</span>
