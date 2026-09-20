@@ -1,1 +1,6 @@
-import Classroom from "@/components/classroom"; export default function Page(){return <Classroom/>}
+"use client";
+import Classroom from "@/components/classroom";
+import "@/app/learn/classroom.css";
+export default function ClassroomPage() {
+  return <Classroom />;
+}
