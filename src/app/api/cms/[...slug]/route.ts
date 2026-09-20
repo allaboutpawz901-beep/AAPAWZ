@@ -68,18 +68,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ slug: stri
     if (!rec) return NextResponse.json({ error: "Not found" }, { status: 404 })
     return NextResponse.json(rec)
   }
-  const rows = await repo.list(resource)
-  // Static fallback: when Supabase is not configured (or returns empty for
-  // core public-site resources), serve client-side static data so the site
-  // renders fully without a database. These are the same services/gallery/
-  // testimonials the production site seeds via Supabase.
-  if ((!process.env.NEXT_PUBLIC_SUPABASE_URL || rows.length === 0) && resource === "services") {
-    return NextResponse.json(STATIC_SERVICES)
-  }
-  if ((!process.env.NEXT_PUBLIC_SUPABASE_URL || rows.length === 0) && resource === "testimonials") {
-    return NextResponse.json(STATIC_TESTIMONIALS)
-  }
-  return NextResponse.json(rows)
+  return NextResponse.json(await repo.list(resource))
 }
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: string[] }> }) {
@@ -191,19 +180,3 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ slug: s
 }
 
 // ---------------------------------------------------------------------------
-// Static fallback data — renders the public site fully without Supabase.
-// These match the production seed data structure. When Supabase IS
-// configured, the database rows take precedence.
-// ---------------------------------------------------------------------------
-const STATIC_SERVICES = [
-  { id: "srv-1", icon: "Scissors", title: "FULL GROOM", description: "Breed-specific haircut, bath,\nblow-dry & nail trim.", visible: true, order: 0 },
-  { id: "srv-2", icon: "Bath", title: "LUXURY BATH", description: "Hypoallergenic shampoo,\nconditioning & brush-out.", visible: true, order: 1 },
-  { id: "srv-3", icon: "Sparkle", title: "SPA ADD-ONS", description: "Teeth brushing, paw balm\n& coat treatments.", visible: true, order: 2 },
-  { id: "srv-4", icon: "Heart", title: "PUPPY'S FIRST", description: "Gentle intro groom for pups\nunder 6 months old.", visible: true, order: 3 },
-]
-
-const STATIC_TESTIMONIALS = [
-  { id: "t-1", text: "Mochi looks amazing every single time. The attention to detail is unmatched.", author: "Sarah K.", pet: "Mochi - Shih Tzu", rating: 5, visible: true, order: 0 },
-  { id: "t-2", text: "Best groomer in Memphis. Bruno actually gets excited to go now.", author: "Michael R.", pet: "Bruno - Golden Retriever", rating: 5, visible: true, order: 1 },
-  { id: "t-3", text: "They treated Bella like royalty. The salon is spotless and calm.", author: "Jennifer L.", pet: "Bella - Poodle", rating: 5, visible: true, order: 2 },
-]

@@ -116,7 +116,7 @@ export function SiteChrome({ children, settings: initialSettings }: { children: 
                 <Link
                   href={i.to}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 text-[11px] font-bold tracking-[0.13em] text-ink-soft"
+                  className="flex cursor-pointer items-center gap-3 text-[11px] font-bold tracking-[0.13em] text-ink-soft"
                 >
                   <span className="text-gold-deep">{i.n}</span>
                   {i.label}
@@ -129,7 +129,7 @@ export function SiteChrome({ children, settings: initialSettings }: { children: 
           <Link
             href="/book/appointment"
             onClick={() => setOpen(false)}
-            className="mt-4 flex w-full items-center justify-center gap-2 border border-gold-deep/70 bg-cream-deep px-3 py-3.5 text-[9.5px] font-bold tracking-[0.14em] text-ink"
+            className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 border border-gold-deep/70 bg-cream-deep px-3 py-3.5 text-[9.5px] font-bold tracking-[0.14em] text-ink"
           >
             <CalendarDays className="h-3.5 w-3.5 text-gold-deep" />
             BOOK APPOINTMENT
