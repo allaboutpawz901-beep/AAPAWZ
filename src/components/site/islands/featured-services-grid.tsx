@@ -2,34 +2,19 @@
 
 import { Scissors } from "lucide-react"
 import { getIcon } from "@/lib/icons"
-import { useCms, visibleOnly } from "./use-cms"
 
 // The 4-up featured services band used on the home page and the services
-// page. CSR: fetches after paint — the band's headline/CTA never wait.
+// page. Static data — no CMS fetch, no loading state. Icons render
+// client-side immediately.
+const STATIC_SERVICES = [
+  { id: "srv-1", icon: "Scissors", title: "FULL GROOM", description: "Breed-specific haircut, bath,\nblow-dry & nail trim." },
+  { id: "srv-2", icon: "Bath", title: "LUXURY BATH", description: "Hypoallergenic shampoo,\nconditioning & brush-out." },
+  { id: "srv-3", icon: "Sparkle", title: "SPA ADD-ONS", description: "Teeth brushing, paw balm\n& coat treatments." },
+  { id: "srv-4", icon: "Heart", title: "PUPPY'S FIRST", description: "Gentle intro groom for pups\nunder 6 months old." },
+]
+
 export function FeaturedServicesGrid({ count = 4 }: { count?: number }) {
-  const { data, loading } = useCms<{
-    id: string
-    icon?: string
-    title: string
-    description: string
-    visible?: boolean
-  }>("services")
-  const services = visibleOnly(data).slice(0, count)
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className={`px-6 text-center ${i > 0 ? "lg:border-l lg:border-gold/25" : ""}`}>
-            <div className="mx-auto h-10 w-10 animate-pulse rounded-full bg-white/10" />
-            <div className="mx-auto mt-4 h-3 w-24 animate-pulse bg-white/10" />
-            <div className="mx-auto mt-3 h-2.5 w-32 animate-pulse bg-white/10" />
-          </div>
-        ))}
-      </div>
-    )
-  }
-
+  const services = STATIC_SERVICES.slice(0, count)
   return (
     <div className="grid grid-cols-2 gap-y-10 lg:grid-cols-4">
       {services.map(({ id, icon, title, description }, i) => {

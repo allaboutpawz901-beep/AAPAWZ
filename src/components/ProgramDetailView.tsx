@@ -69,13 +69,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr]">
         {/* Left Content Column — marble on cream */}
         <div className="marble bg-cream px-6 sm:px-10 lg:px-14 py-10 lg:py-14 flex flex-col justify-center">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-gold-light/20 border border-gold/30 text-xs font-semibold uppercase tracking-wider text-gold-deep">
-              PROGRAM: {program.code}
-            </span>
-          </div>
-
-          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink leading-[1.12] mt-5">
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink leading-[1.12]">
             {program.fullTitle}
           </h1>
 
