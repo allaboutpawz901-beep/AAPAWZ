@@ -16,7 +16,6 @@ import {
   GraduationCap,
   Users,
   Building,
-  Sparkles,
   HelpCircle,
   Briefcase,
 } from 'lucide-react';
@@ -124,10 +123,6 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             >
               <span>Enroll in this Pathway</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link href="/learn/enroll" className="btn-ghost">
-              <Sparkles className="w-4 h-4" />
-              <span>View Enrollment Steps</span>
             </Link>
           </div>
         </div>
@@ -804,26 +799,19 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               >
                 Enroll in Program <ArrowRight className="w-4 h-4" />
               </Link>
-
-              <Link
-                href="/learn/enroll"
-                className="btn-ghost w-full"
-              >
-                View Enrollment Steps
-              </Link>
             </div>
 
             {/* Stacking Ladder Card */}
             {syllabus && (
-              <div className="bg-[#8a6d2b] text-on-dark rounded-xl p-6 shadow-sm">
-                <span className="text-[10px] font-bold tracking-widest text-gold uppercase block mb-1">
+              <div className="bg-cream border border-gold/25 p-6">
+                <span className="text-[10px] font-bold tracking-widest text-gold-deep uppercase block mb-1">
                   Build on Your Credentials
                 </span>
-                <h4 className="font-display text-base font-bold text-on-dark mb-2">Build on Your Credentials</h4>
-                <p className="text-xs text-[#d5e0d8] leading-relaxed mb-4">
+                <h4 className="font-display text-base font-bold text-ink mb-2">Build on Your Credentials</h4>
+                <p className="text-xs text-ink-soft leading-relaxed mb-4">
                   {syllabus.stacksInto}
                 </p>
-                <div className="text-[11px] text-[#a0b2a6] font-mono">
+                <div className="text-[11px] text-ink-soft">
                   Your completed hours transfer into advanced programs.
                 </div>
               </div>

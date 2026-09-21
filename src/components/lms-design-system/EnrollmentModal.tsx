@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from './Button';
-import { X, CheckCircle, Sparkles } from 'lucide-react';
+import { X, CheckCircle } from 'lucide-react';
 import { ProgramItem } from './ProgramCard';
 
 interface EnrollmentModalProps {
@@ -53,7 +53,7 @@ export function EnrollmentModal({
         <div className="bg-[#131b15] text-white px-6 py-5 flex items-center justify-between border-b border-[#233328]">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-full bg-[#d9b589] text-[#131b15] flex items-center justify-center font-bold text-xs">
-              <Sparkles className="w-4 h-4" />
+              
             </div>
             <div>
               <h3 className="font-serif text-lg font-bold text-white">Start Your Pet Care Career</h3>

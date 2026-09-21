@@ -14,7 +14,7 @@ import {
   X,
   Shield,
   Layers,
-  Sparkles,
+  
   GraduationCap,
 } from 'lucide-react';
 import { COURSES_PROGRAMS, ProgramDetails } from '@/lib/courses-data';
@@ -560,7 +560,7 @@ export function CoursesCatalogView() {
                               {matchedModules.length > 0 && searchQuery && (
                                 <div className="mb-4 p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/60 text-xs">
                                   <div className="text-[0.68rem] font-bold text-amber-900 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                                    <Sparkles className="w-3 h-3 text-amber-700" />
+                                    
                                     <span>Matched Courses in this Track ({matchedModules.length})</span>
                                   </div>
                                   <div className="space-y-1">
