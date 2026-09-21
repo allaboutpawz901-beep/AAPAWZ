@@ -348,50 +348,6 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                 </section>
 
-                {/* Textbooks & Reference Bibliography (Part B & C) */}
-                <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-display text-xl sm:text-2xl font-bold text-ink">
-                      Required Textbooks & Official Syllabi Manuals
-                    </h2>
-                    <span className="text-xs text-[#5a6b5f]">Part B & C Bibliography</span>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs border border-gold/25">
-                      <thead className="bg-cream text-ink font-bold border-b border-gold/25">
-                        <tr>
-                          <th className="p-3">Reference Code</th>
-                          <th className="p-3">Title & Publication Standard</th>
-                          <th className="p-3">Category</th>
-                          <th className="p-3">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[#e4dfd4] text-[#5a6b5f]">
-                        {program.manuals.map((man, idx) => (
-                          <tr key={idx} className="hover:bg-cream">
-                            <td className="p-3 font-mono font-bold text-[#8a6d2b]">{man.id}</td>
-                            <td className="p-3 font-medium text-ink">{man.title}</td>
-                            <td className="p-3">
-                              <span
-                                className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-                                  man.type === 'Core Manual'
-                                    ? 'bg-[#8a6d2b]/10 text-[#8a6d2b]'
-                                    : 'bg-[#d9b589]/20 text-[#8c6527]'
-                                }`}
-                              >
-                                {man.type}
-                              </span>
-                            </td>
-                            <td className="p-3 text-gold-deep font-semibold flex items-center gap-1">
-                              <Check className="w-3.5 h-3.5" /> Required in LMS
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
               </div>
             )}
 
@@ -478,53 +434,55 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                           </button>
 
                           {isOpen && (
-                            <div className="p-6 pt-0 border-t border-gold/25/70 bg-cream/50 space-y-6">
+                            <div className="p-6 pt-0 border-t border-gold/25 bg-cream/50 space-y-6">
                               <p className="text-sm text-[#5a6b5f] leading-relaxed pt-4">{term.description}</p>
 
                               {/* Time Breakdown */}
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-lg bg-cream border border-gold/25">
+                              <div className="grid grid-cols-3 gap-3 p-4 border border-gold/25">
                                 <div>
-                                  <div className="text-xs text-[#5a6b5f]">Technical Lab Hours</div>
-                                  <div className="text-base font-bold text-[#8a6d2b]">
-                                    {term.modulesSummary.technicalHours || 0} hrs
+                                  <div className="text-xs text-[#5a6b5f]">Technical Hours</div>
+                                  <div className="text-base font-bold text-gold-deep">
+                                    {term.modulesSummary?.technicalHours || term.techHours || 0} hrs
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="text-xs text-[#5a6b5f]">Business Spine Hours</div>
-                                  <div className="text-base font-bold text-[#8c6527]">
-                                    {term.modulesSummary.businessHours || 0} hrs
+                                  <div className="text-xs text-[#5a6b5f]">Business & Personal Hours</div>
+                                  <div className="text-base font-bold text-gold-deep">
+                                    {term.modulesSummary?.businessHours || term.businessHours || 0} hrs
                                   </div>
                                 </div>
                                 <div>
-                                  <div className="text-xs text-[#5a6b5f]">Applied / Capstone</div>
-                                  <div className="text-base font-bold text-[#0d9488]">
-                                    {term.modulesSummary.appliedHours || 0} hrs
+                                  <div className="text-xs text-[#5a6b5f]">Applied Hours</div>
+                                  <div className="text-base font-bold text-gold-deep">
+                                    {term.modulesSummary?.appliedHours || term.appliedHours || 0} hrs
                                   </div>
                                 </div>
                               </div>
 
-                              {/* Detailed Course Highlight Cards */}
+                              {/* Module Codes for this Term */}
                               <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#5a6b5f] mb-3">
-                                  Term {term.termNumber} Modules & Practical Syllabi
+                                  Term {term.termNumber} Modules
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                  {term.courseHighlights.map((mod) => (
-                                    <div
-                                      key={mod.code}
-                                      className="p-4 rounded-lg bg-cream border border-gold/25 hover:border-[#8a6d2b]/40 transition-colors"
-                                    >
-                                      <div className="flex items-center justify-between mb-1.5">
-                                        <span className="font-mono text-xs font-bold text-[#8a6d2b] px-2 py-0.5 rounded bg-[#8a6d2b]/10">
-                                          {mod.code}
-                                        </span>
-                                        <span className="text-xs font-medium text-[#5a6b5f]">{mod.hours} Hrs</span>
-                                      </div>
-                                      <h5 className="font-semibold text-sm text-ink mb-1">{mod.title}</h5>
-                                      <p className="text-xs text-[#5a6b5f] leading-relaxed">{mod.description}</p>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                  {term.technicalModules.map((code) => (
+                                    <div key={code} className="p-3 border border-gold/25 bg-cream">
+                                      <span className="font-mono text-xs font-bold text-gold-deep">{code}</span>
+                                      {program.safetyGates.includes(code) && (
+                                        <span className="block text-[10px] text-gold-deep mt-1">Key Skills Check</span>
+                                      )}
                                     </div>
                                   ))}
+                                  {term.appliedModule && (
+                                    <div className="p-3 border border-gold-deep/30 bg-gold-deep/5">
+                                      <span className="font-mono text-xs font-bold text-gold-deep">{term.appliedModule}</span>
+                                      <span className="block text-[10px] text-gold-deep mt-1">Capstone</span>
+                                    </div>
+                                  )}
                                 </div>
+                                <p className="text-xs text-[#5a6b5f] mt-2">
+                                  Business & personal modules: {term.businessModules}
+                                </p>
                               </div>
                             </div>
                           )}
