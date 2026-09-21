@@ -446,30 +446,25 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                 </div>
                               </div>
 
-                              {/* Module Codes for this Term */}
+                              {/* Modules in this Term — with names and hours */}
                               <div>
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#5a6b5f] mb-3">
-                                  Term {term.termNumber} Modules
+                                  Term {term.termNumber} Modules ({term.courseHighlights.length})
                                 </h4>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                  {term.technicalModules.map((code) => (
-                                    <div key={code} className="p-3 border border-gold/25 bg-cream">
-                                      <span className="font-mono text-xs font-bold text-gold-deep">{code}</span>
-                                      {program.safetyGates.includes(code) && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  {term.courseHighlights.map((mod) => (
+                                    <div key={mod.code} className="p-4 border border-gold/25 bg-cream">
+                                      <div className="flex items-center justify-between mb-1">
+                                        <span className="text-sm font-semibold text-ink">{mod.title}</span>
+                                        <span className="text-xs text-[#5a6b5f]">{mod.hours} hrs</span>
+                                      </div>
+                                      <span className="text-[10px] text-[#5a6b5f]">{mod.code}</span>
+                                      {program.safetyGates.includes(mod.code) && (
                                         <span className="block text-[10px] text-gold-deep mt-1">Key Skills Check</span>
                                       )}
                                     </div>
                                   ))}
-                                  {term.appliedModule && (
-                                    <div className="p-3 border border-gold-deep/30 bg-gold-deep/5">
-                                      <span className="font-mono text-xs font-bold text-gold-deep">{term.appliedModule}</span>
-                                      <span className="block text-[10px] text-gold-deep mt-1">Capstone</span>
-                                    </div>
-                                  )}
                                 </div>
-                                <p className="text-xs text-[#5a6b5f] mt-2">
-                                  Business & personal modules: {term.businessModules}
-                                </p>
                               </div>
                             </div>
                           )}
