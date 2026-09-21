@@ -56,21 +56,11 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ slug: stri
   const [resource, id] = slug
 
   if (resource === "status") {
-    const { getBackend, supabaseReady: sr } = await import("@/lib/repo")
-    return NextResponse.json({ backend: await getBackend(), supabaseConfigured: sr, resendReady: !!process.env.RESEND_API_KEY })
+    const { getBackend } = await import("@/lib/repo")
+    return NextResponse.json({ backend: await getBackend(), supabaseConfigured: !!(process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL), resendReady: !!process.env.RESEND_API_KEY })
   }
   if (resource === "stats") return NextResponse.json(await repo.stats())
-  if (resource === "settings") {
-    const settings = await repo.getSettings()
-    // Static fallback: when Supabase is not configured, return seed defaults
-    // from schema.sql so the site renders fully. When Supabase IS configured,
-    // the database settings take precedence.
-    const { supabaseReady } = await import("@/lib/repo")
-    if (!supabaseReady || Object.keys(settings).length === 0) {
-      return NextResponse.json(STATIC_SETTINGS)
-    }
-    return NextResponse.json(settings)
-  }
+  if (resource === "settings") return NextResponse.json(await repo.getSettings())
   if (resource === "newsletter") return NextResponse.json(await repo.listNewsletter())
   if (!isResource(resource)) return NextResponse.json({ error: `Unknown resource: ${resource}` }, { status: 404 })
   if (id) {
@@ -78,15 +68,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ slug: stri
     if (!rec) return NextResponse.json({ error: "Not found" }, { status: 404 })
     return NextResponse.json(rec)
   }
-  const rows = await repo.list(resource)
-  // Static fallback for core public-site resources when Supabase is not
-  // configured or returns empty. These match the seed data in schema.sql.
-  const { supabaseReady } = await import("@/lib/repo")
-  if (!supabaseReady || rows.length === 0) {
-    if (resource === "services") return NextResponse.json(STATIC_SERVICES)
-    if (resource === "testimonials") return NextResponse.json(STATIC_TESTIMONIALS)
-  }
-  return NextResponse.json(rows)
+  return NextResponse.json(await repo.list(resource))
 }
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ slug: string[] }> }) {
@@ -198,36 +180,4 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ slug: s
 }
 
 // ---------------------------------------------------------------------------
-// Static fallback data — matches the seed data in supabase/schema.sql.
-// Used when Supabase is not configured (dev/preview) so the site renders
-// fully. In production with Supabase connected, the database data is used.
-// ---------------------------------------------------------------------------
 
-const STATIC_SETTINGS: Record<string, string> = {
-  brandName: "All About Pawz",
-  tagline: "From Pawz to PAWfection",
-  heroTitle: "Luxury Grooming. Exceptional Care.",
-  heroSubtitle: "We deliver a spa-level grooming experience where every detail is designed for your pup's comfort, style, and happiness.",
-  addressLine1: "1428 Maple Grove Avenue",
-  addressLine2: "Memphis, TN 38104",
-  phone: "901-800-7182",
-  email: "help@aapawz.com",
-  hoursTueSat: "9am – 6pm",
-  hoursSun: "10am – 4pm",
-  hoursMon: "Closed",
-  instagram: "https://instagram.com/aapawz",
-  footerNote: "© 2024 All About Pawz LLC. All rights reserved.",
-}
-
-const STATIC_SERVICES = [
-  { id: "srv-1", icon: "Scissors", title: "GROOMING", description: "Haircuts, styling,\nand full grooms", image: "/assets/svc-groom.jpg", alt: "Groomer trimming a dog's coat with scissors", order: 0, visible: true },
-  { id: "srv-2", icon: "Bath", title: "BATH & SPA", description: "De-shedding, deep\ncleanse, and more", image: "/assets/svc-bath.jpg", alt: "Small dog enjoying a bubble bath", order: 1, visible: true },
-  { id: "srv-3", icon: "PawPrint", title: "NAIL & PAW CARE", description: "Nail trims, paw balm,\nand pawdicures", image: "/assets/svc-nails.jpg", alt: "Dog's nails being trimmed", order: 2, visible: true },
-  { id: "srv-4", icon: "Droplets", title: "ADD-ON SERVICES", description: "Teeth brushing, de-tangling,\nfragrance & more", image: "/assets/svc-addon.jpg", alt: "Paw balm being applied to a dog's paw", order: 3, visible: true },
-]
-
-const STATIC_TESTIMONIALS = [
-  { id: "t-1", quote: "The best grooming experience we've ever had! My dog always comes home happy and handsome.", author: "Jessica M. & Cooper", rating: 5, order: 0, visible: true },
-  { id: "t-2", quote: "From the moment you walk in, you feel the love they put into every detail.", author: "Daniel R. & Olive", rating: 5, order: 1, visible: true },
-  { id: "t-3", quote: "Booked the Deluxe Spa for our doodle and the results were stunning.", author: "Priya S. & Maple", rating: 5, order: 2, visible: true },
-]
