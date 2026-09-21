@@ -524,11 +524,6 @@ export function CoursesCatalogView() {
                                 className="object-cover object-center brightness-100 contrast-[1.01] transition-transform duration-500 hover:scale-105"
                                 referrerPolicy="no-referrer"
                               />
-                              <div className="absolute top-3 left-3">
-                                <span className="px-2.5 py-1 rounded-full bg-cream/95 text-ink font-mono font-bold text-[0.68rem] tracking-wider uppercase backdrop-blur-md shadow-xs border border-gold/25">
-                                  {program.code}
-                                </span>
-                              </div>
                             </div>
 
                             {/* Card Body */}
@@ -698,7 +693,7 @@ export function CoursesCatalogView() {
                                 </span>
                               )}
                               {m.practicum && (
-                                <span className="inline-flex items-center gap-1 text-[0.68rem] font-bold px-2 py-0.5 rounded bg-[#8a6d2b] text-on-dark">
+                                <span className="inline-flex items-center gap-1 text-[0.68rem] font-bold px-2 py-0.5 rounded bg-ink text-on-dark">
                                   <span>Hands-on Practice</span>
                                 </span>
                               )}

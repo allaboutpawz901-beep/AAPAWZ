@@ -12,8 +12,6 @@ import {
   PawPrint,
   User,
   Users,
-  Building,
-  ShieldCheck,
   Compass,
   ArrowRight,
   ArrowLeft,
@@ -27,7 +25,6 @@ import {
   Award,
   Briefcase,
   Home,
-  CheckCircle2,
 } from 'lucide-react';
 
 interface OnboardingFlowProps {
@@ -44,27 +41,19 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
   const [password, setPassword] = useState('••••••••••••');
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(true);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   // Step 3 Role
   const [selectedRole, setSelectedRole] = useState<string>('learner');
 
   // Step 4 Goals
-  const [selectedGoals, setSelectedGoals] = useState<string[]>([
-    'Become a professional pet groomer',
-    'Learn business and entrepreneurship',
-    'Gain animal care knowledge',
-  ]);
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
 
   // Step 5 Details
   const [dateOfBirth, setDateOfBirth] = useState('2000-01-01');
   const [phone, setPhone] = useState('(555) 123-4567');
   const [educationLevel, setEducationLevel] = useState('Some College');
   const [hearAboutUs, setHearAboutUs] = useState('Shelter / Vet Referral');
-
-  // Step 6 Guardian
-  const [isUnder18, setIsUnder18] = useState(false);
-  const [guardianEmail, setGuardianEmail] = useState('');
-  const [guardianPhone, setGuardianPhone] = useState('');
 
   // Toggle goal helper
   const toggleGoal = (goal: string) => {
@@ -76,11 +65,11 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
   };
 
   const nextStep = () => {
-    if (currentStep < 8) {
+    if (currentStep < 7) {
       setCurrentStep(currentStep + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Step 8 complete -> Route to /classroom
+      // Step 7 complete -> Route to /classroom
       router.push('/learn/classroom');
     }
   };
@@ -97,6 +86,27 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
   const goToStep = (stepNumber: number) => {
     setCurrentStep(stepNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Google sign-in handler (mirrors SignInView pattern).
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider: 'google',
+          email: 'google.student@leashed.edu',
+          name: fullName || 'Google Scholar',
+        }),
+      });
+    } catch {
+      // Continue regardless — this is a demo onboarding flow.
+    } finally {
+      setIsGoogleLoading(false);
+      nextStep();
+    }
   };
 
   // Step metadata & photographic assets for left column
@@ -151,14 +161,6 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       imageAlt: 'Caregiver with feline friend',
     },
     6: {
-      tag: 'SAFETY & COMPLIANCE',
-      title: 'High Standards From Day One.',
-      subtitle:
-        'We adhere to professional animal welfare and student safety standards across all virtual and in-person hands-on sessions.',
-      image: '/images/vet_cat_checkup.jpg',
-      imageAlt: 'Professional pet care safety and checkup',
-    },
-    7: {
       tag: 'APPLICATION REVIEW',
       title: 'Almost There! Confirm Your Details.',
       subtitle:
@@ -166,7 +168,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
       image: '/images/job_resume_desk.jpg',
       imageAlt: 'Career profile review desk',
     },
-    8: {
+    7: {
       tag: 'ENROLLMENT CONFIRMED',
       title: "You're Ready to Begin!",
       subtitle:
@@ -211,7 +213,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
           {/* 4 Core Pillars */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
             <div className="flex items-start gap-3 p-2.5 rounded-xl bg-cream/70 border border-[#e8dfd1] backdrop-blur-xs">
-              <div className="w-8 h-8 rounded-full bg-[#e8efe9] text-[#8a6d2b] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-ink/10 text-ink flex items-center justify-center shrink-0">
                 <GraduationCap className="w-4 h-4" />
               </div>
               <div>
@@ -223,7 +225,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
             </div>
 
             <div className="flex items-start gap-3 p-2.5 rounded-xl bg-cream/70 border border-[#e8dfd1] backdrop-blur-xs">
-              <div className="w-8 h-8 rounded-full bg-[#e8efe9] text-[#8a6d2b] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-ink/10 text-ink flex items-center justify-center shrink-0">
                 <TrendingUp className="w-4 h-4" />
               </div>
               <div>
@@ -235,7 +237,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
             </div>
 
             <div className="flex items-start gap-3 p-2.5 rounded-xl bg-cream/70 border border-[#e8dfd1] backdrop-blur-xs">
-              <div className="w-8 h-8 rounded-full bg-[#e8efe9] text-[#8a6d2b] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-ink/10 text-ink flex items-center justify-center shrink-0">
                 <Heart className="w-4 h-4" />
               </div>
               <div>
@@ -247,7 +249,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
             </div>
 
             <div className="flex items-start gap-3 p-2.5 rounded-xl bg-cream/70 border border-[#e8dfd1] backdrop-blur-xs">
-              <div className="w-8 h-8 rounded-full bg-[#e8efe9] text-[#8a6d2b] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-ink/10 text-ink flex items-center justify-center shrink-0">
                 <PawPrint className="w-4 h-4" />
               </div>
               <div>
@@ -276,7 +278,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
 
           {/* Cursive Handwriting Signature */}
           <div className="pt-2">
-            {currentStep === 8 ? (
+            {currentStep === 7 ? (
               <p className="font-script text-2xl sm:text-3xl text-gold-deep font-bold flex items-center gap-2">
                 <span>Great things start here.</span>
                 <PawPrint className="w-5 h-5 text-gold-deep fill-current" />
@@ -309,7 +311,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
 
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-[#6a7d70] tracking-wider uppercase">
-                  {currentStep} of 8
+                  {currentStep} of 7
                 </span>
               </div>
             </div>
@@ -318,7 +320,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
             <div className="w-full h-1.5 bg-[#eae2d3] rounded-full overflow-hidden">
               <div
                 className="h-full bg-gold-deep transition-all duration-300 rounded-full"
-                style={{ width: `${(currentStep / 8) * 100}%` }}
+                style={{ width: `${(currentStep / 7) * 100}%` }}
               />
             </div>
           </div>
@@ -329,15 +331,15 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
           {currentStep === 1 && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="space-y-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.7rem] font-bold tracking-wider uppercase bg-[#e8efe9] text-[#8a6d2b] border border-[#d1e0d3]">
-                  <PawPrint className="w-3 h-3 text-[#8a6d2b]" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.7rem] font-bold tracking-wider uppercase bg-ink/10 text-ink border border-ink/20">
+                  <PawPrint className="w-3 h-3 text-ink" />
                   <span>Getting Started</span>
                 </span>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
                   The Enroll Process Starts Here
                 </h2>
                 <p className="text-xs sm:text-sm text-[#5a6b5f] leading-relaxed">
-                  Your journey to a rewarding career in animal care, grooming, and pet business begins now. Follow this seamless 8-step enrollment sequence to set up your learner profile, confirm your training goals, and unlock your interactive Classroom Canvas.
+                  Your journey to a rewarding career in animal care, grooming, and pet business begins now. Follow this seamless 7-step enrollment sequence to set up your learner profile, confirm your training goals, and unlock your interactive Classroom Canvas.
                 </p>
               </div>
 
@@ -402,7 +404,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <p className="text-center text-[0.72rem] text-ink-soft">
-                  Step 1 of 8 · Approximately 3 minutes · Unlocks Classroom Canvas
+                  Step 1 of 7 · Approximately 3 minutes · Unlocks Classroom Canvas
                 </p>
               </div>
             </div>
@@ -422,6 +424,53 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                 </p>
               </div>
 
+              {/* Continue with Google — above the email/password form */}
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleLoading}
+                  className="w-full py-3 px-4 rounded-xl border border-[#d6ccb9] hover:border-ink/40 bg-cream hover:bg-[#faf7f2] text-ink font-semibold text-sm transition-all duration-150 flex items-center justify-center gap-3 shadow-xs disabled:opacity-60 cursor-pointer"
+                >
+                  {isGoogleLoading ? (
+                    <span className="text-xs text-[#5a6b5f]">Connecting to Google…</span>
+                  ) : (
+                    <>
+                      {/* Official Google G SVG icon */}
+                      <svg className="w-4 h-4" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                        />
+                      </svg>
+                      <span>Continue with Google</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Divider: or */}
+                <div className="relative text-center">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-[#e8dfd1]" />
+                  </div>
+                  <span className="relative px-3 bg-[#fdfbf7] text-xs text-[#7d9183] font-medium uppercase tracking-wider">
+                    or
+                  </span>
+                </div>
+              </div>
+
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -439,7 +488,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Jane Doe"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b] focus:ring-1 focus:ring-[#8a6d2b]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-ink focus:ring-1 focus:ring-ink"
                   />
                 </div>
 
@@ -453,7 +502,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b] focus:ring-1 focus:ring-[#8a6d2b]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-ink focus:ring-1 focus:ring-ink"
                   />
                 </div>
 
@@ -468,7 +517,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Create a strong password"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink pr-10 focus:outline-none focus:border-[#8a6d2b] focus:ring-1 focus:ring-[#8a6d2b]"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink pr-10 focus:outline-none focus:border-ink focus:ring-1 focus:ring-ink"
                     />
                     <button
                       type="button"
@@ -487,15 +536,15 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                     id="terms"
                     checked={agreeTerms}
                     onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="mt-0.5 w-4 h-4 rounded text-[#8a6d2b] focus:ring-[#8a6d2b] border-[#c5baaa]"
+                    className="mt-0.5 w-4 h-4 rounded text-ink focus:ring-ink border-[#c5baaa]"
                   />
                   <label htmlFor="terms" className="text-xs text-[#526456] leading-snug">
                     I agree to the{' '}
-                    <span className="text-[#8a6d2b] font-semibold underline cursor-pointer">
+                    <span className="text-ink font-semibold underline cursor-pointer">
                       Terms of Service
                     </span>{' '}
                     and{' '}
-                    <span className="text-[#8a6d2b] font-semibold underline cursor-pointer">
+                    <span className="text-ink font-semibold underline cursor-pointer">
                       Privacy Policy
                     </span>
                   </label>
@@ -516,7 +565,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                   <button
                     type="button"
                     onClick={() => nextStep()}
-                    className="text-[#8a6d2b] font-bold hover:underline"
+                    className="text-ink font-bold hover:underline"
                   >
                     Sign In
                   </button>
@@ -526,94 +575,42 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
           )}
 
           {/* ===================================================================
-              STEP 3: What best describes you? (6 Role Cards)
+              STEP 3: Confirm Your Role (Learner only — auto-selected)
               =================================================================== */}
           {currentStep === 3 && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
-                  What best describes you?
+                  You&rsquo;re enrolling as a Learner
                 </h2>
                 <p className="text-xs sm:text-sm text-[#5a6b5f] leading-relaxed">
-                  Select the role that fits your current situation.
+                  Your enrollment is set up for a learner profile. You can take courses, earn credentials, and build new hands-on skills.
                 </p>
               </div>
 
-              {/* 6 Role Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                {[
-                  {
-                    id: 'learner',
-                    title: 'Learner',
-                    desc: "I'm here to take a course, earn a credential, or build new skills.",
-                    icon: User,
-                  },
-                  {
-                    id: 'instructor',
-                    title: 'Instructor',
-                    desc: 'I teach, mentor, or create course content.',
-                    icon: GraduationCap,
-                  },
-                  {
-                    id: 'support_navigator',
-                    title: 'Support Navigator',
-                    desc: 'I help learners with guidance, resources, and support.',
-                    icon: Users,
-                  },
-                  {
-                    id: 'org_admin',
-                    title: 'Organization Admin',
-                    desc: 'I manage a program, class, or organization.',
-                    icon: Building,
-                  },
-                  {
-                    id: 'platform_admin',
-                    title: 'Platform Admin',
-                    desc: 'I support the platform, systems, and overall operations.',
-                    icon: ShieldCheck,
-                  },
-                  {
-                    id: 'new_to_leashed',
-                    title: 'New to Leashed',
-                    desc: "I'm exploring and want to learn more.",
-                    icon: Compass,
-                  },
-                ].map((item) => {
-                  const isSelected = selectedRole === item.id;
-                  const IconComponent = item.icon;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setSelectedRole(item.id)}
-                      className={`p-4 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
-                        isSelected
-                          ? 'border-[#8a6d2b] bg-[#f2f7f3] ring-1 ring-[#8a6d2b]'
-                          : 'border-[#dfd6c8] bg-cream hover:bg-[#faf7f2]'
-                      }`}
-                    >
-                      {isSelected && (
-                        <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-gold-deep text-on-dark flex items-center justify-center">
-                          <Check className="w-3 h-3" />
-                        </div>
-                      )}
-                      <div className="w-8 h-8 rounded-lg bg-[#e8efe9] text-[#8a6d2b] flex items-center justify-center mb-2.5">
-                        <IconComponent className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <h3 className="text-xs font-bold text-ink mb-1">
-                          {item.title}
-                        </h3>
-                        <p className="text-[0.72rem] text-[#5a6b5f] leading-snug">
-                          {item.desc}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
+              {/* Single Learner Role Card — auto-selected, BLACK border */}
+              <div className="pt-1">
+                <div
+                  className="p-5 rounded-xl border-2 border-ink bg-cream relative flex items-start gap-4 shadow-sm"
+                >
+                  <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-ink text-on-dark flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="w-10 h-10 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1 min-w-0">
+                    <h3 className="text-sm font-bold text-ink">
+                      Learner
+                    </h3>
+                    <p className="text-xs text-[#5a6b5f] leading-snug">
+                      I&rsquo;m here to take a course, earn a credential, or build new skills.
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="pt-4">
+              <div className="pt-2">
                 <button
                   onClick={nextStep}
                   className="btn-gold w-full rounded-xl shadow-sm"
@@ -676,12 +673,12 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                       onClick={() => toggleGoal(goal.title)}
                       className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between gap-3 ${
                         isChecked
-                          ? 'border-[#8a6d2b] bg-[#f2f7f3]'
+                          ? 'border-ink bg-cream'
                           : 'border-[#dfd6c8] bg-cream hover:bg-[#faf7f2]'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-[#e8efe9] text-[#8a6d2b] flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                           <Icon className="w-4 h-4" />
                         </div>
                         <span className="text-xs sm:text-sm font-semibold text-ink">
@@ -692,7 +689,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                       <div
                         className={`w-5 h-5 rounded flex items-center justify-center transition-colors ${
                           isChecked
-                            ? 'bg-gold-deep text-on-dark'
+                            ? 'bg-ink text-on-dark'
                             : 'border border-[#cbbea9] bg-cream'
                         }`}
                       >
@@ -740,7 +737,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                         type="date"
                         value={dateOfBirth}
                         onChange={(e) => setDateOfBirth(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-ink"
                       />
                       <Calendar className="w-4 h-4 text-[#788a7d] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
@@ -756,7 +753,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="(555) 123-4567"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-ink"
                       />
                       <Phone className="w-4 h-4 text-[#788a7d] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
@@ -770,7 +767,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                   <select
                     value={educationLevel}
                     onChange={(e) => setEducationLevel(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-ink"
                   >
                     <option>High School / GED</option>
                     <option>Some College</option>
@@ -788,7 +785,7 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                   <select
                     value={hearAboutUs}
                     onChange={(e) => setHearAboutUs(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-ink"
                   >
                     <option>Shelter / Vet Referral</option>
                     <option>Search Engine / Online Search</option>
@@ -821,104 +818,9 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
           )}
 
           {/* ===================================================================
-              STEP 6: Guardian & Consent
+              STEP 6: Review Your Information (redesigned — clean card layout)
               =================================================================== */}
           {currentStep === 6 && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              <div className="space-y-2">
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
-                  Guardian &amp; Consent
-                </h2>
-                <p className="text-xs sm:text-sm text-[#5a6b5f] leading-relaxed">
-                  If you&apos;re under 18, we&apos;ll need your guardian&apos;s information and consent to continue.
-                </p>
-              </div>
-
-              <div className="space-y-4 pt-1">
-                {/* Toggle Card */}
-                <div className="p-4 rounded-xl border border-[#dcd2c1] bg-[#fbf8f2] flex items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <h4 className="text-xs sm:text-sm font-bold text-ink">
-                      I am under 18 years old
-                    </h4>
-                    <p className="text-[0.72rem] text-[#647769] leading-snug">
-                      If you are under 18, a parent or guardian will need to complete the next step.
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setIsUnder18(!isUnder18)}
-                    className={`w-12 h-6 rounded-full transition-colors relative shrink-0 ${
-                      isUnder18 ? 'bg-gold-deep' : 'bg-[#d8cebe]'
-                    }`}
-                  >
-                    <span
-                      className={`block w-5 h-5 rounded-full bg-cream shadow-sm transition-transform absolute top-0.5 ${
-                        isUnder18 ? 'left-6.5' : 'left-0.5'
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Conditional Guardian Inputs */}
-                <div
-                  className={`space-y-4 transition-opacity ${
-                    isUnder18 ? 'opacity-100' : 'opacity-40 pointer-events-none'
-                  }`}
-                >
-                  <div>
-                    <label className="block text-xs font-bold text-[#5a6b5f] mb-1.5">
-                      Guardian Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={guardianEmail}
-                      onChange={(e) => setGuardianEmail(e.target.value)}
-                      placeholder="guardian@example.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#5a6b5f] mb-1.5">
-                      Guardian Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      value={guardianPhone}
-                      onChange={(e) => setGuardianPhone(e.target.value)}
-                      placeholder="(555) 123-4567"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#d6ccb9] bg-cream text-sm text-ink focus:outline-none focus:border-[#8a6d2b]"
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-4 flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className="py-3.5 px-5 rounded-xl border border-[#d6ccb9] bg-cream hover:bg-[#faf7f2] text-ink font-bold text-sm transition-colors"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    className="btn-gold flex-1 rounded-xl shadow-sm"
-                  >
-                    <span>Continue</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ===================================================================
-              STEP 7: Review Your Information
-              =================================================================== */}
-          {currentStep === 7 && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink">
@@ -929,134 +831,140 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
                 </p>
               </div>
 
-              {/* Review Card with Edit Buttons */}
-              <div className="rounded-2xl border border-[#dcd2c1] bg-cream p-5 divide-y divide-[#eee5d6] space-y-3">
-                <div className="flex items-center justify-between pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0eee6] text-[#0f1f35] flex items-center justify-center">
+              {/* Review Card — black border, clean typography, no brown/green hovers */}
+              <div className="rounded-2xl border-2 border-ink bg-cream overflow-hidden">
+                {/* Name row */}
+                <div className="flex items-center justify-between p-4 border-b border-ink/10 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                       <User className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="block text-[0.68rem] text-[#718276] uppercase font-bold">
+                    <div className="min-w-0">
+                      <span className="block text-[0.65rem] text-[#5a6b5f] uppercase font-bold tracking-wider">
                         Name
                       </span>
-                      <span className="text-sm font-bold text-ink">{fullName}</span>
+                      <span className="text-sm font-bold text-ink truncate block">{fullName}</span>
                     </div>
                   </div>
                   <button
                     onClick={() => goToStep(2)}
-                    className="text-xs font-bold text-[#8a6d2b] hover:underline"
+                    className="text-xs font-bold text-ink hover:underline shrink-0"
                   >
                     Edit
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0eee6] text-[#0f1f35] flex items-center justify-center">
+                {/* Email row */}
+                <div className="flex items-center justify-between p-4 border-b border-ink/10 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                       <Lock className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="block text-[0.68rem] text-[#718276] uppercase font-bold">
+                    <div className="min-w-0">
+                      <span className="block text-[0.65rem] text-[#5a6b5f] uppercase font-bold tracking-wider">
                         Email
                       </span>
-                      <span className="text-sm font-bold text-ink">{email}</span>
+                      <span className="text-sm font-bold text-ink truncate block">{email}</span>
                     </div>
                   </div>
                   <button
                     onClick={() => goToStep(2)}
-                    className="text-xs font-bold text-[#8a6d2b] hover:underline"
+                    className="text-xs font-bold text-ink hover:underline shrink-0"
                   >
                     Edit
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0eee6] text-[#0f1f35] flex items-center justify-center">
+                {/* Role row */}
+                <div className="flex items-center justify-between p-4 border-b border-ink/10 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                       <Users className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="block text-[0.68rem] text-[#718276] uppercase font-bold">
+                    <div className="min-w-0">
+                      <span className="block text-[0.65rem] text-[#5a6b5f] uppercase font-bold tracking-wider">
                         Role
                       </span>
-                      <span className="text-sm font-bold text-ink capitalize">
+                      <span className="text-sm font-bold text-ink capitalize block">
                         {selectedRole.replace(/_/g, ' ')}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => goToStep(3)}
-                    className="text-xs font-bold text-[#8a6d2b] hover:underline"
+                    className="text-xs font-bold text-ink hover:underline shrink-0"
                   >
                     Edit
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0eee6] text-[#0f1f35] flex items-center justify-center">
+                {/* Learning Goals row */}
+                <div className="flex items-center justify-between p-4 border-b border-ink/10 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                       <PawPrint className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="block text-[0.68rem] text-[#718276] uppercase font-bold">
+                    <div className="min-w-0">
+                      <span className="block text-[0.65rem] text-[#5a6b5f] uppercase font-bold tracking-wider">
                         Learning Goals
                       </span>
-                      <span className="text-xs font-bold text-ink line-clamp-1">
+                      <span className="text-xs font-bold text-ink line-clamp-2 block">
                         {selectedGoals.length > 0 ? selectedGoals.join(', ') : 'None selected'}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => goToStep(4)}
-                    className="text-xs font-bold text-[#8a6d2b] hover:underline"
+                    className="text-xs font-bold text-ink hover:underline shrink-0"
                   >
                     Edit
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0eee6] text-[#0f1f35] flex items-center justify-center">
+                {/* Date of Birth row */}
+                <div className="flex items-center justify-between p-4 border-b border-ink/10 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                       <Calendar className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="block text-[0.68rem] text-[#718276] uppercase font-bold">
+                    <div className="min-w-0">
+                      <span className="block text-[0.65rem] text-[#5a6b5f] uppercase font-bold tracking-wider">
                         Date of Birth
                       </span>
-                      <span className="text-sm font-bold text-ink">{dateOfBirth}</span>
+                      <span className="text-sm font-bold text-ink block">{dateOfBirth}</span>
                     </div>
                   </div>
                   <button
                     onClick={() => goToStep(5)}
-                    className="text-xs font-bold text-[#8a6d2b] hover:underline"
+                    className="text-xs font-bold text-ink hover:underline shrink-0"
                   >
                     Edit
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between pt-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0eee6] text-[#0f1f35] flex items-center justify-center">
+                {/* Phone row */}
+                <div className="flex items-center justify-between p-4 gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-ink/10 text-ink flex items-center justify-center shrink-0">
                       <Phone className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="block text-[0.68rem] text-[#718276] uppercase font-bold">
+                    <div className="min-w-0">
+                      <span className="block text-[0.65rem] text-[#5a6b5f] uppercase font-bold tracking-wider">
                         Phone
                       </span>
-                      <span className="text-sm font-bold text-ink">{phone}</span>
+                      <span className="text-sm font-bold text-ink block">{phone}</span>
                     </div>
                   </div>
                   <button
                     onClick={() => goToStep(5)}
-                    className="text-xs font-bold text-[#8a6d2b] hover:underline"
+                    className="text-xs font-bold text-ink hover:underline shrink-0"
                   >
                     Edit
                   </button>
                 </div>
               </div>
 
-              <div className="pt-4 flex items-center gap-3">
+              <div className="pt-2 flex items-center gap-3">
                 <button
                   type="button"
                   onClick={prevStep}
@@ -1077,71 +985,79 @@ export function OnboardingFlow({ initialStep = 1 }: OnboardingFlowProps) {
           )}
 
           {/* ===================================================================
-              STEP 8: You're In! (Classroom Destination)
+              STEP 7: You're Enrolled! (redesigned — polished celebration layout)
               =================================================================== */}
-          {currentStep === 8 && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              {/* Green Paw Badge */}
-              <div className="w-16 h-16 rounded-2xl bg-gold-deep text-[#ebdcc8] flex items-center justify-center shadow-md">
-                <PawPrint className="w-8 h-8" />
-              </div>
+          {currentStep === 7 && (() => {
+            // Derive the pathway name from selected goals for the celebration card.
+            const goals = selectedGoals;
+            const pathwayName = goals.includes('Become a professional pet groomer')
+              ? 'Professional Dog Groomer'
+              : goals.includes('Become a professional dog trainer')
+                ? 'Professional Dog Trainer'
+                : goals.includes('Become a pet sitter')
+                  ? 'Professional Pet Sitter'
+                  : goals.includes('Learn business and entrepreneurship')
+                    ? 'Pet Care Business Ownership'
+                    : goals.includes('Gain animal care knowledge')
+                      ? 'Animal Care Assistant'
+                      : 'Your Chosen Pathway';
+            return (
+              <div className="space-y-6 animate-in fade-in duration-200">
+                {/* Centered celebration header */}
+                <div className="text-center space-y-4 pt-2">
+                  <div className="w-16 h-16 rounded-2xl bg-ink text-on-dark flex items-center justify-center shadow-md mx-auto">
+                    <PawPrint className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="font-display text-3xl sm:text-4xl font-bold text-ink">
+                      You&rsquo;re Enrolled!
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#5a6b5f] leading-relaxed max-w-md mx-auto">
+                      Your learner profile is ready. Head to your classroom to start your first lesson.
+                    </p>
+                  </div>
+                </div>
 
-              <div className="space-y-2">
-                <h2 className="font-display text-3xl sm:text-4xl font-bold text-ink">
-                  You&apos;re In!
-                </h2>
-                <p className="text-xs sm:text-sm text-[#5a6b5f] leading-relaxed">
-                  Welcome to the Leashed community. Your learning journey is about to begin.
+                {/* Pathway Card — clean centered layout with black border */}
+                <div className="rounded-2xl border-2 border-ink bg-cream p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-wider text-ink">
+                    <GraduationCap className="w-4 h-4" />
+                    <span>Your Pathway</span>
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-ink leading-snug">
+                    {pathwayName}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <span className="text-[0.65rem] font-bold px-2 py-0.5 rounded bg-ink/10 text-ink uppercase tracking-wider">
+                      Learner
+                    </span>
+                    <span className="text-[0.65rem] font-bold px-2 py-0.5 rounded bg-ink/10 text-ink uppercase tracking-wider">
+                      Account Ready
+                    </span>
+                    <span className="text-[0.65rem] font-bold px-2 py-0.5 rounded bg-ink/10 text-ink uppercase tracking-wider">
+                      Classroom Unlocked
+                    </span>
+                  </div>
+                </div>
+
+                {/* Next Step Hint */}
+                <p className="text-center text-xs text-[#5a6b5f] leading-relaxed">
+                  Your classroom has your courses, schedule, and support team ready and waiting.
                 </p>
-              </div>
 
-              {/* Status List */}
-              <div className="space-y-2.5 pt-2">
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-[#f2f7f3] border border-[#d8e6db]">
-                  <CheckCircle2 className="w-5 h-5 text-[#8a6d2b] shrink-0" />
-                  <span className="text-xs sm:text-sm font-bold text-[#1b3b2c]">
-                    Account created
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-[#f2f7f3] border border-[#d8e6db]">
-                  <CheckCircle2 className="w-5 h-5 text-[#8a6d2b] shrink-0" />
-                  <span className="text-xs sm:text-sm font-bold text-[#1b3b2c]">
-                    Profile complete
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-[#f2f7f3] border border-[#d8e6db]">
-                  <CheckCircle2 className="w-5 h-5 text-[#8a6d2b] shrink-0" />
-                  <span className="text-xs sm:text-sm font-bold text-[#1b3b2c]">
-                    You&apos;re enrolled in your selected pathway
-                  </span>
+                {/* Primary Action — black "Go to Classroom" button */}
+                <div className="pt-2">
+                  <button
+                    onClick={() => router.push('/learn/classroom')}
+                    className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-ink hover:bg-ink/90 text-on-dark font-bold text-sm tracking-wide transition-all duration-150 shadow-md hover:shadow-lg active:scale-[0.99]"
+                  >
+                    <span>Go to Classroom</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-
-              {/* Next Step Box */}
-              <div className="p-4 rounded-xl bg-[#f8f5ee] border border-[#e5dcce] flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-lg bg-gold-light text-ink flex items-center justify-center shrink-0 mt-0.5">
-                  <GraduationCap className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-bold text-ink mb-0.5">Next Step</h3>
-                  <p className="text-[0.72rem] text-[#5a6b5f] leading-relaxed">
-                    Head to your classroom dashboard to explore your courses, track your progress, and meet your support team.
-                  </p>
-                </div>
-              </div>
-
-              {/* Primary Action to Classroom */}
-              <div className="pt-4">
-                <button
-                  onClick={() => router.push('/learn/classroom')}
-                  className="btn-gold w-full rounded-xl shadow-md hover:shadow-lg active:scale-[0.99]"
-                >
-                  <span>Go to Classroom</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Bottom Security Trust Notice */}
           <div className="pt-6 border-t border-gold/25 flex items-center justify-center gap-2 text-center text-[0.75rem] text-[#6f8275]">

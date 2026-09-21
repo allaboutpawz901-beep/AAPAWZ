@@ -158,7 +158,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`py-4 px-1 text-sm font-semibold border-b-2 transition-colors duration-150 flex items-center gap-2 ${
                       activeTab === tab.id
-                        ? 'border-[#8a6d2b] text-[#8a6d2b]'
+                        ? 'border-ink text-ink'
                         : 'border-transparent text-[#5a6b5f] hover:text-ink hover:border-[#cbd5e1]'
                     }`}
                   >
@@ -173,7 +173,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               <div className="space-y-10">
                 {/* Program Description & Core Competencies */}
                 <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-3">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink mb-3">
                     <GraduationCap className="w-4 h-4 text-gold" /> What You'll Learn
                   </div>
                   <h2 className="font-display text-2xl font-bold text-ink mb-4">
@@ -195,7 +195,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                         key={idx}
                         className="flex items-center gap-3 p-3.5 rounded-lg bg-cream border border-gold/25 text-ink text-xs sm:text-sm font-medium"
                       >
-                        <DynamicIcon name={item.icon} className="w-4 h-4 text-[#8a6d2b] shrink-0" />
+                        <DynamicIcon name={item.icon} className="w-4 h-4 text-ink shrink-0" />
                         <span>{item.label}</span>
                       </div>
                     ))}
@@ -224,7 +224,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                             cy="50"
                             r="38"
                             fill="none"
-                            stroke="#8a6d2b"
+                            stroke="var(--ink)"
                             strokeWidth="12"
                             strokeDasharray={`${strokeTech} ${circ}`}
                             strokeDashoffset={0}
@@ -235,7 +235,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                             cy="50"
                             r="38"
                             fill="none"
-                            stroke="#d9b589"
+                            stroke="color-mix(in oklab, var(--ink) 55%, var(--cream))"
                             strokeWidth="12"
                             strokeDasharray={`${strokeBiz} ${circ}`}
                             strokeDashoffset={-strokeTech}
@@ -247,7 +247,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                               cy="50"
                               r="38"
                               fill="none"
-                              stroke="#0d9488"
+                              stroke="color-mix(in oklab, var(--ink) 30%, var(--cream))"
                               strokeWidth="12"
                               strokeDasharray={`${strokeApp} ${circ}`}
                               strokeDashoffset={-(strokeTech + strokeBiz)}
@@ -273,12 +273,12 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                             <div className="flex items-center gap-2">
                               <span
                                 className={`w-3 h-3 rounded-full ${
-                                  idx === 0 ? 'bg-[#8a6d2b]' : idx === 1 ? 'bg-[#d9b589]' : 'bg-[#0d9488]'
+                                  idx === 0 ? 'bg-ink' : idx === 1 ? 'bg-ink/55' : 'bg-ink/30'
                                 }`}
                               />
                               <span className="text-sm font-bold text-ink">{item.type}</span>
                             </div>
-                            <span className="text-xs font-mono font-bold text-[#8a6d2b] bg-cream px-2 py-0.5 rounded border border-gold/25">
+                            <span className="text-xs font-mono font-bold text-ink bg-cream px-2 py-0.5 rounded border border-gold/25">
                               {item.hours} Hours ({item.percent})
                             </span>
                           </div>
@@ -361,7 +361,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                       onClick={() => setCurriculumViewMode('terms')}
                       className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                         curriculumViewMode === 'terms'
-                          ? 'bg-[#8a6d2b] text-on-dark shadow-sm'
+                          ? 'bg-ink text-on-dark shadow-sm'
                           : 'text-[#5a6b5f] hover:text-ink'
                       }`}
                     >
@@ -371,7 +371,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                       onClick={() => setCurriculumViewMode('weekly')}
                       className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                         curriculumViewMode === 'weekly'
-                          ? 'bg-[#8a6d2b] text-on-dark shadow-sm'
+                          ? 'bg-ink text-on-dark shadow-sm'
                           : 'text-[#5a6b5f] hover:text-ink'
                       }`}
                     >
@@ -381,7 +381,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                       onClick={() => setCurriculumViewMode('catalog')}
                       className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                         curriculumViewMode === 'catalog'
-                          ? 'bg-[#8a6d2b] text-on-dark shadow-sm'
+                          ? 'bg-ink text-on-dark shadow-sm'
                           : 'text-[#5a6b5f] hover:text-ink'
                       }`}
                     >
@@ -405,9 +405,9 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                             className="w-full text-left p-6 flex items-start sm:items-center justify-between gap-4 hover:bg-cream transition-colors"
                           >
                             <div className="flex items-start sm:items-center gap-4">
-                              <div className="w-12 h-12 rounded-xl bg-[#8a6d2b]/10 border border-[#8a6d2b]/20 flex flex-col items-center justify-center shrink-0">
-                                <span className="text-[10px] font-bold text-[#8a6d2b] uppercase">TERM</span>
-                                <span className="text-base font-bold font-display text-[#8a6d2b]">{term.termNumber}</span>
+                              <div className="w-12 h-12 rounded-xl bg-ink/10 border border-ink/20 flex flex-col items-center justify-center shrink-0">
+                                <span className="text-[10px] font-bold text-ink uppercase">TERM</span>
+                                <span className="text-base font-bold font-display text-ink">{term.termNumber}</span>
                               </div>
                               <div>
                                 <h3 className="font-display text-lg font-bold text-ink">{term.name}</h3>
@@ -499,7 +499,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                           Exact pacing of technical modules, business/personal spine modules, hours, and weekly assessments.
                         </p>
                       </div>
-                      <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-[#8a6d2b]/10 text-[#8a6d2b]">
+                      <span className="text-xs font-mono font-bold px-2.5 py-1 rounded bg-ink/10 text-ink">
                         Total {syllabus?.weeklySchedule.length || program.totalWeeks} Weeks Scheduled
                       </span>
                     </div>
@@ -519,10 +519,10 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                         <tbody className="divide-y divide-[#e4dfd4] text-[#5a6b5f]">
                           {syllabus?.weeklySchedule.map((entry) => (
                             <tr key={entry.week} className="hover:bg-cream">
-                              <td className="p-3 font-mono font-bold text-[#8a6d2b]">Wk {entry.week}</td>
+                              <td className="p-3 font-mono font-bold text-ink">Wk {entry.week}</td>
                               <td className="p-3 font-medium text-ink">{entry.term}</td>
-                              <td className="p-3 font-mono text-[#8a6d2b] font-semibold">{entry.technicalModules}</td>
-                              <td className="p-3 font-mono text-[#8c6527]">{entry.businessModules}</td>
+                              <td className="p-3 font-mono text-ink font-semibold">{entry.technicalModules}</td>
+                              <td className="p-3 font-mono text-ink">{entry.businessModules}</td>
                               <td className="p-3 font-mono font-bold bg-cream">{entry.hoursFormatted}</td>
                               <td className="p-3 text-xs">
                                 {entry.assessments.includes('Safety Gate') ? (
@@ -530,7 +530,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                                     <AlertTriangle className="w-3 h-3 shrink-0" /> {entry.assessments}
                                   </span>
                                 ) : entry.assessments.includes('Defense') || entry.assessments.includes('Checkpoint') ? (
-                                  <span className="text-[#8a6d2b] font-semibold flex items-center gap-1">
+                                  <span className="text-ink font-semibold flex items-center gap-1">
                                     <Award className="w-3 h-3 shrink-0" /> {entry.assessments}
                                   </span>
                                 ) : (
@@ -554,7 +554,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                       </span>
                       <Link
                         href="/learn/courses"
-                        className="text-xs font-bold text-[#8a6d2b] hover:underline flex items-center gap-1"
+                        className="text-xs font-bold text-ink hover:underline flex items-center gap-1"
                       >
                         Open Global Catalog <ArrowRight className="w-3 h-3" />
                       </Link>
@@ -565,7 +565,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                         <div key={m.code} className="p-5 rounded-xl bg-cream border border-gold/25 shadow-sm flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between gap-2 mb-2">
-                              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#8a6d2b]/10 text-[#8a6d2b]">
+                              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-ink/10 text-ink">
                                 {m.code}
                               </span>
                               <div className="flex items-center gap-1.5">
@@ -597,7 +597,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
               <div className="space-y-8">
                 {/* Career Pathways & Wage Ladder */}
                 <section className="bg-cream p-6 sm:p-8 border-t border-gold/25">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-2">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink mb-2">
                     <Briefcase className="w-4 h-4 text-gold" /> Professional Pathways & Economic Mobility
                   </div>
                   <h2 className="font-display text-2xl font-bold text-ink mb-2">
@@ -611,7 +611,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     {syllabus?.careerOutcomes.map((outcome, idx) => (
                       <div key={idx} className="p-5 rounded-xl bg-cream border border-gold/25 flex flex-col justify-between">
                         <div>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#8a6d2b]/10 text-[#8a6d2b] uppercase tracking-wider block w-fit mb-2">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-ink/10 text-ink uppercase tracking-wider block w-fit mb-2">
                             {outcome.employmentType}
                           </span>
                           <h3 className="font-semibold text-base text-ink mb-1">{outcome.title}</h3>
@@ -619,7 +619,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                         </div>
                         <div className="pt-3 border-t border-gold/25">
                           <div className="text-[10px] uppercase font-bold text-[#5a6b5f]">Typical Compensation</div>
-                          <div className="text-sm font-mono font-bold text-[#8a6d2b]">{outcome.typicalComp}</div>
+                          <div className="text-sm font-mono font-bold text-ink">{outcome.typicalComp}</div>
                           <div className="text-[11px] text-gold-deep font-medium mt-0.5">Market Demand: {outcome.marketDemand}</div>
                         </div>
                       </div>
@@ -646,11 +646,11 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                           <div className="p-3 rounded bg-cream border border-gold/25">
-                            <span className="font-bold text-[#8a6d2b] block mb-1">Competent Benchmark (Graduation Standard):</span>
+                            <span className="font-bold text-ink block mb-1">Competent Benchmark (Graduation Standard):</span>
                             <span className="text-[#5a6b5f]">{r.competentBenchmark}</span>
                           </div>
                           <div className="p-3 rounded bg-cream border border-gold/25">
-                            <span className="font-bold text-[#8c6527] block mb-1">Mastery / Honors Benchmark:</span>
+                            <span className="font-bold text-ink block mb-1">Mastery / Honors Benchmark:</span>
                             <span className="text-[#5a6b5f]">{r.masteryThreshold}</span>
                           </div>
                         </div>
@@ -704,7 +704,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     <ul className="space-y-2.5 text-xs text-[#5a6b5f]">
                       {syllabus?.admissionRequirements.map((req, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-[#8a6d2b] shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-4 h-4 text-ink shrink-0 mt-0.5" />
                           <span>{req}</span>
                         </li>
                       ))}
@@ -718,7 +718,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
                     <p className="text-xs text-[#5a6b5f] leading-relaxed mb-4">
                       {syllabus?.attendancePolicy}
                     </p>
-                    <div className="p-3 rounded-lg bg-cream text-xs font-mono text-[#8a6d2b] font-semibold">
+                    <div className="p-3 rounded-lg bg-cream text-xs font-mono text-ink font-semibold">
                       Friday 08:00–12:00: Open Laboratory Makeup Block
                     </div>
                   </section>
@@ -729,7 +729,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
             {/* TAB 5: ACCREDITATION FAQ */}
             {activeTab === 'faq' && (
               <section className="bg-cream p-6 sm:p-8 border-t border-gold/25 space-y-4">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6d2b] mb-2">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink mb-2">
                   <HelpCircle className="w-4 h-4 text-gold" /> Compliance & Operations FAQ
                 </div>
                 <h2 className="font-display text-2xl font-bold text-ink mb-2">
@@ -767,7 +767,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
           {/* Right Sidebar: Program Card & Action Pane */}
           <aside className="w-full lg:w-80 shrink-0 space-y-6">
             <div className="bg-cream rounded-xl border border-gold/25 p-6 shadow-sm">
-              <span className="text-[10px] font-bold tracking-widest text-[#8a6d2b] uppercase block mb-1">
+              <span className="text-[10px] font-bold tracking-widest text-ink uppercase block mb-1">
                 Official Credential
               </span>
               <h3 className="font-display text-lg font-bold text-ink mb-3">

@@ -300,3 +300,94 @@ Stage Summary:
 - Every populated field is sourced verbatim from the Program Delivery Guide. careerOutcomes, rubricDomains, faqs, deliveryAndAccess, completionRequirements (on courses-data.ts) are all empty arrays — the guide does not provide this data, so nothing is fabricated.
 - Pre-existing tsc error in ProgramDetailView.tsx (missing ProgramInstitutionalData export) resolved via type alias without modifying the component.
 - All 6 course detail routes return HTTP 200 with guide-verified data rendered.
+
+---
+Task ID: polish-fixes
+Agent: general-purpose
+Task: Polish pass — black buttons (not brown), restore classroom orange, remove acronyms, redesign onboarding steps.
+
+Work Log:
+1) src/app/learn/classroom.css — Restored the original orange/cream palette in the :root token block:
+   - --orange: #a87432 → #e96436
+   - --warm: #faf6ee → #f6f2e8
+   - --paper: #fffaf0 → #fffdf8
+   - --green: #5a6b3f → #227665 (original)
+   - --brand-orange: #f05a28 → #e96436
+   - --ink kept at #0f1f35 (navy ink for classroom canvas)
+   All 16 `var(--orange)` references throughout the file now resolve to the original warm orange. Visual identity of the classroom canvas restored.
+
+2) src/components/ProgramDetailView.tsx — Brown/gold → ink replacement (24 changes):
+   - Tab switcher: `border-[#8a6d2b] text-[#8a6d2b]` → `border-ink text-ink`
+   - All section eyebrows, dynamic icons, code badges, "Wk N" cells, technical/business module cells, competency benchmark labels, admission checkmarks, manual text, sidebar credential eyebrow: `text-[#8a6d2b]` / `text-[#8c6527]` → `text-ink`
+   - Term number circle: `bg-[#8a6d2b]/10 border border-[#8a6d2b]/20` → `bg-ink/10 border border-ink/20`; TERM label and term number text → `text-ink`
+   - Curriculum view-mode tab buttons (3): `bg-[#8a6d2b] text-on-dark` → `bg-ink text-on-dark`
+   - Code badges (`bg-[#8a6d2b]/10 text-[#8a6d2b]`): → `bg-ink/10 text-ink`
+   - Donut chart SVG strokes: `#8a6d2b` → `var(--ink)`, `#d9b589` → `color-mix(in oklab, var(--ink) 55%, var(--cream))`, `#0d9488` → `color-mix(in oklab, var(--ink) 30%, var(--cream))` (teal removed entirely; segments remain visually distinct via ink shades)
+   - Breakdown dots: `bg-[#8a6d2b]` / `bg-[#d9b589]` / `bg-[#0d9488]` → `bg-ink` / `bg-ink/55` / `bg-ink/30`
+   - "Open Global Catalog" hover link + "Total N Weeks Scheduled" badge + outcome cards: text/bgs converted to ink
+   - btn-gold buttons kept as-is (per exception rule); bg-gold-deep/text-gold-deep kept as-is
+
+3) src/components/CoursesCatalogView.tsx — 2 changes:
+   - Removed the program.code badge entirely from the course card image (the `<div className="absolute top-3 left-3">...{program.code}</div>` block). Card image is now clean — no acronym overlay.
+   - "Hands-on Practice" module badge: `bg-[#8a6d2b] text-on-dark` → `bg-ink text-on-dark`
+   - btn-gold, bg-gold-deep, text-gold-deep all kept as-is per exception rule.
+
+4) src/components/classroom.tsx — 1 change:
+   - `short(c)` function simplified from `c?.title?.split(":")[0]?.replace("Understanding Mental Wellness","Mental Wellness")||"Course"` to `c?.title||"Course"`. The colon-split truncation (legacy from a generic LMS template) is removed, so the course-switcher dropdown (`<select>` in `.course-switch`) now shows full course titles like "Professional Dog Groomer" rather than truncating at any colon. subjectColor() still works because pet-care course titles ("Professional Dog Groomer", "Animal Care Assistant", etc.) don't match the Bio/Algebra/English/History patterns and fall through to the default `#547590`.
+
+5) src/components/onboarding/OnboardingFlow.tsx — Substantial restructuring (Fixes #1, #4, #5, #6, #7, #8, #9):
+   - State: removed `isUnder18`, `guardianEmail`, `guardianPhone` (Guardian step deleted). Added `isGoogleLoading` for the Google button. Changed `selectedGoals` default from 3 pre-selected items to `[]` (Fix #6).
+   - nextStep(): changed `if (currentStep < 8)` → `if (currentStep < 7)`; updated comment from "Step 8 complete" → "Step 7 complete" (Fix #7).
+   - Added `handleGoogleSignIn()` async helper that mirrors SignInView's pattern (POST /api/auth with provider:'google') and then calls `nextStep()` to continue the onboarding flow.
+   - stepConfig: removed the Guardian step (was step 6 — "SAFETY & COMPLIANCE"). Old step 7 (Review) renumbered to 6, old step 8 (Complete) renumbered to 7 (Fix #7).
+   - Cursive signature check: `currentStep === 8` → `currentStep === 7`.
+   - Progress bar: `{currentStep} of 8` → `{currentStep} of 7`; width calc `currentStep / 8` → `currentStep / 7` (Fix #7).
+   - Step 1: badge colors `bg-[#e8efe9] text-[#8a6d2b] border-[#d1e0d3]` → `bg-ink/10 text-ink border border-ink/20`; PawPrint icon `text-[#8a6d2b]` → `text-ink`; "8-step enrollment sequence" → "7-step enrollment sequence"; "Step 1 of 8" → "Step 1 of 7". 4 left-column pillar icons `bg-[#e8efe9] text-[#8a6d2b]` → `bg-ink/10 text-ink`.
+   - Step 2 (Fix #4): Added "Continue with Google" button above the email/password form, mirroring SignInView's Google button (white background, ink text, official 4-color Google G SVG icon). Added a "or" divider below the Google button. Also fixed all step-2 input focus states `focus:border-[#8a6d2b] focus:ring-[#8a6d2b]` → `focus:border-ink focus:ring-ink`; Terms checkbox + Terms of Service/Privacy Policy links + "Sign In" link all converted from `text-[#8a6d2b]` → `text-ink`.
+   - Step 3 (Fix #5): Replaced the 6-role-card grid with a single Learner card that's auto-selected (selectedRole already defaults to 'learner'). Card uses `border-2 border-ink` (BLACK border, per requirement). Card has a User icon, "Learner" title, description, and an ink check badge in the top-right. Heading changed from "What best describes you?" to "You're enrolling as a Learner". Continue button (btn-gold) kept.
+   - Step 4: Goal card selected state `border-[#8a6d2b] bg-[#f2f7f3]` → `border-ink bg-cream`; icon `bg-[#e8efe9] text-[#8a6d2b]` → `bg-ink/10 text-ink`; checkbox selected state `bg-gold-deep text-on-dark` → `bg-ink text-on-dark`.
+   - Step 5: All 4 input/select focus states `focus:border-[#8a6d2b]` → `focus:border-ink`.
+   - Step 6 (Fix #9 — Review, redesigned): Removed the old review card with brown borders (`border border-[#dcd2c1]`, `bg-[#f0eee6] text-[#0f1f35]` icons, `text-[#8a6d2b]` Edit links). Replaced with a clean card layout: `rounded-2xl border-2 border-ink bg-cream overflow-hidden`, each row uses `border-b border-ink/10` divider, ink-tinted icon backgrounds (`bg-ink/10 text-ink`), uppercase tracking-wider labels, and `text-ink hover:underline` Edit links (no brown, no green hovers). All 6 fields (Name, Email, Role, Learning Goals, Date of Birth, Phone) preserved with their goToStep() targets intact.
+   - Step 7 (Fix #8 — Complete, redesigned): Removed the old basic complete step (gold-deep paw badge, 3 green-bordered status boxes with `text-[#8a6d2b]` checkmarks, gold-light Next Step box, btn-gold "Go to Classroom"). Replaced with a polished centered celebration layout:
+     * Centered ink paw badge (`bg-ink text-on-dark`) at top
+     * "You're Enrolled!" headline + subhead
+     * Pathway card (`border-2 border-ink bg-cream`) showing the derived pathway name based on the user's selectedGoals (e.g., "Become a professional pet groomer" → "Professional Dog Groomer"). Includes 3 ink-tinted status pills (Learner, Account Ready, Classroom Unlocked).
+     * Centered next-step hint text
+     * Black "Go to Classroom" button: `bg-ink hover:bg-ink/90 text-on-dark` (NOT btn-gold — explicitly black per Fix #8 requirement)
+   - Imports cleaned: removed `Building`, `ShieldCheck`, `CheckCircle2` (no longer used after step 3 simplification and step 7 redesign).
+
+Lint result:
+- `bun run lint` → 0 errors, 46 warnings (all pre-existing unused eslint-disable directives in unrelated files: pawz/settings/screens/*, site/islands/booking-wizard-v2.tsx, site/pet-card.tsx, lib/hooks/useSessionQuery.ts). None of the 4 target files produce any lint errors or warnings.
+- `bunx tsc --noEmit` → 0 errors in any of the modified files (OnboardingFlow, ProgramDetailView, CoursesCatalogView, classroom.tsx, classroom.css). The pre-existing `CoursesCatalogView.tsx(126,53)` error about `t.topics` (line 126, untouched by this task) is the only catalog error and was already present before this work.
+
+Routes verified (all return HTTP 200):
+- /learn/enroll (onboarding flow entry) ✓
+- /learn/learner-enroll-onboarding-steps ✓
+- /learn/courses (catalog) ✓
+- /learn/courses/professional-dog-groomer ✓
+- /learn/courses/professional-dog-trainer ✓
+- /learn/courses/animal-care-assistant ✓
+- /learn/courses/professional-pet-sitter ✓
+- /learn/courses/professional-cat-groomer ✓
+- /learn/courses/pet-care-business-ownership ✓
+- /learn/classroom ✓
+- /learn/sign-in, /learn/signin, /learn/login ✓
+- /learn ✓
+
+Spot-checked rendered HTML:
+- /learn/courses: no `font-mono font-bold ... backdrop-blur-md shadow-xs border border-gold/25` code badge overlay present on the card image (confirming the badge is removed). Program titles render in full.
+- /learn/courses/professional-dog-groomer: `var(--ink)`, `color-mix(in oklab, var(--ink)`, `bg-ink/10`, `bg-ink/55`, `bg-ink/30`, `border-ink text-ink` all present in rendered HTML (confirming the donut chart, dots, eyebrows, badges all use ink now).
+- /learn/enroll: "7-step enrollment sequence" and "of 7" both render in step 1 (confirming step count update).
+
+Stage Summary:
+- Files modified (5): src/app/learn/classroom.css, src/components/ProgramDetailView.tsx, src/components/CoursesCatalogView.tsx, src/components/classroom.tsx, src/components/onboarding/OnboardingFlow.tsx.
+- Brown/gold/teal colors fully replaced with ink (black) across all LMS components per the rule. btn-gold and bg-gold-deep/text-gold-deep kept as-is per the exception rule.
+- Classroom canvas palette restored to original orange/cream/green tokens.
+- Course catalog card image no longer shows acronym badge. Classroom switcher shows full course titles.
+- OnboardingFlow reduced from 8 steps to 7 (Guardian step removed; Review renumbered 7→6; Complete renumbered 8→7).
+- OnboardingFlow step 2 has a "Continue with Google" button above the email/password form (mirrors SignInView's pattern).
+- OnboardingFlow step 3 simplified to a single auto-selected Learner card with a BLACK border.
+- OnboardingFlow step 4 starts with no pre-selected goals.
+- OnboardingFlow step 6 (Review) redesigned with clean card layout, ink borders, no brown/green hovers.
+- OnboardingFlow step 7 (Complete) redesigned with polished centered celebration layout, derived pathway name, and a BLACK "Go to Classroom" button.
+- 0 lint errors. 0 tsc errors in modified files. All LMS routes return HTTP 200.

@@ -9,7 +9,7 @@ type Course={id:number;title:string;grade:string;area:string;statute:string;comp
 const TOOLS:[Tool,string,any][]=[["lesson","Classroom",House],["courses","My courses",GraduationCap],["companion","Companion",BookOpen],["assignments","Assignments",ClipboardList],["quizzes","Quizzes",HelpCircle],["grades","Grades",GraduationCap],["notes","Notebook",NotebookPen],["resources","Resources",Library],["calendar","Calendar",CalendarDays],["inbox","Inbox",MessageSquare],["files","Files",FolderOpen],["meeting","Meeting",Video]];
 const EMPTY={notes:[],events:[],files:[],assignments:[],messages:[],evidence:[]};
 const EMPTY_SCHOOL={enrollments:[],schedule:[],grades:[],submissions:[],meetings:[],inbox:[],resources:[],events:[],schoolDate:""};
-function short(c:any){return c?.title?.split(":")[0]?.replace("Understanding Mental Wellness","Mental Wellness")||"Course"}
+function short(c:any){return c?.title||"Course"}
 function clock(value:string){if(!value)return"—";return new Date(value).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}
 function subjectColor(c:any){const s=short(c);return /Bio/i.test(s)?"#187b65":/Algebra/i.test(s)?"#956e29":/English/i.test(s)?"#7761a6":/History/i.test(s)?"#b46545":"#547590"}
 function workItems(c:Course){return [
