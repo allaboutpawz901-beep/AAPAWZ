@@ -8,21 +8,21 @@ import { Badge } from '@/components/ui/badge';
 import { Database, Trash2, Plus, Loader2 } from 'lucide-react';
 
 interface Chunk { id: string; sourceId: string; pathwayCode: string; moduleCode: string; text: string; safetyFlag: boolean; createdAt: string; }
-const PATHWAYS = ['IPDG', 'PDT', 'ACA', 'PPS', 'CAT', 'PPC'];
+const PATHWAYS = ['VET', 'VTE', 'VST', 'VPM', 'VTN', 'PVM', 'VPT', 'EQN', 'GRO', 'FEL', 'ZKA', 'PRT', 'ABT', 'ACA', 'GSP'];
 
 export default function AdminKnowledgePage() {
   const [chunks, setChunks] = useState<Chunk[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
-  const [newChunk, setNewChunk] = useState({ sourceId: '', pathwayCode: 'IPDG', moduleCode: '', text: '', safetyFlag: false });
+  const [newChunk, setNewChunk] = useState({ sourceId: '', pathwayCode: 'VET', moduleCode: '', text: '', safetyFlag: false });
 
   const load = () => { fetch(`/api/knowledge${filter ? `?pathwayCode=${filter}` : ''}`).then(r => r.json()).then(d => setChunks(d.chunks || [])).finally(() => setLoading(false)); };
   useEffect(() => { load(); }, [filter]);
 
   const add = async () => {
     await fetch('/api/knowledge', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newChunk) });
-    setNewChunk({ sourceId: '', pathwayCode: 'IPDG', moduleCode: '', text: '', safetyFlag: false });
+    setNewChunk({ sourceId: '', pathwayCode: 'VET', moduleCode: '', text: '', safetyFlag: false });
     setShowForm(false); load();
   };
   const remove = async (id: string) => { await fetch(`/api/knowledge?id=${id}`, { method: 'DELETE' }); load(); };

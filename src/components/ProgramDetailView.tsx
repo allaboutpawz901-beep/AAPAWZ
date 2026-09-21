@@ -40,15 +40,7 @@ export function ProgramDetailView({ program }: ProgramDetailViewProps) {
 
   // Retrieve track-specific catalog modules
   const programCatalogModules = React.useMemo(() => {
-    return ALL_CATALOG_MODULES.filter((m) => {
-      if (program.code.toUpperCase() === 'IPDG') return m.trackCode === 'IPDG';
-      if (program.code.toUpperCase() === 'PDT') return m.trackCode === 'PDT';
-      if (program.code.toUpperCase() === 'ACA') return m.trackCode === 'ACA';
-      if (program.code.toUpperCase() === 'PPS') return m.trackCode === 'PPS' || m.code.startsWith('PPS');
-      if (program.code.toUpperCase() === 'CAT') return m.trackCode === 'CAT' || m.code.startsWith('CAT');
-      if (program.code.toUpperCase() === 'PPC') return true; // PPC contains all modules
-      return m.trackCode === program.code.toUpperCase();
-    });
+    return ALL_CATALOG_MODULES.filter((m) => m.trackCode === program.code.toUpperCase());
   }, [program.code]);
 
   // SVG Donut Calculations

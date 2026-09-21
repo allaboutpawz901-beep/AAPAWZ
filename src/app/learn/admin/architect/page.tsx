@@ -13,10 +13,10 @@ const OPERATIONS = [
   { id: 'accessibility_pass', label: 'Accessibility Pass' },
   { id: 'draft_module', label: 'Draft New Module' },
 ];
-const PATHWAYS = ['IPDG', 'PDT', 'ACA', 'PPS', 'CAT', 'PPC'];
+const PATHWAYS = ['VET', 'VTE', 'VST', 'VPM', 'VTN', 'PVM', 'VPT', 'EQN', 'GRO', 'FEL', 'ZKA', 'PRT', 'ABT', 'ACA', 'GSP'];
 
 export default function AdminArchitectPage() {
-  const [pathway, setPathway] = useState('IPDG');
+  const [pathway, setPathway] = useState('VET');
   const [operation, setOperation] = useState('strengthen_lesson');
   const [brief, setBrief] = useState('');
   const [loading, setLoading] = useState(false);

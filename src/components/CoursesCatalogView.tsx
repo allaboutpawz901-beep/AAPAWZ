@@ -20,16 +20,32 @@ import {
 import { COURSES_PROGRAMS, ProgramDetails } from '@/lib/courses-data';
 import { ALL_CATALOG_MODULES, CatalogModule } from '@/lib/catalog-modules';
 
-// Track code mapping to program id
+// Track code mapping to program id (15 pathways from the Leashed Course Catalog)
 const TRACK_CODE_TO_PROGRAM_ID: Record<string, string> = {
-  IPDG: 'ipdg',
-  PDT: 'pdt',
+  VET: 'vet',
+  VTE: 'vte',
+  VST: 'vst',
+  VPM: 'vpm',
+  VTN: 'vtn',
+  PVM: 'pvm',
+  VPT: 'vpt',
+  EQN: 'eqn',
+  GRO: 'gro',
+  FEL: 'fel',
+  ZKA: 'zka',
+  PRT: 'prt',
+  ABT: 'abt',
   ACA: 'aca',
-  PPS: 'pps',
-  CAT: 'cat',
-  PPC: 'ppc',
-  BIZ: 'ppc',
-  PERS: 'ppc',
+  GSP: 'gsp',
+};
+
+// Pathway category groupings for the filter dropdown
+const PATHWAY_CATEGORIES: Record<string, string[]> = {
+  veterinary: ['VET', 'VTE', 'VST', 'VTN', 'PVM', 'VPT'], // clinical veterinary tracks
+  practice_mgmt: ['VPM', 'GSP'],                          // business/operations tracks
+  behavior_training: ['PRT', 'ABT'],                      // training & behavior
+  grooming: ['GRO', 'FEL'],                               // grooming tracks
+  animal_care: ['ACA', 'ZKA', 'EQN'],                     // entry-level & specialty animal care
 };
 
 export function CoursesCatalogView() {
@@ -45,12 +61,10 @@ export function CoursesCatalogView() {
   // 1. Filtered Modules from ALL_CATALOG_MODULES
   const filteredModules = useMemo(() => {
     return ALL_CATALOG_MODULES.filter((m) => {
-      // Pathway filter
+      // Pathway filter (modules view)
       if (selectedPathway !== 'all') {
-        if (selectedPathway === 'grooming' && !['IPDG', 'CAT', 'ACA'].includes(m.trackCode)) return false;
-        if (selectedPathway === 'training' && m.trackCode !== 'PDT') return false;
-        if (selectedPathway === 'pet-care' && !['PPS', 'ACA', 'PPC'].includes(m.trackCode)) return false;
-        if (selectedPathway === 'business' && !['PPC', 'BIZ', 'PERS'].includes(m.trackCode)) return false;
+        const allowed = PATHWAY_CATEGORIES[selectedPathway];
+        if (allowed && !allowed.includes(m.trackCode)) return false;
       }
 
       // Course Level filter
@@ -96,12 +110,10 @@ export function CoursesCatalogView() {
   // 3. Filtered & Sorted Programs
   const filteredPrograms = useMemo(() => {
     const list = COURSES_PROGRAMS.filter((p) => {
-      // Pathway filter
+      // Pathway filter (programs view)
       if (selectedPathway !== 'all') {
-        if (selectedPathway === 'grooming' && !['ipdg', 'cat', 'aca'].includes(p.id)) return false;
-        if (selectedPathway === 'training' && p.id !== 'pdt') return false;
-        if (selectedPathway === 'pet-care' && !['pps', 'aca', 'ppc'].includes(p.id)) return false;
-        if (selectedPathway === 'business' && p.id !== 'ppc') return false;
+        const allowed = PATHWAY_CATEGORIES[selectedPathway]?.map((c) => c.toLowerCase());
+        if (allowed && !allowed.includes(p.id)) return false;
       }
 
       // Duration filter
@@ -123,7 +135,6 @@ export function CoursesCatalogView() {
         const matchesCode = p.code.toLowerCase().includes(q);
         const matchesSubtitle = p.subtitle.toLowerCase().includes(q);
         const matchesOverview = p.overviewParagraphs.some((para) => para.toLowerCase().includes(q));
-        const matchesTopics = p.terms.some((t) => t.topics.some((top) => top.toLowerCase().includes(q)));
         const matchesHighlights = p.terms.some((t) =>
           t.courseHighlights.some(
             (ch) =>
@@ -142,7 +153,6 @@ export function CoursesCatalogView() {
           !matchesCode &&
           !matchesSubtitle &&
           !matchesOverview &&
-          !matchesTopics &&
           !matchesHighlights &&
           !hasMatchedModules &&
           !matchesSafetyQuery
@@ -190,7 +200,7 @@ export function CoursesCatalogView() {
             View All Academy Courses
           </h1>
           <p className="mt-4 max-w-[460px] text-[13px] leading-[1.8] text-ink-soft">
-            Explore our 6 career pathways and 160+ courses. Search by module code, skill, or credential to find your path.
+            Explore our 15 career pathways and 147 courses. Search by module code, skill, or credential to find your path.
           </p>
 
           {/* Quick Route Shortcut to Enroll */}
@@ -208,10 +218,10 @@ export function CoursesCatalogView() {
             <div>
               <div className="flex items-center gap-2 text-gold-deep mb-1">
                 <Award className="w-4 h-4" strokeWidth={1.5} />
-                <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">6 Pathways</span>
+                <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">15 Pathways</span>
               </div>
               <p className="text-[0.75rem] text-ink-soft leading-relaxed">
-                Grooming, training, sitting, daycare, cat care, business.
+                Grooming, training, veterinary, behavior, practice management.
               </p>
             </div>
 
@@ -221,7 +231,7 @@ export function CoursesCatalogView() {
                 <span className="text-[0.7rem] uppercase tracking-wider font-semibold text-ink-soft">Flexible Formats</span>
               </div>
               <p className="text-[0.75rem] text-ink-soft leading-relaxed">
-                6 to 52 weeks with hybrid and hands-on tracks.
+                2 to 104 weeks with term-based and hands-on tracks.
               </p>
             </div>
 
@@ -302,7 +312,7 @@ export function CoursesCatalogView() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="e.g. IPDG-103, key skills check, lion cut..."
+                      placeholder="e.g. VET-101, anatomy, surgical nursing, lion cut..."
                       className="w-full bg-cream border border-gold/30 rounded-lg pl-3 pr-8 py-2 text-xs text-ink focus:outline-none focus:border-gold-deep"
                     />
                     {searchQuery ? (
@@ -330,10 +340,11 @@ export function CoursesCatalogView() {
                     className="w-full bg-cream border border-gold/30 rounded-lg px-3 py-2 text-xs text-ink font-medium focus:outline-none focus:border-gold-deep"
                   >
                     <option value="all">All Pathways</option>
-                    <option value="grooming">Grooming &amp; Bathing (IPDG, CAT, ACA)</option>
-                    <option value="training">Dog Training (PDT)</option>
-                    <option value="pet-care">Pet Sitting &amp; Care (PPS, ACA, PPC)</option>
-                    <option value="business">Business &amp; Ownership (PPC)</option>
+                    <option value="veterinary">Veterinary Clinical (VET, VTE, VST, VTN, PVM, VPT)</option>
+                    <option value="practice_mgmt">Practice Management (VPM, GSP)</option>
+                    <option value="behavior_training">Training &amp; Behavior (PRT, ABT)</option>
+                    <option value="grooming">Grooming (GRO, FEL)</option>
+                    <option value="animal_care">Animal Care (ACA, ZKA, EQN)</option>
                   </select>
                 </div>
 
@@ -377,7 +388,7 @@ export function CoursesCatalogView() {
                     Popular Inquiries
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {['Key Skills Check', 'IPDG-103', 'PDT-201', 'Lion Cut', 'Bathing', 'Obedience'].map((term) => (
+                    {['Anatomy', 'VET-101', 'PRT-104', 'Surgical Nursing', 'Bathing', 'Obedience'].map((term) => (
                       <button
                         key={term}
                         onClick={() => setSearchQuery(term)}
@@ -629,7 +640,7 @@ export function CoursesCatalogView() {
               </>
             )}
 
-            {/* VIEW MODE 2: COURSE MODULES CATALOG (ALL 160+ MODULES) */}
+            {/* VIEW MODE 2: COURSE MODULES CATALOG (ALL 147 MODULES) */}
             {viewMode === 'modules' && (
               <div className="space-y-4">
                 <div className="bg-cream rounded-2xl p-5 border border-gold/25 shadow-sm">
