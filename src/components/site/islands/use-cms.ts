@@ -1,18 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 // ---------------------------------------------------------------------------
-// Client-side CMS — renders immediately with built-in defaults, then
-// updates from Supabase when the admin publishes a change.
+// Client-side CMS data — the data IS the component.
 //
-// Components NEVER show a loading skeleton. They render their fallback
-// content on first paint. If Supabase returns data, it swaps in.
-// If Supabase is not configured or returns empty, the defaults stay.
+// The site renders with this built-in data immediately. No fetch, no
+// loading state, no Supabase dependency for rendering.
+//
+// Supabase is for the ADMIN to push changes. When that happens, Supabase
+// sends a trigger/cron to Next.js which revalidates the page. The admin
+// changes are a separate concern from rendering — the site always works
+// with these defaults.
 // ---------------------------------------------------------------------------
 
-// Built-in defaults — these render on first paint, no fetch needed.
-// When an admin pushes a change to Supabase, the Supabase data overrides.
 const DEFAULT_SETTINGS: Record<string, string> = {
   brandName: "All About Pawz",
   tagline: "From Pawz to PAWfection",
@@ -48,62 +49,15 @@ const DEFAULTS: Record<string, any[]> = {
 }
 
 export function useCms<T = any>(resource: string): { data: T[]; loading: boolean } {
-  // Render defaults immediately — no loading state, no skeleton.
-  const [data, setData] = useState<T[]>(() => (DEFAULTS[resource] as T[]) || [])
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    let alive = true
-    fetch(`/api/cms/${resource}`)
-      .then((r) => (r.ok ? r.json() : []))
-      .then((d) => {
-        if (!alive) return
-        const rows = Array.isArray(d) ? d : []
-        // Only update if Supabase returned real data — otherwise keep defaults.
-        if (rows.length > 0) {
-          setData(rows)
-        }
-      })
-      .catch(() => {
-        // Keep defaults on error — no skeleton, no broken state.
-      })
-    return () => {
-      alive = false
-    }
-  }, [resource])
-
-  return { data, loading }
+  const [data] = useState<T[]>(() => (DEFAULTS[resource] as T[]) || [])
+  return { data, loading: false }
 }
 
 export function useCmsSettings(): { settings: Record<string, string>; loading: boolean } {
-  // Render defaults immediately — no loading state.
-  const [settings, setSettings] = useState<Record<string, string>>(DEFAULT_SETTINGS)
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    let alive = true
-    fetch("/api/cms/settings")
-      .then((r) => (r.ok ? r.json() : {}))
-      .then((d) => {
-        if (!alive) return
-        const s = d && typeof d === "object" && !Array.isArray(d) ? d : {}
-        // Only update if Supabase returned real settings — otherwise keep defaults.
-        if (Object.keys(s).length > 0) {
-          setSettings(s)
-        }
-      })
-      .catch(() => {
-        // Keep defaults on error.
-      })
-    return () => {
-      alive = false
-    }
-  }, [])
-
-  return { settings, loading }
+  const [settings] = useState<Record<string, string>>(DEFAULT_SETTINGS)
+  return { settings, loading: false }
 }
 
-// Rows the admin marked hidden must not render on the public site.
 export function visibleOnly<T extends { visible?: boolean }>(rows: T[]): T[] {
   return rows.filter((r) => r.visible)
 }
