@@ -33,8 +33,6 @@ import {
   MessageSquare,
   Scissors,
   ClipboardCheck,
-  Wrench,
-  Database,
   Phone,
   PhoneCall,
   GraduationCap,
@@ -224,22 +222,6 @@ const VARIANT_CONFIG: Record<SidebarVariant, VariantConfig> = {
           { id: 'completed', label: 'Completed', icon: Award },
           { id: 'certificates', label: 'Certificates', icon: Award },
           { id: 'resources', label: 'Resources', icon: FolderOpen },
-        ],
-      },
-      {
-        category: 'TEACH',
-        categoryDefaultSection: 'instructor-review',
-        items: [
-          { id: 'instructor-review', label: 'Review Queue', icon: ClipboardCheck },
-          { id: 'instructor-sessions', label: 'Live Sessions', icon: Users },
-        ],
-      },
-      {
-        category: 'ADMIN',
-        categoryDefaultSection: 'admin-architect',
-        items: [
-          { id: 'admin-architect', label: 'Course Architect', icon: Wrench },
-          { id: 'admin-knowledge', label: 'Knowledge Base', icon: Database },
         ],
       },
     ],
