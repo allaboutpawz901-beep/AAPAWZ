@@ -92,7 +92,7 @@ const abt: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 485, description: "9 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 9 modules", "Complete 385 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Behavior Foundations — graduate has mastered learning theory, species behavior, and neurochemistry.", "Certificate of Proficiency: Behavior Modification — graduate has completed applied behavior modification and treatment strategy training.", "Program Completion: Animal Behavior Technician — graduate is prepared for animal behavior specialty roles and certification."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["ABT-101", "ABT-102", "ABT-103"], businessModules: "", appliedModule: null, techHours: 120, businessHours: 0, appliedHours: 0, termHours: 120, durationWeeks: "≈ 17 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 120, modulesSummary: { technicalHours: 120, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "ABT-101", title: "Foundations of Animal Behavior & Learning Theory", hours: 45, description: "foundation in animal behavior science and learning theory. Students learn ethics and welfare, the human-animal bond, learning theory, operant and classical conditioning, non-associative learning, social learning, extinction, and the LA (Least Invasive, Minimally Aversive) philosophy." },
@@ -150,7 +150,7 @@ const aca: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 170, description: "7 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 7 modules", "Complete 170 instructional hours"],
+  completionRequirements: ["Program Completion: Animal Care Assistant — graduate is prepared for entry-level animal care positions."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["ACA-101", "ACA-102", "ACA-103", "ACA-104", "ACA-105", "ACA-106", "ACA-107"], businessModules: "", appliedModule: null, techHours: 170, businessHours: 0, appliedHours: 0, termHours: 170, durationWeeks: "≈ 9 Weeks", description: "Term 1 modules.", modulesCount: 7, clockHours: 170, modulesSummary: { technicalHours: 170, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "ACA-101", title: "Introduction to Animal Care & Pet Handling", hours: 30, description: "Introduces fundamental animal care and pet handling skills. Students learn basic animal care procedures, safe handling techniques, sanitation processes, and the foundational knowledge needed for animal care assistant roles." },
@@ -202,7 +202,7 @@ const eqn: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 440, description: "9 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 9 modules", "Complete 385 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Equine Foundations — graduate has mastered equine anatomy, physiology, and nursing foundations.", "Certificate of Proficiency: Equine Clinical Skills — graduate has completed equine medicine, anesthesia, and nursing technique training.", "Program Completion: Equine Nursing Technician — graduate is prepared for equine veterinary nursing specialty roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["EQN-101", "EQN-102", "EQN-103"], businessModules: "", appliedModule: null, techHours: 130, businessHours: 0, appliedHours: 0, termHours: 130, durationWeeks: "≈ 17 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 130, modulesSummary: { technicalHours: 130, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "EQN-101", title: "Equine Veterinary Nursing Foundations & Terminology", hours: 45, description: "Introduces equine veterinary nursing, terminology, and the foundational skills needed for confident independent online learning. Students learn equine-specific medical terminology, the scope of equine veterinary nursing, and core professional competencies." },
@@ -260,7 +260,7 @@ const fel: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 170, description: "6 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 6 modules", "Complete 170 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Feline Foundations — graduate has mastered feline behavior, nutrition, and basic care.", "Program Completion: Felines & Health — graduate is prepared for feline-focused professional roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["FEL-101", "FEL-102", "FEL-103", "FEL-104", "FEL-105", "FEL-106"], businessModules: "", appliedModule: null, techHours: 170, businessHours: 0, appliedHours: 0, termHours: 170, durationWeeks: "≈ 13 Weeks", description: "Term 1 modules.", modulesCount: 6, clockHours: 170, modulesSummary: { technicalHours: 170, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "FEL-101", title: "Feline Foundations: Overview, Breeds & Temperament", hours: 25, description: "Introduces the fundamentals of feline care including breed identification, temperament assessment, and handling. Students learn cat breeds, personality traits, characteristics, and appropriate handling methods for cats." },
@@ -311,7 +311,7 @@ const gro: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 345, description: "7 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 7 modules", "Complete 250 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Grooming Foundations — graduate has mastered safety, breed knowledge, and equipment use.", "Program Completion: Pet Grooming — graduate is prepared for professional pet grooming positions."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["GRO-101", "GRO-102", "GRO-103"], businessModules: "", appliedModule: null, techHours: 110, businessHours: 0, appliedHours: 0, termHours: 110, durationWeeks: "≈ 13 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 110, modulesSummary: { technicalHours: 110, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "GRO-101", title: "Introduction to Grooming & Pet Safety", hours: 35, description: "Introduces pet grooming fundamentals, safety protocols, and animal welfare. Students learn the historical background of dogs and cats, safety tools, sanitation processes, CPR and first aid techniques, and the fundamentals of the grooming profession." },
@@ -365,7 +365,7 @@ const gsp: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 655, description: "9 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 9 modules", "Complete 375 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Salon Operations Foundations — graduate has mastered grooming fundamentals and business operations.", "Certificate of Proficiency: Business Management — graduate has completed marketing, technology, and financial management training.", "Program Completion: Grooming Salon Practice Management — graduate is prepared for salon ownership and management roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["GSP-101", "GSP-102", "GSP-103"], businessModules: "", appliedModule: null, techHours: 125, businessHours: 0, appliedHours: 0, termHours: 125, durationWeeks: "≈ 17 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 125, modulesSummary: { technicalHours: 125, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "GSP-101", title: "Grooming Foundations & Salon Operations", hours: 45, description: "grooming foundations and salon operations. Students learn dog development, handling, equipment, breed recognition, basic through dog grooming, bathing, drying, sanitation (ANSI/AAMI and CDC standards), and pet care fundamentals." },
@@ -423,7 +423,7 @@ const prt: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 345, description: "8 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 8 modules", "Complete 290 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Training Foundations — graduate has mastered learning theory, breed characteristics, and basic training.", "Program Completion: Professional Trainer — graduate is prepared for professional dog training positions and certification."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["PRT-101", "PRT-102", "PRT-103"], businessModules: "", appliedModule: null, techHours: 110, businessHours: 0, appliedHours: 0, termHours: 110, durationWeeks: "≈ 13 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 110, modulesSummary: { technicalHours: 110, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "PRT-101", title: "Introduction to Service Dogs & Canine Life", hours: 35, description: "Introduces the world of service dogs and canine development. Students learn about the role of service dogs, a dog's life stages, AKC breed recognition and characteristics, equipment and training tools, and the foundations of working with service dog candidates." },
@@ -478,7 +478,7 @@ const pvm: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 770, description: "13 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 13 modules", "Complete 550 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Veterinary Medical Foundations — graduate has mastered medical terminology and foundational clinical concepts.", "Certificate of Proficiency: Clinical Diagnostics — graduate has completed radiology, dental, and fluid therapy training.", "Certificate of Practice — graduate has completed specialized clinical topics in neurology, oncology, and exotic medicine.", "Program Completion: Pre-Veterinary Medicine — graduate is prepared for veterinary school or clinical practice."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["PVM-101", "PVM-102", "PVM-103"], businessModules: "", appliedModule: null, techHours: 135, businessHours: 0, appliedHours: 0, termHours: 135, durationWeeks: "≈ 26 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 135, modulesSummary: { technicalHours: 135, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "PVM-101", title: "The Language of Veterinary Medicine & Mathematical Calculations", hours: 45, description: "Foundational course covering veterinary medical terminology, mathematical calculations, and the conceptual language of veterinary medicine. Students master the vocabulary and quantitative skills essential for veterinary study." },
@@ -542,7 +542,7 @@ const vet: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 395, description: "12 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 12 modules", "Complete 395 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Veterinary Foundations — graduate has mastered terminology, animal handling, and hospital procedures.", "Program Completion: Veterinary Assistant — graduate is prepared for entry-level veterinary assistant positions."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["VET-101", "VET-102", "VET-103"], businessModules: "", appliedModule: null, techHours: 110, businessHours: 0, appliedHours: 0, termHours: 110, durationWeeks: "≈ 13 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 110, modulesSummary: { technicalHours: 110, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "VET-101", title: "Veterinary Foundations & Medical Terminology", hours: 40, description: "Introduces foundational veterinary medical terminology, anatomy basics, and body systems. Students learn the language of veterinary medicine, directional terms, anatomical planes, and the structure and function of major body systems. This course establishes the vocabulary and conceptual framework required for all subsequent veterinary coursework." },
@@ -601,7 +601,7 @@ const vpm: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 330, description: "8 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 8 modules", "Complete 300 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Business Foundations — graduate has mastered management principles and basic accounting.", "Certificate of Proficiency: Practice Management — graduate has completed HR, marketing, and practice management coursework.", "Program Completion: Veterinary Practice Management — graduate is prepared for veterinary practice manager roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["VPM-101", "VPM-102", "VPM-103"], businessModules: "", appliedModule: null, techHours: 105, businessHours: 0, appliedHours: 0, termHours: 105, durationWeeks: "≈ 17 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 105, modulesSummary: { technicalHours: 105, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "VPM-101", title: "Business Orientation & Professional Development", hours: 30, description: "Orients students to business principles and online learning strategies. Students develop skills for confident, independent learning and analyze the interdependent goals of life and business, including the steps needed to achieve them." },
@@ -658,7 +658,7 @@ const vpt: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 510, description: "12 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 12 modules", "Complete 495 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Pathology Foundations — graduate has mastered microscopy, instrumentation, and laboratory safety.", "Certificate of Proficiency: Clinical Laboratory Science — graduate has completed hematology, clinical chemistry, and urinalysis training.", "Certificate of Practice — graduate has mastered cytology, microbiology, parasitology, and toxicology.", "Program Completion: Veterinary Pathology Technician — graduate is prepared for pathology technician specialty roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["VPT-101", "VPT-102", "VPT-103"], businessModules: "", appliedModule: null, techHours: 130, businessHours: 0, appliedHours: 0, termHours: 130, durationWeeks: "≈ 26 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 130, modulesSummary: { technicalHours: 130, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "VPT-101", title: "Foundations of Pathology & Laboratory Safety", hours: 45, description: "Introduces pathology fundamentals, laboratory safety, and quality assurance. Students learn the rationale for testing procedures, pathophysiology, hazard prevention, MSDS utilization, and the interrelationship between procedures. Includes skills for independent online learning." },
@@ -721,7 +721,7 @@ const vst: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 445, description: "12 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 12 modules", "Complete 465 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Surgical Foundations — graduate has mastered aseptic technique, instrumentation, and patient preparation.", "Certificate of Proficiency: Surgical Nursing — graduate has completed scrub and circulating nurse duties, wound management, and anesthesia training.", "Program Completion: Veterinary Surgical Technician — graduate is prepared for surgical technician specialty roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["VST-101", "VST-102", "VST-103"], businessModules: "", appliedModule: null, techHours: 120, businessHours: 0, appliedHours: 0, termHours: 120, durationWeeks: "≈ 17 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 120, modulesSummary: { technicalHours: 120, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "VST-101", title: "Aseptic Technique & Sterilization", hours: 45, description: "coverage of aseptic technique, sterilization methods, and infection prevention in the surgical setting. Students learn steam sterilization, CDC guidelines for disinfection and sterilization, veterinary infection prevention and control, and sterile field maintenance." },
@@ -782,7 +782,7 @@ const vte: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 1010, description: "16 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 16 modules", "Complete 650 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Veterinary Foundations — graduate has completed foundational veterinary science coursework.", "Certificate of Proficiency: Core Clinical Skills — graduate has mastered anatomy, pharmacology, and clinical pathology fundamentals.", "Certificate of Practice — graduate has completed anesthesia, surgical nursing, and diagnostic imaging competencies.", "Program Completion: Veterinary Technician — graduate is prepared for the VTNE and entry-level veterinary technician positions."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["VTE-101", "VTE-102", "VTE-103", "VTE-104"], businessModules: "", appliedModule: null, techHours: 170, businessHours: 0, appliedHours: 0, termHours: 170, durationWeeks: "≈ 26 Weeks", description: "Term 1 modules.", modulesCount: 4, clockHours: 170, modulesSummary: { technicalHours: 170, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "VTE-101", title: "Veterinary Medicine Profession & Practice", hours: 40, description: "Introduces the veterinary technology profession, scope of practice, professional ethics, and the role of the veterinary technician in the healthcare team. Students explore pathways, regulatory frameworks, and the historical development of veterinary medicine." },
@@ -849,7 +849,7 @@ const vtn: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 525, description: "10 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 10 modules", "Complete 435 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Pharmacology — graduate has completed pharmacology coursework.", "Certificate of Proficiency: Clinical Foundations — graduate has mastered safety compliance, research methods, and preventative healthcare.", "Certificate of Practice — graduate has completed animal medicine and emergency critical care training.", "Program Completion: Veterinary Technology — graduate is prepared for veterinary technology and VTS specialty roles."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["VTN-101", "VTN-102", "VTN-103"], businessModules: "", appliedModule: null, techHours: 115, businessHours: 0, appliedHours: 0, termHours: 115, durationWeeks: "≈ 26 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 115, modulesSummary: { technicalHours: 115, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "VTN-101", title: "Veterinary Pharmacology", hours: 50, description: "study of veterinary pharmacology including pharmacokinetics, pharmacodynamics, drug interactions, compounding, and therapeutic protocols. Students explore emerging pharmaceuticals and evidence-based pharmacotherapy." },
@@ -910,7 +910,7 @@ const zka: ProgramDetails = {
   breakdown: [{ type: "Total Hours", percent: "100%", hours: 440, description: "9 modules" }],
   manuals: [],
   deliveryAndAccess: [],
-  completionRequirements: ["Complete all 9 modules", "Complete 375 instructional hours"],
+  completionRequirements: ["Certificate of Completion: Zookeeping Foundations — graduate has mastered zoo operations, housing, and safety.", "Certificate of Proficiency: Animal Care & Conservation — graduate has completed behavior, conservation, and biology coursework.", "Program Completion: Zookeeper Assistant — graduate is prepared for zookeeper assistant positions."],
   terms: [
     { termNumber: 1, name: "Term 1", technicalModules: ["ZKA-101", "ZKA-102", "ZKA-103"], businessModules: "", appliedModule: null, techHours: 120, businessHours: 0, appliedHours: 0, termHours: 120, durationWeeks: "≈ 17 Weeks", description: "Term 1 modules.", modulesCount: 3, clockHours: 120, modulesSummary: { technicalHours: 120, businessHours: 0, appliedHours: 0 }, courseHighlights: [
       { code: "ZKA-101", title: "Introduction to Zoos & Zookeeping", hours: 40, description: "Introduces the zookeeping profession, zoo operations, and the role of the zookeeper assistant. Students learn the history and purpose of zoos, zoo organizational structures, and pathways in zookeeping." },
