@@ -3,8 +3,8 @@ import type { NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 // Multi-tenant role isolation middleware.
-// Intercepts requests to portal routes, checks the user's role array
-// against Supabase, and blocks access if they lack the required role.
+// Intercepts requests to /portal/* routes, validates the user's role
+// array against Supabase, and blocks access if they lack the required role.
 
 const ROLE_ROUTES: Record<string, string> = {
   '/portal/admin': 'admin',
@@ -22,8 +22,7 @@ export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  // If Supabase is not configured, allow all requests (dev/preview mode)
-  if (!supabaseUrl || !supabaseKey || supabaseUrl.startsWith('your-')) {
+  if (!supabaseUrl || !supabaseKey) {
     return response
   }
 

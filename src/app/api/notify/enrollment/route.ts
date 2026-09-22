@@ -1,62 +1,69 @@
 import { NextRequest, NextResponse } from "next/server"
 
-// POST /api/notify/enrollment — receives webhook from Supabase trigger
+// POST /api/notify/enrollment
+// Called by the Supabase database trigger (notify_management_of_enrollment)
 // when a new learner enrolls. Sends a transactional email to management
 // via Resend.
 //
-// The Supabase trigger (on_new_learner_enrollment) fires this webhook
-// whenever a new row is inserted into user_roles with role='learner'.
+// The Supabase trigger fires pg_net HTTP POST to this endpoint with:
+// { email, name, user_id, timestamp }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { email, name, user_id, role, timestamp } = body
+    const { email, name, user_id, timestamp } = body
 
-    const resendKey = process.env.RESEND_API_KEY
-    if (!resendKey) {
-      // No Resend key — log and return success so the trigger doesn't retry
-      console.log("[Enrollment Notification] New enrollment (no email sent — RESEND_API_KEY not configured):", { email, name, role })
-      return NextResponse.json({ notified: false, reason: "RESEND_API_KEY not configured" })
+    if (!email) {
+      return NextResponse.json({ error: "Email required" }, { status: 400 })
     }
 
-    // Send email to management via Resend
+    const resendKey = process.env.RESEND_API_KEY
+    const managementEmail = "etnologicinc@gmail.com"
+
+    if (!resendKey) {
+      console.log(`[ENROLLMENT NOTIFY] No RESEND_API_KEY — logging only: ${email} enrolled at ${timestamp}`)
+      return NextResponse.json({ notified: false, logged: true })
+    }
+
+    // Send email via Resend
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${resendKey}`,
+        "Authorization": `Bearer ${resendKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "All About Pawz <noreply@aapawz.com>",
-        to: ["etnologicinc@gmail.com"],
+        from: "All About Pawz Academy <noreply@aapawz.com>",
+        to: [managementEmail],
         subject: `New Enrollment: ${name || email}`,
         html: `
-          <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+          <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto;">
             <h2 style="color: #0f1f35;">New Learner Enrollment</h2>
-            <p>A new learner has enrolled in the academy:</p>
-            <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Name:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${name || 'N/A'}</td></tr>
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Email:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${email}</td></tr>
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Role:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${role}</td></tr>
-              <tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Time:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${new Date(timestamp || Date.now()).toLocaleString()}</td></tr>
-            </table>
-            <p style="color: #666; font-size: 12px;">This is an automated notification from the All About Pawz enrollment system.</p>
+            <p><strong>Name:</strong> ${name || "New Member"}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>User ID:</strong> ${user_id || "N/A"}</p>
+            <p><strong>Enrolled at:</strong> ${new Date(timestamp || Date.now()).toLocaleString()}</p>
+            <hr style="border: none; border-top: 1px solid #e4dfd4; margin: 20px 0;" />
+            <p style="color: #73818a; font-size: 12px;">
+              This notification was sent automatically when a new user completed enrollment.
+              The learner has been seeded into the database with the 'learner' role.
+            </p>
           </div>
         `,
       }),
     })
 
     if (!res.ok) {
-      const errText = await res.text()
-      console.error("[Enrollment Notification] Resend error:", errText)
-      return NextResponse.json({ notified: false, error: errText }, { status: 500 })
+      const err = await res.text()
+      console.error("[ENROLLMENT NOTIFY] Resend error:", err)
+      return NextResponse.json({ error: "Email failed", detail: err }, { status: 500 })
     }
 
     return NextResponse.json({ notified: true, email, name })
   } catch (error) {
-    console.error("[Enrollment Notification] Error:", error)
+    console.error("[ENROLLMENT NOTIFY] Error:", error)
     return NextResponse.json(
-      { notified: false, error: error instanceof Error ? error.message : "Unknown error" },
+      { error: error instanceof Error ? error.message : "Notification failed" },
       { status: 500 }
     )
   }
