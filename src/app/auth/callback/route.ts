@@ -26,13 +26,28 @@ export async function GET(request: Request) {
     const { error, data } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data?.user) {
-      const { data: rolesData } = await supabase.from('user_roles').select('role').eq('user_id', data.user.id)
+      // Query the existing lms.lms_roles table for active roles
+      const { data: rolesData } = await supabase
+        .from('lms_roles')
+        .select('role, status')
+        .eq('user_id', data.user.id)
+        .eq('status', 'active')
       const activeRoles = rolesData?.map((r: any) => r.role) || []
+
+      // Also check staff table for admin/groomer roles
+      const { data: staffData } = await supabase
+        .from('staff')
+        .select('role')
+        .eq('email', data.user.email)
+      if (staffData) {
+        staffData.forEach((s: any) => {
+          if (s.role === 'owner' || s.role === 'admin') activeRoles.push('admin')
+          if (s.role === 'groomer' || (s.role && s.role.includes('groomer'))) activeRoles.push('groomer')
+        })
+      }
 
       if (activeRoles.includes('admin')) return NextResponse.redirect(`${origin}/portal/admin`)
       if (activeRoles.includes('groomer')) return NextResponse.redirect(`${origin}/portal/groomer`)
-      if (activeRoles.includes('grooming_customer')) return NextResponse.redirect(`${origin}/portal/grooming`)
-      if (activeRoles.includes('shop_customer')) return NextResponse.redirect(`${origin}/portal/shop`)
       if (activeRoles.includes('learner')) return NextResponse.redirect(`${origin}/learn/classroom`)
       return NextResponse.redirect(`${origin}/learn/classroom`)
     }

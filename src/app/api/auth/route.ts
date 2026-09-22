@@ -1,207 +1,197 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server"
+import { createClient } from "@supabase/supabase-js"
 
-// POST /api/auth — LMS learner authentication
-// Handles:
-//   1. Google sign-in (provider: 'google') — creates/looks up a learner
-//   2. Email/password sign-in — looks up a learner
-//   3. New learner registration — creates a learner account
-//
-// When Supabase is configured, this writes to the auth tables.
-// When Supabase is NOT configured (dev/preview), it returns a demo session
-// so the onboarding flow can proceed to the classroom.
+// POST /api/auth — LMS learner authentication and enrollment
+// Uses the EXISTING Supabase schema:
+//   - lms.learner_profiles for learner data
+//   - lms.lms_roles for role assignments (via assign_lms_role function)
+//   - lms.enrollments for course enrollment
+//   - staff table for groomer/admin roles
+//   - customers table for customer accounts
 
-const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SB_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL
+const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+const TENANT_ID = "00000000-0000-0000-0000-000000000001"
 
 function getSupabase() {
-  if (!SB_URL || !SB_KEY || SB_URL.startsWith("your-")) return null;
-  return createClient(SB_URL, SB_KEY, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
+  if (!SB_URL || !SB_KEY || SB_URL.startsWith("your-")) return null
+  return createClient(SB_URL, SB_KEY, { auth: { autoRefreshToken: false, persistSession: false } })
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { provider, email, name, password, action } = body;
+    const body = await req.json()
+    const { provider, email, name, password, action, pathwayCode } = body
+
+    const supabase = getSupabase()
 
     // Google sign-in
     if (provider === "google") {
-      const supabase = getSupabase();
-
       if (supabase) {
-        // Create the user in Supabase Auth — the handle_new_user trigger
-        // will automatically create a profile + learner role + notification
-        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-          email,
-          email_confirm: true,
-          user_metadata: { full_name: name || "Learner" },
-        });
+        // Check if learner_profiles already has this user
+        const { data: existing } = await supabase
+          .from("learner_profiles")
+          .select("id, user_id")
+          .eq("user_id", body.user_id || email)
+          .limit(1)
 
-        // If user already exists, that's fine — just sign them in
-        if (authError && !authError.message.includes("already")) {
-          return NextResponse.json({ error: authError.message }, { status: 400 });
-        }
+        if (!existing || existing.length === 0) {
+          // Create learner profile using the existing table
+          await supabase.from("learner_profiles").insert({
+            tenant_id: TENANT_ID,
+            user_id: body.user_id || crypto.randomUUID(),
+            preferred_name: name || "Learner",
+            marketing_opt_in: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
 
-        // If new user was created, the Supabase trigger already:
-        //   1. Created a profile in public.profiles
-        //   2. Assigned 'learner' role in public.user_roles
-        //   3. Assigned 'admin' role if email is etnologicinc@gmail.com
-        //   4. Fired the enrollment notification webhook to /api/notify/enrollment
-        //   which sends an email to management via Resend
+          // Assign learner role using the existing function
+          await supabase.rpc("assign_lms_role", {
+            p_tenant_id: TENANT_ID,
+            p_user_id: body.user_id || email,
+            p_role: "learner",
+          })
 
-        // Also check if admin role should be assigned for the test account
-        if (email.toLowerCase() === "etnologicinc@gmail.com" && authData?.user) {
-          await supabase.from("user_roles").upsert({
-            user_id: authData.user.id,
-            role: "admin",
-          }, { onConflict: "user_id,role" });
+          // Fire enrollment notification
+          await fetch(`${req.nextUrl.origin}/api/notify/enrollment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, name: name || "Learner", user_id: body.user_id, timestamp: new Date().toISOString() }),
+          })
         }
       }
 
-      // Set a session cookie and return success
       const res = NextResponse.json({
         user: { id: email, email, name: name || "Learner", role: "learner" },
         redirect: "/learn/classroom",
-      });
+      })
       res.cookies.set("leashed_user", JSON.stringify({ id: email, email, name: name || "Learner" }), {
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      });
-      return res;
+        httpOnly: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 7, path: "/",
+      })
+      return res
     }
 
     // Email/password sign-in
     if (action === "signin" || (email && password)) {
-      const supabase = getSupabase();
-
       if (supabase) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) {
-          return NextResponse.json({ error: error.message }, { status: 401 });
-        }
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) return NextResponse.json({ error: error.message }, { status: 401 })
 
         return NextResponse.json({
           user: { id: data.user?.id, email: data.user?.email, role: "learner" },
           redirect: "/learn/classroom",
-        });
+        })
       }
 
-      // Demo mode — no Supabase, return a demo session
+      // Demo mode
       const res = NextResponse.json({
         user: { id: email, email, name: name || email.split("@")[0], role: "learner" },
         redirect: "/learn/classroom",
-      });
+      })
       res.cookies.set("leashed_user", JSON.stringify({ id: email, email, name: name || email.split("@")[0] }), {
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      });
-      return res;
+        httpOnly: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 7, path: "/",
+      })
+      return res
     }
 
-    // New registration
+    // New registration / enrollment
     if (action === "register" || (email && !password)) {
-      const supabase = getSupabase();
-
       if (supabase) {
-        // Create user in Supabase Auth — the handle_new_user trigger fires
-        // automatically, creating profile + learner role + notification email
-        const { data, error } = await supabase.auth.admin.createUser({
+        // Create auth user
+        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
           email,
-          password: password || "tempPassword123!",
+          password: password || "WelcomePawz123!",
           email_confirm: true,
-          user_metadata: { full_name: name, name },
-        });
+          user_metadata: { name, role: "learner", full_name: name },
+        })
 
-        if (error && !error.message.includes("already")) {
-          return NextResponse.json({ error: error.message }, { status: 400 });
+        if (authError) return NextResponse.json({ error: authError.message }, { status: 400 })
+
+        const userId = authData.user.id
+
+        // Insert into existing learner_profiles table
+        await supabase.from("learner_profiles").insert({
+          tenant_id: TENANT_ID,
+          user_id: userId,
+          preferred_name: name,
+          marketing_opt_in: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+
+        // Assign learner role using the existing function
+        await supabase.rpc("assign_lms_role", {
+          p_tenant_id: TENANT_ID,
+          p_user_id: userId,
+          p_role: "learner",
+        })
+
+        // If etnologicinc@gmail.com, also assign admin role
+        if (email.toLowerCase() === "etnologicinc@gmail.com") {
+          await supabase.rpc("assign_lms_role", {
+            p_tenant_id: TENANT_ID,
+            p_user_id: userId,
+            p_role: "admin",
+          })
         }
 
-        // If new user created, the trigger already:
-        //   1. Created profile in public.profiles
-        //   2. Assigned 'learner' role in public.user_roles
-        //   3. Fired enrollment notification to /api/notify/enrollment
-        //   4. Assigned 'admin' role if email is etnologicinc@gmail.com
+        // Fire enrollment notification to management
+        await fetch(`${req.nextUrl.origin}/api/notify/enrollment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, name, user_id: userId, timestamp: new Date().toISOString() }),
+        })
 
-        // Also fire the notification webhook directly (belt + suspenders)
-        // in case the DB trigger's pg_net isn't available
-        try {
-          await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL || "https://aapawz.com"}/api/notify/enrollment`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email,
-              name,
-              user_id: data?.user?.id || email,
-              role: "learner",
-              timestamp: new Date().toISOString(),
-            }),
-          });
-        } catch {
-          // Notification is best-effort — don't fail enrollment
-        }
         return NextResponse.json({
-          user: { id: data.user.id, email, name, role: "learner" },
+          user: { id: userId, email, name, role: "learner" },
           redirect: "/learn/classroom",
-        });
+        })
       }
 
       // Demo mode
       const res = NextResponse.json({
         user: { id: email, email, name, role: "learner" },
         redirect: "/learn/classroom",
-      });
+      })
       res.cookies.set("leashed_user", JSON.stringify({ id: email, email, name }), {
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7,
-        path: "/",
-      });
-      return res;
+        httpOnly: true, sameSite: "lax", maxAge: 60 * 60 * 24 * 7, path: "/",
+      })
+      return res
     }
 
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 })
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Auth failed" },
       { status: 500 }
-    );
+    )
   }
 }
 
 // GET — check current session
 export async function GET(req: NextRequest) {
-  const cookie = req.cookies.get("leashed_user")?.value;
+  const cookie = req.cookies.get("leashed_user")?.value
   if (cookie) {
     try {
-      const user = JSON.parse(decodeURIComponent(cookie));
-      return NextResponse.json({ user });
+      const user = JSON.parse(decodeURIComponent(cookie))
+      return NextResponse.json({ user })
     } catch {
-      return NextResponse.json({ user: null });
+      return NextResponse.json({ user: null })
     }
   }
 
-  // Check Supabase session
-  const supabase = getSupabase();
+  const supabase = getSupabase()
   if (supabase) {
-    const authHeader = req.headers.get("authorization");
+    const authHeader = req.headers.get("authorization")
     if (authHeader?.startsWith("Bearer ")) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data } = await supabase.auth.getUser(token);
+      const token = authHeader.replace("Bearer ", "")
+      const { data } = await supabase.auth.getUser(token)
       if (data.user) {
-        return NextResponse.json({ user: { id: data.user.id, email: data.user.email, role: "learner" } });
+        return NextResponse.json({ user: { id: data.user.id, email: data.user.email, role: "learner" } })
       }
     }
   }
 
-  return NextResponse.json({ user: null });
+  return NextResponse.json({ user: null })
 }
